@@ -1,2 +1,2 @@
 # xxl-trace
-A distributed tracing and apm system.
+A distributed tracing and apm platform.
