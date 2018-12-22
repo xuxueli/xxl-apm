@@ -12,7 +12,8 @@
 
 	<modules>
         <module>xxl-trace-client</module>
-    </modules>
+		<module>xxl-trace-admin</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
