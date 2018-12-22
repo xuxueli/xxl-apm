@@ -11,7 +11,8 @@
 	<url>http://www.xuxueli.com/</url>
 
 	<modules>
-	</modules>
+        <module>xxl-trace-client</module>
+    </modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,7 +22,8 @@
 		<maven.compiler.target>1.7</maven.compiler.target>
 
 		<maven.test.skip>true</maven.test.skip>
-    
+
+		<slf4j-api.version>1.7.25</slf4j-api.version>
 	</properties>
 
 
