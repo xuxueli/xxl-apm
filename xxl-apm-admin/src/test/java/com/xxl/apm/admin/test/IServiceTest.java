@@ -1,4 +1,4 @@
-package com.xxl.trace.admin.test;
+package com.xxl.apm.admin.test;
 
 
 import org.junit.Test;

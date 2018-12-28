@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author xuxueli 2018-11-17 17:21:44
  */
 @SpringBootApplication
-public class XxlTraceAdminApplication {
+public class XxlApmAdminApplication {
 
 	public static void main(String[] args) {
-        SpringApplication.run(XxlTraceAdminApplication.class, args);
+        SpringApplication.run(XxlApmAdminApplication.class, args);
 	}
 
 }

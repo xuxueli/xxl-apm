@@ -24,9 +24,9 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter implements 
 
     // ---------------------- init ----------------------
 
-    @Value("${xxl.mq.login.username}")
+    @Value("${xxl-apm.login.username}")
     private String username;
-    @Value("${xxl.mq.login.password}")
+    @Value("${xxl-apm.login.password}")
     private String password;
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -45,7 +45,7 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter implements 
 
     // ---------------------- tool ----------------------
 
-	public static final String LOGIN_IDENTITY_KEY = "XXL_MQ_LOGIN_IDENTITY";
+	public static final String LOGIN_IDENTITY_KEY = "XXL_APM_LOGIN_IDENTITY";
 	private static String LOGIN_IDENTITY_TOKEN;
 
 	public static String getLoginIdentityToken() {

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxl.mq.admin.dao.IXxlCommonRegistryMessageDao" >
+<mapper namespace="com.xxl.apm.admin.dao.IXxlCommonRegistryMessageDao" >
 	
-	<resultMap id="xxlCommonRegistryMessage" type="com.xxl.mq.admin.core.model.XxlCommonRegistryMessage" >
+	<resultMap id="xxlCommonRegistryMessage" type="com.xxl.apm.admin.core.model.XxlCommonRegistryMessage" >
 		<result column="id" property="id" />
 		<result column="data" property="data" />
 		<result column="addTime" property="addTime" />
@@ -15,7 +15,7 @@
 		t.`addTime`
 	</sql>
 
-	<insert id="add" parameterType="com.xxl.mq.admin.core.model.XxlCommonRegistryMessage" >
+	<insert id="add" parameterType="com.xxl.apm.admin.core.model.XxlCommonRegistryMessage" >
 		INSERT INTO xxl_apm_common_registry_message (
 			`data`,
 			`addTime`

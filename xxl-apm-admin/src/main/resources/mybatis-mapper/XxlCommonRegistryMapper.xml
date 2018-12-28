@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxl.mq.admin.dao.IXxlCommonRegistryDao" >
+<mapper namespace="com.xxl.apm.admin.dao.IXxlCommonRegistryDao" >
 	
-	<resultMap id="xxlCommonRegistry" type="com.xxl.mq.admin.core.model.XxlCommonRegistry" >
+	<resultMap id="xxlCommonRegistry" type="com.xxl.apm.admin.core.model.XxlCommonRegistry" >
 		<result column="id" property="id" />
 		<result column="key" property="key" />
 		<result column="data" property="data" />
@@ -28,7 +28,7 @@
 		WHERE t.`key` = #{key}
 	</select>
 
-	<insert id="add" parameterType="com.xxl.mq.admin.core.model.XxlCommonRegistry" >
+	<insert id="add" parameterType="com.xxl.apm.admin.core.model.XxlCommonRegistry" >
 		INSERT INTO xxl_apm_common_registry (
 			`key`,
 			`data`
@@ -39,7 +39,7 @@
 		)
 	</insert>
 
-	<update id="update" parameterType="com.xxl.mq.admin.core.model.XxlCommonRegistry"  >
+	<update id="update" parameterType="com.xxl.apm.admin.core.model.XxlCommonRegistry"  >
 		UPDATE xxl_apm_common_registry AS t
 		SET
 			t.`data` = #{xxlCommonRegistry.data}

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xxl.mq.admin.dao.IXxlCommonRegistryDataDao" >
+<mapper namespace="com.xxl.apm.admin.dao.IXxlCommonRegistryDataDao" >
 	
-	<resultMap id="xxlCommonRegistryData" type="com.xxl.mq.admin.core.model.XxlCommonRegistryData" >
+	<resultMap id="xxlCommonRegistryData" type="com.xxl.apm.admin.core.model.XxlCommonRegistryData" >
 		<result column="id" property="id" />
 		<result column="key" property="key" />
 		<result column="value" property="value" />
@@ -17,7 +17,7 @@
 		t.`updateTime`
 	</sql>
 
-	<update id="refresh" parameterType="com.xxl.mq.admin.core.model.XxlCommonRegistryData"  >
+	<update id="refresh" parameterType="com.xxl.apm.admin.core.model.XxlCommonRegistryData"  >
 		UPDATE xxl_apm_common_registry_data AS t
 		SET
 			t.`updateTime` = now()
@@ -25,7 +25,7 @@
 			and t.`value` = #{xxlCommonRegistryData.value}
 	</update>
 
-	<insert id="add" parameterType="com.xxl.mq.admin.core.model.XxlCommonRegistryData" >
+	<insert id="add" parameterType="com.xxl.apm.admin.core.model.XxlCommonRegistryData" >
 		INSERT INTO xxl_apm_common_registry_data (
 			`key`,
 			`value`,
