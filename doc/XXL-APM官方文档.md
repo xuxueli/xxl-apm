@@ -4,8 +4,8 @@ A distributed APM(application-performance-management) platform.
 
 ### todo
 - core model
+    - admin rpc discovery: xxl-reigtry [done]
     - transfer log: xxl-rpc (async + mult send)
-    - admin rpc discovery: xxl-reigtry
     - log storage: file(client) + es(admin)
     - view: ui 
 - trace

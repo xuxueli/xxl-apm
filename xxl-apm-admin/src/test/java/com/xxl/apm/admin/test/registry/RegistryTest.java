@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class RegistryTest {
 
     public static void main(String[] args) throws InterruptedException {
-        test1();
+        test2();
     }
 
 
