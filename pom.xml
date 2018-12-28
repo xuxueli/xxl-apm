@@ -2,17 +2,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.xuxueli</groupId>
-	<artifactId>xxl-trace</artifactId>
+	<artifactId>xxl-apm</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>xxl-trace</name>
-	<description>A distributed tracing and apm platform.</description>
+	<name>xxl-apm</name>
+	<description>A distributed APM(application-performance-management) platform.</description>
 	<url>http://www.xuxueli.com/</url>
 
 	<modules>
-        <module>xxl-trace-client</module>
-		<module>xxl-trace-admin</module>
+        <module>xxl-apm-client</module>
+		<module>xxl-apm-admin</module>
 	</modules>
 
 	<properties>

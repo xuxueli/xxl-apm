@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.xuxueli</groupId>
-        <artifactId>xxl-trace</artifactId>
+        <artifactId>xxl-apm</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>xxl-trace-admin</artifactId>
+    <artifactId>xxl-apm-admin</artifactId>
     <packaging>jar</packaging>
 
 
@@ -60,7 +60,7 @@
         <!-- xxl-apm-client -->
         <dependency>
             <groupId>com.xuxueli</groupId>
-            <artifactId>xxl-trace-client</artifactId>
+            <artifactId>xxl-apm-client</artifactId>
             <version>${parent.version}</version>
         </dependency>
 

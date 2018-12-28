@@ -1,2 +1,2 @@
-# xxl-trace
-A distributed tracing and apm platform.
+# xxl-apm
+A distributed APM(application-performance-management) platform.

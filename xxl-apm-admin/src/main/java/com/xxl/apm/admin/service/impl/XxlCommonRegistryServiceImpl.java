@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * xxl native regsitry, borrowed from "xxl-rpc"
+ * xxl native regsitry, borrowed from "xxl-registry"
  *
  * @author xuxueli 2018-11-26
  */
@@ -40,11 +40,11 @@ public class XxlCommonRegistryServiceImpl implements XxlCommonRegistryService, I
     @Resource
     private IXxlCommonRegistryMessageDao xxlCommonRegistryMessageDao;
 
-    @Value("${xxl.mq.registry.data.filepath}")
+    @Value("${xxl-apm.registry.data.filepath}")
     private String registryDataFilePath;
-    @Value("${xxl.mq.registry.beattime}")
+    @Value("${xxl-apm.registry.beattime}")
     private int registryBeatTime;
-    @Value("${xxl.mq.registry.accessToken}")
+    @Value("${xxl-apm.registry.accessToken}")
     private String accessToken;
 
     @Override
