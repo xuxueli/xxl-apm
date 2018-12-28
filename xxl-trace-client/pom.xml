@@ -12,6 +12,14 @@
     <packaging>jar</packaging>
 
     <dependencies>
+
+        <!-- xxl-rpc-core -->
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-rpc-core</artifactId>
+            <version>${xxl-rpc.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
