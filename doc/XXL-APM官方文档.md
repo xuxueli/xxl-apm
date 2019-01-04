@@ -22,3 +22,9 @@ A distributed APM(application-performance-management) platform.
         - Heartbeat: gc error 
         - Metric: order num zero
         - Trace: error invoke
+        
+- other
+    - api：tcp + http
+    - mvc、rpc、db、cache
+    - trace拓扑
+    - 机器指标，时间折线图；
