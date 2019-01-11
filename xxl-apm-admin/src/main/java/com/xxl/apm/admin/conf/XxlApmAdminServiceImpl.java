@@ -1,8 +1,8 @@
 package com.xxl.apm.admin.conf;
 
-import com.xxl.apm.client.admin.ApmAdminService;
-import com.xxl.apm.client.admin.param.XxlApmMsg;
-import com.xxl.apm.client.admin.param.XxlApmMsgResult;
+import com.xxl.apm.client.admin.XxlApmAdminService;
+import com.xxl.apm.client.message.XxlApmMsg;
+import com.xxl.apm.client.admin.model.XxlApmResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -16,7 +16,7 @@ import java.util.List;
  * Created by xuxueli on 16/8/28.
  */
 @Component
-public class XxlApmAdminServiceImpl implements ApmAdminService, InitializingBean, DisposableBean {
+public class XxlApmAdminServiceImpl implements XxlApmAdminService, InitializingBean, DisposableBean {
     private final static Logger logger = LoggerFactory.getLogger(XxlApmAdminServiceImpl.class);
 
 
@@ -44,9 +44,9 @@ public class XxlApmAdminServiceImpl implements ApmAdminService, InitializingBean
     // ---------------------- service ----------------------
 
     @Override
-    public XxlApmMsgResult report(List<XxlApmMsg> msgList) {
+    public XxlApmResult report(List<XxlApmMsg> msgList) {
 
-        return new XxlApmMsgResult();
+        return new XxlApmResult();
     }
 
 }

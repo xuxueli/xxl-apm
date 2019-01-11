@@ -1,20 +1,20 @@
-package com.xxl.apm.client.admin.param;
+package com.xxl.apm.client.admin.model;
 
 import java.io.Serializable;
 
 /**
  * @author xuxueli 2018-12-29 17:15:40
  */
-public class XxlApmMsgResult implements Serializable {
+public class XxlApmResult implements Serializable {
     private static final long serialVersionUID = 42L;
 
     private boolean code;
     private String msg;
 
-    public XxlApmMsgResult() {
+    public XxlApmResult() {
         this.code = true;
     }
-    public XxlApmMsgResult(boolean code, String msg) {
+    public XxlApmResult(boolean code, String msg) {
         this.code = code;
         this.msg = msg;
     }

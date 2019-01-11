@@ -1,4 +1,6 @@
-package com.xxl.apm.client.admin.param;
+package com.xxl.apm.client.message.impl;
+
+import com.xxl.apm.client.message.XxlApmMsg;
 
 /**
  * app and machine info, report each minute

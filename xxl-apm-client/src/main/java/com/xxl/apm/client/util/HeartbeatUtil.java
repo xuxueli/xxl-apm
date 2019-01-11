@@ -1,6 +1,6 @@
-package com.xxl.apm.client.admin.util;
+package com.xxl.apm.client.util;
 
-import com.xxl.apm.client.admin.param.XxlApmHeartbeat;
+import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
 
 /**
  * @author xuxueli 2019-01-10
