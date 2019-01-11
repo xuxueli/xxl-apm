@@ -3,6 +3,7 @@ package com.xxl.apm.client.message.impl;
 import com.xxl.apm.client.message.XxlApmMsg;
 import com.xxl.apm.client.os.OsHelper;
 
+import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +27,8 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     private MemoryInfo non_heap_compressed_class_space;
 
     // gc
-    private GcInfo gc_marksweep;
-    private GcInfo gc_scavenge;
-
-    private GcInfo gc_younggc;
-    private GcInfo gc_fullgc;
+    private GcInfo gc_younggc = new GcInfo();  // marksweep、scavenge
+    private GcInfo gc_fullgc = new GcInfo();
 
     // thread
     private List<ThreadInfo> thread_list = new ArrayList<ThreadInfo>();
@@ -90,20 +88,20 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         this.non_heap_compressed_class_space = non_heap_compressed_class_space;
     }
 
-    public GcInfo getGc_marksweep() {
-        return gc_marksweep;
+    public GcInfo getGc_younggc() {
+        return gc_younggc;
     }
 
-    public void setGc_marksweep(GcInfo gc_marksweep) {
-        this.gc_marksweep = gc_marksweep;
+    public void setGc_younggc(GcInfo gc_younggc) {
+        this.gc_younggc = gc_younggc;
     }
 
-    public GcInfo getGc_scavenge() {
-        return gc_scavenge;
+    public GcInfo getGc_fullgc() {
+        return gc_fullgc;
     }
 
-    public void setGc_scavenge(GcInfo gc_scavenge) {
-        this.gc_scavenge = gc_scavenge;
+    public void setGc_fullgc(GcInfo gc_fullgc) {
+        this.gc_fullgc = gc_fullgc;
     }
 
     public List<ThreadInfo> getThread_list() {
@@ -134,6 +132,13 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     // tool
     @Override
     public void complete() {
+
+        // gc_fullgc
+        for (final GarbageCollectorMXBean garbageCollector : ManagementFactory.getGarbageCollectorMXBeans()) {
+            // todo
+        }
+        gc_younggc.setCount(0);
+        gc_younggc.setCost(0);
 
         // thread_list
         java.lang.management.ThreadInfo[] threadInfos = ManagementFactory.getThreadMXBean().getThreadInfo(
