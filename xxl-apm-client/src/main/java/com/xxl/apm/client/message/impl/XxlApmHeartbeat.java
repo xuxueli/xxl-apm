@@ -1,8 +1,10 @@
 package com.xxl.apm.client.message.impl;
 
 import com.xxl.apm.client.message.XxlApmMsg;
-import com.xxl.apm.client.util.OperatingSystemTool;
+import com.xxl.apm.client.os.OsHelper;
 
+import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,11 +14,6 @@ import java.util.List;
  */
 public class XxlApmHeartbeat extends XxlApmMsg {
 
-    public XxlApmHeartbeat() {
-        // pre process
-        system_info = new SystemInfo();
-        system_info.setProcess_cpu_time(OperatingSystemTool.getOsmxb().getProcessCpuTime());
-    }
 
     // heap, in Mb units, max for used percent
     private MemoryInfo heap_eden_space;
@@ -36,13 +33,13 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     private GcInfo gc_fullgc;
 
     // thread
-    private List<TheadInfo> thread_list;
+    private List<TheadInfo> thread_list = new ArrayList<>();
 
     // class
-    private ClassInfo class_info;
+    private ClassInfo class_info = new ClassInfo();
 
     // system
-    private SystemInfo system_info;
+    private SystemInfo system_info = new SystemInfo();
 
 
     public MemoryInfo getHeap_eden_space() {
@@ -138,10 +135,17 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     @Override
     public void complete() {
 
+        // thread_list
+        long[] threadIds = ManagementFactory.getThreadMXBean().getAllThreadIds();
+        ManagementFactory.getThreadMXBean().getThreadInfo(threadIds);
+
+        // class
+        class_info.setLoaded_count(ManagementFactory.getClassLoadingMXBean().getLoadedClassCount());
+        class_info.setUnload_count(ManagementFactory.getClassLoadingMXBean().getUnloadedClassCount());
+
         // system
         int kb = 1024;
         int ms_nanoseconds = 1000000;
-        //system_info = new SystemInfo();
         system_info.setOs_name(System.getProperty("os.name"));
         system_info.setOs_arch(System.getProperty("os.arch"));
         system_info.setOs_version(System.getProperty("os.version"));
@@ -149,18 +153,18 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         system_info.setJava_home(System.getProperty("java.home"));
         system_info.setJava_version(System.getProperty("java.version"));
 
-        system_info.setCommitted_virtual_memory(OperatingSystemTool.getOsmxb().getCommittedVirtualMemorySize()/kb);
-        system_info.setTotal_swap_space(OperatingSystemTool.getOsmxb().getTotalSwapSpaceSize()/kb);
-        system_info.setFree_swap_space(OperatingSystemTool.getOsmxb().getFreeSwapSpaceSize()/kb);
-        system_info.setTotal_physical_memory(OperatingSystemTool.getOsmxb().getTotalPhysicalMemorySize()/kb);
-        system_info.setFree_physical_memory(OperatingSystemTool.getOsmxb().getFreePhysicalMemorySize()/kb);
-        system_info.setProcess_cpu_time( (OperatingSystemTool.getOsmxb().getProcessCpuTime()-system_info.getProcess_cpu_time())/ms_nanoseconds);
-        system_info.setSystem_cpu_load((float)OperatingSystemTool.getOsmxb().getSystemCpuLoad());
-        system_info.setProcess_cpu_load((float)OperatingSystemTool.getOsmxb().getProcessCpuLoad());
+        system_info.setCommitted_virtual_memory(OsHelper.getInstance().getCommittedVirtualMemorySize()/kb);
+        system_info.setTotal_swap_space(OsHelper.getInstance().getTotalSwapSpaceSize()/kb);
+        system_info.setFree_swap_space(OsHelper.getInstance().getFreeSwapSpaceSize()/kb);
+        system_info.setTotal_physical_memory(OsHelper.getInstance().getTotalPhysicalMemorySize()/kb);
+        system_info.setFree_physical_memory(OsHelper.getInstance().getFreePhysicalMemorySize()/kb);
+        system_info.setProcess_cpu_time( (OsHelper.getInstance().getProcessCpuTime()-system_info.getProcess_cpu_time())/ms_nanoseconds);
+        system_info.setSystem_cpu_load(OsHelper.getInstance().getSystemCpuLoad());
+        system_info.setProcess_cpu_load(OsHelper.getInstance().getProcessCpuLoad());
 
-        /*long totalMemory = Runtime.getRuntime().totalMemory()/kb;   // 可使用内存
-        long freeMemory = Runtime.getRuntime().freeMemory()/kb;     // 剩余内存
-        long maxMemory = Runtime.getRuntime().maxMemory()/kb;       // 最大可使用内存*/
+        system_info.setCpu_count(ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
+        system_info.setCpu_load_average_1min(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
+
     }
 
 
@@ -196,11 +200,11 @@ public class XxlApmHeartbeat extends XxlApmMsg {
 
     public static class GcInfo{
         private int count;
-        private float cost;     // in second units
+        private long cost;     // in ms units
 
         public GcInfo() {
         }
-        public GcInfo(int count, float cost) {
+        public GcInfo(int count, long cost) {
             this.count = count;
             this.cost = cost;
         }
@@ -213,11 +217,11 @@ public class XxlApmHeartbeat extends XxlApmMsg {
             this.count = count;
         }
 
-        public float getCost() {
+        public long getCost() {
             return cost;
         }
 
-        public void setCost(float cost) {
+        public void setCost(long cost) {
             this.cost = cost;
         }
     }
@@ -262,14 +266,7 @@ public class XxlApmHeartbeat extends XxlApmMsg {
 
     public static class ClassInfo{
         private int loaded_count;
-        private int unload_count;
-
-        public ClassInfo() {
-        }
-        public ClassInfo(int loaded_count, int unload_count) {
-            this.loaded_count = loaded_count;
-            this.unload_count = unload_count;
-        }
+        private long unload_count;
 
         public int getLoaded_count() {
             return loaded_count;
@@ -279,11 +276,11 @@ public class XxlApmHeartbeat extends XxlApmMsg {
             this.loaded_count = loaded_count;
         }
 
-        public int getUnload_count() {
+        public long getUnload_count() {
             return unload_count;
         }
 
-        public void setUnload_count(int unload_count) {
+        public void setUnload_count(long unload_count) {
             this.unload_count = unload_count;
         }
     }
@@ -307,16 +304,14 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         private long total_physical_memory;
         private long free_physical_memory;
         // cpu time
-        private long process_cpu_time;  // already use cpu time, in ms
-        private float system_cpu_load;
-        private float process_cpu_load;
+        private long process_cpu_time = OsHelper.getInstance().getProcessCpuTime();  // already use cpu time, in ms
+        private double system_cpu_load;
+        private double process_cpu_load;
 
         // cpu load
         private int cpu_count;
-        private float cpu_load_average_1min;
-        private float cpu_load_average_5min;
-        private float cpu_load_average_15min;
-        private float cpu_used_percent;
+        private double cpu_load_average_1min;
+        //private float cpu_used_percent;   // todo cpu used percent
 
 
         public String getOs_name() {
@@ -343,6 +338,14 @@ public class XxlApmHeartbeat extends XxlApmMsg {
             this.os_version = os_version;
         }
 
+        public String getOs_user_name() {
+            return os_user_name;
+        }
+
+        public void setOs_user_name(String os_user_name) {
+            this.os_user_name = os_user_name;
+        }
+
         public String getJava_home() {
             return java_home;
         }
@@ -357,14 +360,6 @@ public class XxlApmHeartbeat extends XxlApmMsg {
 
         public void setJava_version(String java_version) {
             this.java_version = java_version;
-        }
-
-        public String getOs_user_name() {
-            return os_user_name;
-        }
-
-        public void setOs_user_name(String os_user_name) {
-            this.os_user_name = os_user_name;
         }
 
         public long getCommitted_virtual_memory() {
@@ -415,19 +410,19 @@ public class XxlApmHeartbeat extends XxlApmMsg {
             this.process_cpu_time = process_cpu_time;
         }
 
-        public float getSystem_cpu_load() {
+        public double getSystem_cpu_load() {
             return system_cpu_load;
         }
 
-        public void setSystem_cpu_load(float system_cpu_load) {
+        public void setSystem_cpu_load(double system_cpu_load) {
             this.system_cpu_load = system_cpu_load;
         }
 
-        public float getProcess_cpu_load() {
+        public double getProcess_cpu_load() {
             return process_cpu_load;
         }
 
-        public void setProcess_cpu_load(float process_cpu_load) {
+        public void setProcess_cpu_load(double process_cpu_load) {
             this.process_cpu_load = process_cpu_load;
         }
 
@@ -439,37 +434,14 @@ public class XxlApmHeartbeat extends XxlApmMsg {
             this.cpu_count = cpu_count;
         }
 
-        public float getCpu_load_average_1min() {
+        public double getCpu_load_average_1min() {
             return cpu_load_average_1min;
         }
 
-        public void setCpu_load_average_1min(float cpu_load_average_1min) {
+        public void setCpu_load_average_1min(double cpu_load_average_1min) {
             this.cpu_load_average_1min = cpu_load_average_1min;
         }
 
-        public float getCpu_load_average_5min() {
-            return cpu_load_average_5min;
-        }
-
-        public void setCpu_load_average_5min(float cpu_load_average_5min) {
-            this.cpu_load_average_5min = cpu_load_average_5min;
-        }
-
-        public float getCpu_load_average_15min() {
-            return cpu_load_average_15min;
-        }
-
-        public void setCpu_load_average_15min(float cpu_load_average_15min) {
-            this.cpu_load_average_15min = cpu_load_average_15min;
-        }
-
-        public float getCpu_used_percent() {
-            return cpu_used_percent;
-        }
-
-        public void setCpu_used_percent(float cpu_used_percent) {
-            this.cpu_used_percent = cpu_used_percent;
-        }
     }
 
 }
