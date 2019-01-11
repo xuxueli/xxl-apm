@@ -1,9 +1,8 @@
 package com.xxl.apm.client.message.impl;
 
-import com.sun.management.OperatingSystemMXBean;
 import com.xxl.apm.client.message.XxlApmMsg;
+import com.xxl.apm.client.util.OperatingSystemTool;
 
-import java.lang.management.ManagementFactory;
 import java.util.List;
 
 /**
@@ -13,6 +12,11 @@ import java.util.List;
  */
 public class XxlApmHeartbeat extends XxlApmMsg {
 
+    public XxlApmHeartbeat() {
+        // pre process
+        system_info = new SystemInfo();
+        system_info.setProcess_cpu_time(OperatingSystemTool.getOsmxb().getProcessCpuTime());
+    }
 
     // heap, in Mb units, max for used percent
     private MemoryInfo heap_eden_space;
@@ -134,11 +138,10 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     @Override
     public void complete() {
 
-
         // system
-        OperatingSystemMXBean osmxb = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
         int kb = 1024;
-        system_info = new SystemInfo();
+        int ms_nanoseconds = 1000000;
+        //system_info = new SystemInfo();
         system_info.setOs_name(System.getProperty("os.name"));
         system_info.setOs_arch(System.getProperty("os.arch"));
         system_info.setOs_version(System.getProperty("os.version"));
@@ -146,14 +149,14 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         system_info.setJava_home(System.getProperty("java.home"));
         system_info.setJava_version(System.getProperty("java.version"));
 
-        system_info.setCommitted_virtual_memory(osmxb.getCommittedVirtualMemorySize()/kb);
-        system_info.setTotal_swap_space(osmxb.getTotalSwapSpaceSize()/kb);
-        system_info.setFree_swap_space(osmxb.getFreeSwapSpaceSize()/kb);
-        system_info.setTotal_physical_memory(osmxb.getTotalPhysicalMemorySize()/kb);
-        system_info.setFree_physical_memory(osmxb.getFreePhysicalMemorySize()/kb);
-        system_info.setProcess_cpu_time(osmxb.getProcessCpuTime()); // todo
-        system_info.setSystem_cpu_load((float)osmxb.getSystemCpuLoad());
-        system_info.setProcess_cpu_load((float)osmxb.getProcessCpuLoad());
+        system_info.setCommitted_virtual_memory(OperatingSystemTool.getOsmxb().getCommittedVirtualMemorySize()/kb);
+        system_info.setTotal_swap_space(OperatingSystemTool.getOsmxb().getTotalSwapSpaceSize()/kb);
+        system_info.setFree_swap_space(OperatingSystemTool.getOsmxb().getFreeSwapSpaceSize()/kb);
+        system_info.setTotal_physical_memory(OperatingSystemTool.getOsmxb().getTotalPhysicalMemorySize()/kb);
+        system_info.setFree_physical_memory(OperatingSystemTool.getOsmxb().getFreePhysicalMemorySize()/kb);
+        system_info.setProcess_cpu_time( (OperatingSystemTool.getOsmxb().getProcessCpuTime()-system_info.getProcess_cpu_time())/ms_nanoseconds);
+        system_info.setSystem_cpu_load((float)OperatingSystemTool.getOsmxb().getSystemCpuLoad());
+        system_info.setProcess_cpu_load((float)OperatingSystemTool.getOsmxb().getProcessCpuLoad());
 
         /*long totalMemory = Runtime.getRuntime().totalMemory()/kb;   // 可使用内存
         long freeMemory = Runtime.getRuntime().freeMemory()/kb;     // 剩余内存
@@ -304,7 +307,7 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         private long total_physical_memory;
         private long free_physical_memory;
         // cpu time
-        private long process_cpu_time;
+        private long process_cpu_time;  // already use cpu time, in ms
         private float system_cpu_load;
         private float process_cpu_load;
 

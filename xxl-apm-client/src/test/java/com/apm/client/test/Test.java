@@ -20,7 +20,7 @@ public class Test {
 
         // transaction
         XxlApmTransaction transaction = new XxlApmTransaction("URL", "/user/add");
-        TimeUnit.SECONDS.sleep(1);
+        TimeUnit.MILLISECONDS.sleep(5);
         transaction.setStatus("fail");
         transaction.setParam(new HashMap<String, String>(){{
             put("userid", "1001");
