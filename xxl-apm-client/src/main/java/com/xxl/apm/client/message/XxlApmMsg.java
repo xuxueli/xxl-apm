@@ -15,7 +15,7 @@ public abstract class XxlApmMsg implements Serializable {
 
     private long addtime = System.currentTimeMillis();
     private String ip = IpUtil.getIp();
-    //private String hostname;
+    private String hostname = IpUtil.getLocalAddress().getHostName();
 
 
     public long getAddtime() {
@@ -32,6 +32,14 @@ public abstract class XxlApmMsg implements Serializable {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
     }
 
 
