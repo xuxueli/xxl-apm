@@ -33,7 +33,7 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     private GcInfo gc_fullgc;
 
     // thread
-    private List<TheadInfo> thread_list = new ArrayList<>();
+    private List<ThreadInfo> thread_list = new ArrayList<ThreadInfo>();
 
     // class
     private ClassInfo class_info = new ClassInfo();
@@ -106,11 +106,11 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         this.gc_scavenge = gc_scavenge;
     }
 
-    public List<TheadInfo> getThread_list() {
+    public List<ThreadInfo> getThread_list() {
         return thread_list;
     }
 
-    public void setThread_list(List<TheadInfo> thread_list) {
+    public void setThread_list(List<ThreadInfo> thread_list) {
         this.thread_list = thread_list;
     }
 
@@ -136,8 +136,26 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     public void complete() {
 
         // thread_list
-        long[] threadIds = ManagementFactory.getThreadMXBean().getAllThreadIds();
-        ManagementFactory.getThreadMXBean().getThreadInfo(threadIds);
+        java.lang.management.ThreadInfo[] threadInfos = ManagementFactory.getThreadMXBean().getThreadInfo(
+                ManagementFactory.getThreadMXBean().getAllThreadIds(), 100);
+
+        for (java.lang.management.ThreadInfo threadItem : threadInfos) {
+            ThreadInfo threadInfo = new ThreadInfo();
+            threadInfo.setName(threadItem.getThreadName());
+            threadInfo.setStatus(threadItem.getThreadState().name());
+            if (threadItem.getStackTrace()!=null && threadItem.getStackTrace().length>0) {
+                StringBuilder stackTrace = new StringBuilder();
+                String separator = System.getProperty("line.separator");
+                for (final StackTraceElement stackTraceElement : threadItem.getStackTrace()) {
+                    stackTrace.append("        at ");
+                    stackTrace.append(stackTraceElement);
+                    stackTrace.append(separator);
+                }
+                threadInfo.setStack_info(stackTrace.toString());
+            }
+
+            thread_list.add(threadInfo);
+        }
 
         // class
         class_info.setLoaded_count(ManagementFactory.getClassLoadingMXBean().getLoadedClassCount());
@@ -226,18 +244,10 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         }
     }
 
-    public static class TheadInfo{
+    public static class ThreadInfo {
         private String name;
-        private String status;
+        private String status;      // java.lang.Thread.State
         private String stack_info;
-
-        public TheadInfo() {
-        }
-        public TheadInfo(String name, String status, String stack_info) {
-            this.name = name;
-            this.status = status;
-            this.stack_info = stack_info;
-        }
 
         public String getName() {
             return name;
