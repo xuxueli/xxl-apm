@@ -9,12 +9,13 @@ A distributed APM(application-performance-management) platform.
     - log storage: file(client) + es(admin)
     - view: ui  
 - BASE: msg type
-    - Transaction: type + status + time, qps/99line
     - Event: type + status, qps/suc rate;
+    - Transaction: type + status + time, qps/99line
     - Heartbeat: app and machine info, time line chart 
     - Metric: biz index, order/booking info, time line
-    - Trace: traceId/span
-        - tranceId + spanId
+    - Trace: extands Transaction
+        - parent_trance_id: zero as root
+        - trance_id: 
 - Extend: 
     - Probleam + Alarm:
         - Transaction: 99line error

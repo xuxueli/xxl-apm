@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * app and machine info, report each minute
+ * app and machine info, like "memory、gc、thread、class、system", report each minute
  *
  * @author xuxueli 2018-12-29 17:40:15
  */
