@@ -13,7 +13,7 @@ public class XxlApmMetric extends XxlApmMsg {
 
     private String name;                    // like "online_user"
     private int count;
-    private Map<String, String> param;      // like "platform、app_version"
+    private Map<String, String> param;      // like "platform=app、app_version=1.2"
 
 
     public XxlApmMetric() {
