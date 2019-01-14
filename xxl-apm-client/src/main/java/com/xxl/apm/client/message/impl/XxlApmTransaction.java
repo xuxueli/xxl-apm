@@ -8,8 +8,7 @@ package com.xxl.apm.client.message.impl;
 public class XxlApmTransaction extends XxlApmEvent {
 
 
-    private long start = System.nanoTime();
-    private long cost;       // cost time, in milliseconds
+    private long time = System.nanoTime();      // cost time, in milliseconds
 
 
     public XxlApmTransaction() {
@@ -19,22 +18,19 @@ public class XxlApmTransaction extends XxlApmEvent {
     }
 
 
-    public long getCost() {
-        return cost;
+    public long getTime() {
+        return time;
     }
 
-    public void setCost(long cost) {
-        this.cost = cost;
+    public void setTime(long time) {
+        this.time = time;
     }
-
 
     // tool
     @Override
     public void complete() {
-        if (cost <= 0) {    // not custome, auto calculate
-            cost = (System.nanoTime() - start)/1000000;
-        }
-        start = 0;
+        int ms_nanoseconds = 1000000;
+        this.time = (System.nanoTime() - time)/ms_nanoseconds;
     }
 
 }
