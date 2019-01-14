@@ -68,4 +68,11 @@ public class XxlApmEvent extends XxlApmMsg {
         this.param = param;
     }
 
+
+    // tool
+    @Override
+    public void complete() {
+        super.complete();
+    }
+
 }

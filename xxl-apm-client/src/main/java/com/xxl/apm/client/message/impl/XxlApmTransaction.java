@@ -26,9 +26,12 @@ public class XxlApmTransaction extends XxlApmEvent {
         this.time = time;
     }
 
+
     // tool
     @Override
     public void complete() {
+        super.complete();
+
         int ms_nanoseconds = 1000000;
         this.time = (System.nanoTime() - time)/ms_nanoseconds;
     }

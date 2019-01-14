@@ -162,6 +162,7 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     // tool
     @Override
     public void complete() {
+        super.complete();
 
         // memory
         int kb_bytes = 1024;

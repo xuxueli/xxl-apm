@@ -16,11 +16,16 @@ public class Test {
 
     public static void main(String[] args) throws InterruptedException {
 
+        // init
+        XxlApm.init("demo-project");
+
         // event message
+        XxlApm.parentMsgId.set("parent-xxxx");
         XxlApm.submit(new XxlApmEvent("URL", "/user/add"));
+        XxlApm.parentMsgId.remove();
 
         // transaction
-        XxlApmTransaction transaction = new XxlApmTransaction("URL", "/user/add");
+        XxlApmTransaction transaction = new XxlApmTransaction("URL", "/user/query");
         for (int i = 0; i < 5; i++) {
             TimeUnit.MILLISECONDS.sleep(1);
         }
@@ -35,6 +40,7 @@ public class Test {
 
         // metric
         XxlApm.submit(new XxlApmMetric("booking_count"));
+
     }
 
 }

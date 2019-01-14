@@ -1,5 +1,6 @@
 package com.xxl.apm.client.message;
 
+import com.xxl.apm.client.XxlApm;
 import com.xxl.rpc.util.IpUtil;
 
 import java.io.Serializable;
@@ -13,11 +14,21 @@ import java.util.UUID;
 public abstract class XxlApmMsg implements Serializable {
     private static final long serialVersionUID = 42L;
 
-    private String msgId = UUID.randomUUID().toString().replaceAll("-", "");
-    private long addtime = System.currentTimeMillis();
-    private String ip = IpUtil.getIp();
-    private String hostname = IpUtil.getLocalAddress().getHostName();
+    private String parentMsgId;
+    private String msgId;
 
+    private long addtime;
+    private String ip;
+    private String hostname;
+
+
+    public String getParentMsgId() {
+        return parentMsgId;
+    }
+
+    public void setParentMsgId(String parentMsgId) {
+        this.parentMsgId = parentMsgId;
+    }
 
     public String getMsgId() {
         return msgId;
@@ -54,7 +65,12 @@ public abstract class XxlApmMsg implements Serializable {
 
     // tool
     public void complete(){
-        // do something
+        this.parentMsgId = XxlApm.parentMsgId.get();
+        this.msgId = XxlApm.getAppname().concat("-").concat(UUID.randomUUID().toString().replaceAll("-", ""));
+
+        this.addtime = System.currentTimeMillis();
+        this.ip = IpUtil.getIp();
+        this.hostname = IpUtil.getLocalAddress().getHostName();
     }
 
 }

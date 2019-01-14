@@ -53,4 +53,11 @@ public class XxlApmMetric extends XxlApmMsg {
         this.param = param;
     }
 
+
+    // tool
+    @Override
+    public void complete() {
+        super.complete();
+    }
+
 }

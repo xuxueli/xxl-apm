@@ -8,14 +8,14 @@ A distributed APM(application-performance-management) platform.
     - transfer log: xxl-rpc, async + mult send [ing]
     - log storage: file(client) + es(admin)
     - view: ui  
-- BASE: msg type
+- Msg: msg type [done]
     - Event: type + status, qps/suc rate;
     - Transaction: type + status + time, qps/99line
     - Heartbeat: app and machine info, time line chart 
     - Metric: biz index, order/booking info, time line
-    - Trace: extands Transaction
-        - parent_trance_id: zero as root
-        - trance_id: 
+- Trace: ApmMsg all support [done]
+        - parentMsgId: null as root
+        - msgId: appname-uuid
 - Extend: 
     - Probleam + Alarm:
         - Transaction: 99line error
