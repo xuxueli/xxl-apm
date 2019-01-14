@@ -18,11 +18,11 @@ public class Test {
 
         // init
         XxlApm.init("demo-project");
+        XxlApm.parentMsgId.set("parent-xxxx");
+
 
         // event message
-        XxlApm.parentMsgId.set("parent-xxxx");
         XxlApm.submit(new XxlApmEvent("URL", "/user/add"));
-        XxlApm.parentMsgId.remove();
 
         // transaction
         XxlApmTransaction transaction = new XxlApmTransaction("URL", "/user/query");
