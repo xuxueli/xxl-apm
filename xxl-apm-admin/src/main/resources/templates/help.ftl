@@ -2,7 +2,7 @@
 <html>
 <head>
 	<#import "./common/common.macro.ftl" as netCommon>
-  	<title>消息队列中心</title>
+  	<title>应用性能管理平台</title>
 	<@netCommon.commonStyle />
 </head>
 <body class="hold-transition skin-blue sidebar-mini <#if cookieMap?exists && cookieMap["xxlapm_adminlte_settings"]?exists && "off" == cookieMap["xxlapm_adminlte_settings"].value >sidebar-collapse</#if> ">
@@ -22,7 +22,7 @@
 		<!-- Main content -->
 		<section class="content">
 			<div class="callout callout-info">
-				<h4>分布式应用性能监控平台XXL-APM</h4>
+				<h4>分布式应用性能管理平台XXL-APM</h4>
 				<br>
 				<p>
                     <a target="_blank" href="https://github.com/xuxueli/xxl-apm">Github</a>&nbsp;&nbsp;&nbsp;&nbsp;

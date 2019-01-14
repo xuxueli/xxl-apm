@@ -69,7 +69,7 @@
 	<header class="main-header">
         <a href="${request.contextPath}/" class="logo">
             <span class="logo-mini"><b>XXL</b></span>
-			<span class="logo-lg"><b>消息队列中心</b></span>
+			<span class="logo-lg"><b>应用性能管理平台</b></span>
 		</a>
         <nav class="navbar navbar-static-top" role="navigation">
 

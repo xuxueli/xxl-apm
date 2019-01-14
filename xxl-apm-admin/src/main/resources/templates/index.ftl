@@ -2,7 +2,7 @@
 <html>
 <head>
   	<#import "./common/common.macro.ftl" as netCommon>
-    <title>消息队列中心</title>
+    <title>应用性能管理平台</title>
 	<@netCommon.commonStyle />
     <!-- daterangepicker -->
     <link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.css">
@@ -34,7 +34,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">业务线数量</span>
-                            <span class="info-box-number">${bizCount}</span>
+                            <span class="info-box-number">5</span>
 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%"></div>
@@ -51,7 +51,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">消息主题数量</span>
-                            <span class="info-box-number">${topicCount}</span>
+                            <span class="info-box-number">3</span>
 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%" ></div>
@@ -68,7 +68,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">消息数量</span>
-                            <span class="info-box-number">${messageCount}</span>
+                            <span class="info-box-number">3</span>
 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%"></div>

@@ -2,7 +2,7 @@
 <html>
 <head>
   	<#import "../common/common.macro.ftl" as netCommon>
-    <title>消息队列中心</title>
+    <title>应用性能管理平台</title>
 	<@netCommon.commonStyle />
 	<!-- DataTables -->
   	<link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
