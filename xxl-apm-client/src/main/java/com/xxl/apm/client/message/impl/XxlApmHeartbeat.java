@@ -188,14 +188,13 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         }
 
         //final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-        long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();   // total = now append max, free = total - used
-        long maxMemory = Runtime.getRuntime().maxMemory();  // max = xms val
-        this.heap_all.setUsed_space(usedMemory/kb_bytes);
-        this.heap_all.setMax_space(maxMemory/kb_bytes);
+        this.heap_all.setUsed_space( (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / kb_bytes);  // total = now-max, free = now-free
+        this.heap_all.setMax_space( Runtime.getRuntime().maxMemory() / kb_bytes);       // max = jvm can use, exclude one of two Survivor(from to), may less than 'Xmx val'
 
         final MemoryUsage nonHeapMemoryUsage = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
         this.non_heap_all.setUsed_space(nonHeapMemoryUsage.getUsed()/kb_bytes);
         this.non_heap_all.setMax_space(nonHeapMemoryUsage.getMax()/kb_bytes);
+
 
         // gc_fullgc
         long young_gc_count = 0;
