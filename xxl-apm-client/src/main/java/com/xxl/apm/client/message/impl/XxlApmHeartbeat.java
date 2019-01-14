@@ -5,6 +5,8 @@ import com.xxl.apm.client.os.OsHelper;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryPoolMXBean;
+import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,14 +20,16 @@ public class XxlApmHeartbeat extends XxlApmMsg {
 
 
     // heap, in Mb units, max for used percent
-    private MemoryInfo heap_eden_space;
-    private MemoryInfo heap_survivor_space;
-    private MemoryInfo heap_old_gen;
+    private MemoryInfo heap_all = new MemoryInfo();
+    private MemoryInfo heap_eden_space = new MemoryInfo();
+    private MemoryInfo heap_survivor_space = new MemoryInfo();
+    private MemoryInfo heap_old_gen = new MemoryInfo();
 
     // non-heap
-    private MemoryInfo non_heap_metaspace;
-    private MemoryInfo non_heap_code_cache;
-    private MemoryInfo non_heap_compressed_class_space;
+    private MemoryInfo non_heap_all = new MemoryInfo();
+    private MemoryInfo non_heap_code_cache = new MemoryInfo();
+    private MemoryInfo non_heap_perm_gen = new MemoryInfo();
+    private MemoryInfo non_heap_metaspace = new MemoryInfo();
 
     // gc
     private GcInfo young_gc = new GcInfo();
@@ -41,6 +45,14 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     // system
     private SystemInfo system_info = new SystemInfo();
 
+
+    public MemoryInfo getHeap_all() {
+        return heap_all;
+    }
+
+    public void setHeap_all(MemoryInfo heap_all) {
+        this.heap_all = heap_all;
+    }
 
     public MemoryInfo getHeap_eden_space() {
         return heap_eden_space;
@@ -66,6 +78,14 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         this.heap_old_gen = heap_old_gen;
     }
 
+    public MemoryInfo getNon_heap_all() {
+        return non_heap_all;
+    }
+
+    public void setNon_heap_all(MemoryInfo non_heap_all) {
+        this.non_heap_all = non_heap_all;
+    }
+
     public MemoryInfo getNon_heap_metaspace() {
         return non_heap_metaspace;
     }
@@ -82,12 +102,12 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         this.non_heap_code_cache = non_heap_code_cache;
     }
 
-    public MemoryInfo getNon_heap_compressed_class_space() {
-        return non_heap_compressed_class_space;
+    public MemoryInfo getNon_heap_perm_gen() {
+        return non_heap_perm_gen;
     }
 
-    public void setNon_heap_compressed_class_space(MemoryInfo non_heap_compressed_class_space) {
-        this.non_heap_compressed_class_space = non_heap_compressed_class_space;
+    public void setNon_heap_perm_gen(MemoryInfo non_heap_perm_gen) {
+        this.non_heap_perm_gen = non_heap_perm_gen;
     }
 
     public GcInfo getYoung_gc() {
@@ -142,6 +162,40 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     // tool
     @Override
     public void complete() {
+
+        // memory
+        int kb_bytes = 1024;
+        for (final MemoryPoolMXBean memoryPool : ManagementFactory.getMemoryPoolMXBeans()) {
+            if (memoryPool.getName().endsWith("Eden Space")) {
+                this.heap_eden_space.setUsed_space(memoryPool.getUsage().getUsed()/kb_bytes);
+                this.heap_eden_space.setMax_space(memoryPool.getUsage().getMax()/kb_bytes);
+            } else if (memoryPool.getName().endsWith("Survivor Space")) {
+                this.heap_survivor_space.setUsed_space(memoryPool.getUsage().getUsed()/kb_bytes);
+                this.heap_survivor_space.setMax_space(memoryPool.getUsage().getMax()/kb_bytes);
+            } else if (memoryPool.getName().endsWith("Old Gen")) {
+                this.heap_old_gen.setUsed_space(memoryPool.getUsage().getUsed()/kb_bytes);
+                this.heap_old_gen.setMax_space(memoryPool.getUsage().getMax()/kb_bytes);
+            } else if (memoryPool.getName().endsWith("Code Cache")) {
+                this.non_heap_code_cache.setUsed_space(memoryPool.getUsage().getUsed()/kb_bytes);
+                this.non_heap_code_cache.setMax_space(memoryPool.getUsage().getMax()/kb_bytes);
+            } else if (memoryPool.getName().endsWith("Perm Gen")) {
+                this.non_heap_perm_gen.setUsed_space(memoryPool.getUsage().getUsed()/kb_bytes);
+                this.non_heap_perm_gen.setMax_space(memoryPool.getUsage().getMax()/kb_bytes);
+            } else if (memoryPool.getName().endsWith("Metaspace")) {
+                this.non_heap_metaspace.setUsed_space(memoryPool.getUsage().getUsed()/kb_bytes);
+                this.non_heap_metaspace.setMax_space(memoryPool.getUsage().getMax()/kb_bytes);
+            }
+        }
+
+        //final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+        long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();   // total = now append max, free = total - used
+        long maxMemory = Runtime.getRuntime().maxMemory();  // max = xms val
+        this.heap_all.setUsed_space(usedMemory/kb_bytes);
+        this.heap_all.setMax_space(maxMemory/kb_bytes);
+
+        final MemoryUsage nonHeapMemoryUsage = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
+        this.non_heap_all.setUsed_space(nonHeapMemoryUsage.getUsed()/kb_bytes);
+        this.non_heap_all.setMax_space(nonHeapMemoryUsage.getMax()/kb_bytes);
 
         // gc_fullgc
         long young_gc_count = 0;
@@ -208,7 +262,6 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         this.class_info.setUnload_count(ManagementFactory.getClassLoadingMXBean().getUnloadedClassCount());
 
         // system
-        int kb = 1024;
         int ms_nanoseconds = 1000000;
         this.system_info.setOs_name(System.getProperty("os.name"));
         this.system_info.setOs_arch(System.getProperty("os.arch"));
@@ -217,11 +270,11 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         this.system_info.setJava_home(System.getProperty("java.home"));
         this.system_info.setJava_version(System.getProperty("java.version"));
 
-        this.system_info.setCommitted_virtual_memory(OsHelper.getInstance().getCommittedVirtualMemorySize()/kb);
-        this.system_info.setTotal_swap_space(OsHelper.getInstance().getTotalSwapSpaceSize()/kb);
-        this.system_info.setFree_swap_space(OsHelper.getInstance().getFreeSwapSpaceSize()/kb);
-        this.system_info.setTotal_physical_memory(OsHelper.getInstance().getTotalPhysicalMemorySize()/kb);
-        this.system_info.setFree_physical_memory(OsHelper.getInstance().getFreePhysicalMemorySize()/kb);
+        this.system_info.setCommitted_virtual_memory(OsHelper.getInstance().getCommittedVirtualMemorySize()/kb_bytes);
+        this.system_info.setTotal_swap_space(OsHelper.getInstance().getTotalSwapSpaceSize()/kb_bytes);
+        this.system_info.setFree_swap_space(OsHelper.getInstance().getFreeSwapSpaceSize()/kb_bytes);
+        this.system_info.setTotal_physical_memory(OsHelper.getInstance().getTotalPhysicalMemorySize()/kb_bytes);
+        this.system_info.setFree_physical_memory(OsHelper.getInstance().getFreePhysicalMemorySize()/kb_bytes);
         this.system_info.setProcess_cpu_time( (OsHelper.getInstance().getProcessCpuTime()-system_info.getProcess_cpu_time())/ms_nanoseconds);
         this.system_info.setSystem_cpu_load(OsHelper.getInstance().getSystemCpuLoad());
         this.system_info.setProcess_cpu_load(OsHelper.getInstance().getProcessCpuLoad());
@@ -236,13 +289,13 @@ public class XxlApmHeartbeat extends XxlApmMsg {
 
     public static class MemoryInfo{
         private float used_space;   // in kb units
-        private float total_space;  // to generate used percent
+        private float max_space;  // in kb units, to generate used percent
 
         public MemoryInfo() {
         }
-        public MemoryInfo(float used_space, float total_space) {
+        public MemoryInfo(float used_space, float max_space) {
             this.used_space = used_space;
-            this.total_space = total_space;
+            this.max_space = max_space;
         }
 
         public float getUsed_space() {
@@ -253,12 +306,12 @@ public class XxlApmHeartbeat extends XxlApmMsg {
             this.used_space = used_space;
         }
 
-        public float getTotal_space() {
-            return total_space;
+        public float getMax_space() {
+            return max_space;
         }
 
-        public void setTotal_space(float total_space) {
-            this.total_space = total_space;
+        public void setMax_space(float max_space) {
+            this.max_space = max_space;
         }
     }
 
