@@ -9,10 +9,13 @@ import com.xxl.registry.client.util.json.BasicJson;
 public class XxlApm {
 
 
-    // env param
+    // ---------------------- env param ----------------------
+
     private static String appname;
     public static final ThreadLocal<String> parentMsgId = new ThreadLocal<String>();
 
+
+    // ---------------------- init / destory ----------------------
 
     /**
      * init
@@ -24,6 +27,17 @@ public class XxlApm {
         }
         XxlApm.appname = appname;
     }
+
+    public static void destory(){
+
+    }
+
+
+    // ---------------------- client thread ----------------------
+
+
+
+    // ---------------------- tool ----------------------
 
     /**
      * appname
