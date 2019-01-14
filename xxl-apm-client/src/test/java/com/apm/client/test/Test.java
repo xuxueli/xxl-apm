@@ -3,6 +3,7 @@ package com.apm.client.test;
 import com.xxl.apm.client.XxlApm;
 import com.xxl.apm.client.message.impl.XxlApmEvent;
 import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
+import com.xxl.apm.client.message.impl.XxlApmMetric;
 import com.xxl.apm.client.message.impl.XxlApmTransaction;
 
 import java.util.HashMap;
@@ -32,7 +33,8 @@ public class Test {
         // heartbeat
         XxlApm.submit(new XxlApmHeartbeat());
 
-
+        // metric
+        XxlApm.submit(new XxlApmMetric("booking_count"));
     }
 
 }

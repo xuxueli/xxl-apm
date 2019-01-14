@@ -3,6 +3,7 @@ package com.xxl.apm.client.message;
 import com.xxl.rpc.util.IpUtil;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * xxl-apm msg
@@ -12,11 +13,19 @@ import java.io.Serializable;
 public abstract class XxlApmMsg implements Serializable {
     private static final long serialVersionUID = 42L;
 
-
+    private String msgId = UUID.randomUUID().toString().replaceAll("-", "");
     private long addtime = System.currentTimeMillis();
     private String ip = IpUtil.getIp();
     private String hostname = IpUtil.getLocalAddress().getHostName();
 
+
+    public String getMsgId() {
+        return msgId;
+    }
+
+    public void setMsgId(String msgId) {
+        this.msgId = msgId;
+    }
 
     public long getAddtime() {
         return addtime;
