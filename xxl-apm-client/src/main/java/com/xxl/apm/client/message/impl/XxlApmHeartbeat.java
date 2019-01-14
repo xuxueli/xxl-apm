@@ -6,6 +6,7 @@ import com.xxl.apm.client.os.OsHelper;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,8 +28,9 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     private MemoryInfo non_heap_compressed_class_space;
 
     // gc
-    private GcInfo gc_younggc = new GcInfo();  // marksweep、scavenge
-    private GcInfo gc_fullgc = new GcInfo();
+    private GcInfo young_gc = new GcInfo();
+    private GcInfo full_gc = new GcInfo();
+    private GcInfo unknown_gc = new GcInfo();
 
     // thread
     private List<ThreadInfo> thread_list = new ArrayList<ThreadInfo>();
@@ -88,20 +90,28 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         this.non_heap_compressed_class_space = non_heap_compressed_class_space;
     }
 
-    public GcInfo getGc_younggc() {
-        return gc_younggc;
+    public GcInfo getYoung_gc() {
+        return young_gc;
     }
 
-    public void setGc_younggc(GcInfo gc_younggc) {
-        this.gc_younggc = gc_younggc;
+    public void setYoung_gc(GcInfo young_gc) {
+        this.young_gc = young_gc;
     }
 
-    public GcInfo getGc_fullgc() {
-        return gc_fullgc;
+    public GcInfo getFull_gc() {
+        return full_gc;
     }
 
-    public void setGc_fullgc(GcInfo gc_fullgc) {
-        this.gc_fullgc = gc_fullgc;
+    public void setFull_gc(GcInfo full_gc) {
+        this.full_gc = full_gc;
+    }
+
+    public GcInfo getUnknown_gc() {
+        return unknown_gc;
+    }
+
+    public void setUnknown_gc(GcInfo unknown_gc) {
+        this.unknown_gc = unknown_gc;
     }
 
     public List<ThreadInfo> getThread_list() {
@@ -134,11 +144,42 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     public void complete() {
 
         // gc_fullgc
+        long young_gc_count = 0;
+        long young_gc_time = 0;
+        long old_gc_count = 0;
+        long old_gc_time = 0;
+        long unknown_gc_count = 0;
+        long unknown_gc_time = 0;
+
         for (final GarbageCollectorMXBean garbageCollector : ManagementFactory.getGarbageCollectorMXBeans()) {
-            // todo
+            if (Arrays.asList("Copy", "ParNew", "PS Scavenge", "G1 Young Generation").contains(garbageCollector.getName())) {
+                // young
+                young_gc_count += garbageCollector.getCollectionCount();
+                young_gc_time += garbageCollector.getCollectionTime();
+            } else if (Arrays.asList("MarkSweepCompact", "PS MarkSweep", "ConcurrentMarkSweep", "G1 Old Generation").contains(garbageCollector.getName())){
+                // old
+                old_gc_count += garbageCollector.getCollectionCount();
+                old_gc_time += garbageCollector.getCollectionTime();
+            } else {
+                // unknown
+                unknown_gc_count += garbageCollector.getCollectionCount();
+                unknown_gc_time += garbageCollector.getCollectionTime();
+            }
         }
-        gc_younggc.setCount(0);
-        gc_younggc.setCost(0);
+        this.young_gc.setCount(young_gc_count - GcInfo.last_young_gc.getCount());
+        this.young_gc.setTime(young_gc_time - GcInfo.last_young_gc.getTime());
+        this.full_gc.setCount(old_gc_count - GcInfo.last_full_gc.getCount());
+        this.full_gc.setTime(old_gc_time - GcInfo.last_full_gc.getTime());
+        this.unknown_gc.setCount(unknown_gc_count - GcInfo.last_unknown_gc.getCount());
+        this.unknown_gc.setTime(unknown_gc_time - GcInfo.last_unknown_gc.getTime());
+
+        GcInfo.last_young_gc.setCount(young_gc_count);
+        GcInfo.last_young_gc.setTime(young_gc_time);
+        GcInfo.last_full_gc.setCount(old_gc_count);
+        GcInfo.last_full_gc.setTime(old_gc_time);
+        GcInfo.last_unknown_gc.setCount(unknown_gc_count);
+        GcInfo.last_unknown_gc.setTime(unknown_gc_time);
+
 
         // thread_list
         java.lang.management.ThreadInfo[] threadInfos = ManagementFactory.getThreadMXBean().getThreadInfo(
@@ -159,34 +200,34 @@ public class XxlApmHeartbeat extends XxlApmMsg {
                 threadInfo.setStack_info(stackTrace.toString());
             }
 
-            thread_list.add(threadInfo);
+            this.thread_list.add(threadInfo);
         }
 
         // class
-        class_info.setLoaded_count(ManagementFactory.getClassLoadingMXBean().getLoadedClassCount());
-        class_info.setUnload_count(ManagementFactory.getClassLoadingMXBean().getUnloadedClassCount());
+        this.class_info.setLoaded_count(ManagementFactory.getClassLoadingMXBean().getLoadedClassCount());
+        this.class_info.setUnload_count(ManagementFactory.getClassLoadingMXBean().getUnloadedClassCount());
 
         // system
         int kb = 1024;
         int ms_nanoseconds = 1000000;
-        system_info.setOs_name(System.getProperty("os.name"));
-        system_info.setOs_arch(System.getProperty("os.arch"));
-        system_info.setOs_version(System.getProperty("os.version"));
-        system_info.setOs_user_name(System.getProperty("user.name"));
-        system_info.setJava_home(System.getProperty("java.home"));
-        system_info.setJava_version(System.getProperty("java.version"));
+        this.system_info.setOs_name(System.getProperty("os.name"));
+        this.system_info.setOs_arch(System.getProperty("os.arch"));
+        this.system_info.setOs_version(System.getProperty("os.version"));
+        this.system_info.setOs_user_name(System.getProperty("user.name"));
+        this.system_info.setJava_home(System.getProperty("java.home"));
+        this.system_info.setJava_version(System.getProperty("java.version"));
 
-        system_info.setCommitted_virtual_memory(OsHelper.getInstance().getCommittedVirtualMemorySize()/kb);
-        system_info.setTotal_swap_space(OsHelper.getInstance().getTotalSwapSpaceSize()/kb);
-        system_info.setFree_swap_space(OsHelper.getInstance().getFreeSwapSpaceSize()/kb);
-        system_info.setTotal_physical_memory(OsHelper.getInstance().getTotalPhysicalMemorySize()/kb);
-        system_info.setFree_physical_memory(OsHelper.getInstance().getFreePhysicalMemorySize()/kb);
-        system_info.setProcess_cpu_time( (OsHelper.getInstance().getProcessCpuTime()-system_info.getProcess_cpu_time())/ms_nanoseconds);
-        system_info.setSystem_cpu_load(OsHelper.getInstance().getSystemCpuLoad());
-        system_info.setProcess_cpu_load(OsHelper.getInstance().getProcessCpuLoad());
+        this.system_info.setCommitted_virtual_memory(OsHelper.getInstance().getCommittedVirtualMemorySize()/kb);
+        this.system_info.setTotal_swap_space(OsHelper.getInstance().getTotalSwapSpaceSize()/kb);
+        this.system_info.setFree_swap_space(OsHelper.getInstance().getFreeSwapSpaceSize()/kb);
+        this.system_info.setTotal_physical_memory(OsHelper.getInstance().getTotalPhysicalMemorySize()/kb);
+        this.system_info.setFree_physical_memory(OsHelper.getInstance().getFreePhysicalMemorySize()/kb);
+        this.system_info.setProcess_cpu_time( (OsHelper.getInstance().getProcessCpuTime()-system_info.getProcess_cpu_time())/ms_nanoseconds);
+        this.system_info.setSystem_cpu_load(OsHelper.getInstance().getSystemCpuLoad());
+        this.system_info.setProcess_cpu_load(OsHelper.getInstance().getProcessCpuLoad());
 
-        system_info.setCpu_count(ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
-        system_info.setCpu_load_average_1min(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
+        this.system_info.setCpu_count(ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
+        this.system_info.setCpu_load_average_1min(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
 
     }
 
@@ -222,30 +263,37 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     }
 
     public static class GcInfo{
-        private int count;
-        private long cost;     // in ms units
+
+        // last
+        public static GcInfo last_young_gc = new GcInfo();
+        public static GcInfo last_full_gc = new GcInfo();
+        public static GcInfo last_unknown_gc = new GcInfo();
+
+        // field
+        private long count;
+        private long time;     // in ms units
 
         public GcInfo() {
         }
-        public GcInfo(int count, long cost) {
+        public GcInfo(long count, long time) {
             this.count = count;
-            this.cost = cost;
+            this.time = time;
         }
 
-        public int getCount() {
+        public long getCount() {
             return count;
         }
 
-        public void setCount(int count) {
+        public void setCount(long count) {
             this.count = count;
         }
 
-        public long getCost() {
-            return cost;
+        public long getTime() {
+            return time;
         }
 
-        public void setCost(long cost) {
-            this.cost = cost;
+        public void setTime(long time) {
+            this.time = time;
         }
     }
 
