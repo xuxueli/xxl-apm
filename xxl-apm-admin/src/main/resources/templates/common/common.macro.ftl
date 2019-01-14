@@ -101,10 +101,11 @@
 			<!-- sidebar menu: : style can be found in sidebar.less -->
 			<ul class="sidebar-menu">
 				<li class="header">导航</li>
-                <li class="nav-click <#if pageName == "index">active</#if>" ><a href="${request.contextPath}/"><i class="fa fa-circle-o text-aqua"></i><span>运行报表</span></a></li>
-                <li class="nav-click <#if pageName == "topic">active</#if>" ><a href="${request.contextPath}/topic"><i class="fa fa-circle-o text-yellow"></i><span>消息主题</span></a></li>
-				<li class="nav-click <#if pageName == "message">active</#if>" ><a href="${request.contextPath}/message"><i class="fa fa-circle-o text-green"></i><span>消息记录</span></a></li>
-                <li class="nav-click <#if pageName == "biz">active</#if>" ><a href="${request.contextPath}/biz"><i class="fa fa-circle-o text-red"></i><span>业务线</span></a></li>
+                <li class="nav-click <#if pageName == "index">active</#if>" ><a href="${request.contextPath}/"><i class="fa fa-circle-o text-aqua"></i><span>Dashboard</span></a></li>
+                <li class="nav-click <#if pageName == "event">active</#if>" ><a href="${request.contextPath}/event"><i class="fa fa-circle-o text-yellow"></i><span>Event</span></a></li>
+				<li class="nav-click <#if pageName == "Transaction">active</#if>" ><a href="${request.contextPath}/transaction"><i class="fa fa-circle-o text-green"></i><span>Transaction</span></a></li>
+                <li class="nav-click <#if pageName == "heartbeat">active</#if>" ><a href="${request.contextPath}/heartbeat"><i class="fa fa-circle-o text-red"></i><span>Heartbeat</span></a></li>
+                <li class="nav-click <#if pageName == "metric">active</#if>" ><a href="${request.contextPath}/metric"><i class="fa fa-circle-o text-aqua"></i><span>Metric</span></a></li>
                 <li class="nav-click <#if pageName == "help">active</#if>" ><a href="${request.contextPath}/help"><i class="fa fa-circle-o text-gray"></i><span>使用教程</span></a></li>
 			</ul>
 		</section>
@@ -114,7 +115,7 @@
 
 <#macro commonFooter >
 	<footer class="main-footer">
-		Powered by <b>XXL-APM</b> 1.3.0-SNAPSHOT
+		Powered by <b>XXL-APM</b> 1.0.0-SNAPSHOT
 		<div class="pull-right hidden-xs">
 			<strong>Copyright &copy; 2015-${.now?string('yyyy')} &nbsp;
 				<a href="http://www.xuxueli.com/" target="_blank" >xuxueli</a>

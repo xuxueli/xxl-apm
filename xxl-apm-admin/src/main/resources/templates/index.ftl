@@ -33,13 +33,13 @@
                         <span class="info-box-icon"><i class="fa fa-flag-o"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">业务线数量</span>
+                            <span class="info-box-text">应用数量</span>
                             <span class="info-box-number">5</span>
 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%"></div>
                             </div>
-                            <span class="progress-description">接入的业务线数量</span>
+                            <span class="progress-description">接入的应用数量</span>
                         </div>
                     </div>
                 </div>
@@ -50,13 +50,13 @@
                         <span class="info-box-icon"><i class="fa fa-calendar"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">消息主题数量</span>
-                            <span class="info-box-number">3</span>
+                            <span class="info-box-text">消息数量</span>
+                            <span class="info-box-number">5.0000.0000.0000</span>
 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%" ></div>
                             </div>
-                            <span class="progress-description">接入的消息主题数量</span>
+                            <span class="progress-description">接入应用上报的消息数量</span>
                         </div>
                     </div>
                 </div>
@@ -67,13 +67,13 @@
                         <span class="info-box-icon"><i class="fa ion-ios-settings-strong"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">消息数量</span>
-                            <span class="info-box-number">3</span>
+                            <span class="info-box-text">告警次数</span>
+                            <span class="info-box-number">500</span>
 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%"></div>
                             </div>
-                            <span class="progress-description">在线消息数量</span>
+                            <span class="progress-description">应用故障告警次数</span>
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                 <div class="col-md-12">
                     <div class="box">
                         <div class="box-header with-border">
-                            <h3 class="box-title">消息报表</h3>
+                            <h3 class="box-title">应用监控大盘</h3>
 
                             <!-- tools box -->
                             <div class="pull-right box-tools">
