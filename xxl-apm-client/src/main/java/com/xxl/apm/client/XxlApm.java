@@ -39,10 +39,17 @@ public class XxlApm {
      * @return
      */
     public static boolean submit(XxlApmMsg apmMsg){
+
         // complete message
         apmMsg.complete();
 
-        // todo: send message, fail retry > file + retry tread
+        /**
+         * todo: send message
+         *
+         *  - async queue send; 200 msg per invoke
+         *  - queue-max or fail, write file
+         *  - fail-retry thread, read file
+         */
         System.out.println(BasicJson.toJson(apmMsg));;
 
         return true;
