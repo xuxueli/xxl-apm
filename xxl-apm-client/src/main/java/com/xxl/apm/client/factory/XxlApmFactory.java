@@ -235,7 +235,7 @@ public class XxlApmFactory {
                             for (File fileItem : file.listFiles()) {
                                 // read msg-file
                                 String msgListJson = FileUtil.readFileContent(fileItem);
-                                List<XxlApmMsg> messageList = null;//BasicJson.parseList(msgListJson);
+                                List<XxlApmMsg> messageList = BasicJson.parseList(msgListJson, XxlApmMsg.class);
 
                                 // retry report
                                 boolean ret = xxlApmMsgService.report(messageList);

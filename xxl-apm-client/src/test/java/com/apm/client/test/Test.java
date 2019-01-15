@@ -22,14 +22,16 @@ public class Test {
 
         if (true) {
 
-            List<XxlApmEvent> msgList = Arrays.asList(new XxlApmEvent("URL", "/user/add"));
+            XxlApmEvent event = new XxlApmEvent("URL", "/user/add");
+            event.setAddtime(System.currentTimeMillis());
+            List<XxlApmEvent> msgList = Arrays.asList(event);
 
             String json = BasicJson.toJson(msgList);
             System.out.println(json);
 
-            List<Object> msgList2 = BasicJson.parseList(json);
+            List<XxlApmEvent> msgList3 = BasicJson.parseList(json, XxlApmEvent.class);
 
-            String json2 = BasicJson.toJson(msgList2);
+            String json2 = BasicJson.toJson(msgList3);
             System.out.println(json2);
 
             return;
