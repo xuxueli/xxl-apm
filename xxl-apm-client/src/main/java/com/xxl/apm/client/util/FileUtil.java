@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * file tool
@@ -88,9 +87,6 @@ public class FileUtil {
         String json2= FileUtil.readFileContent(new File("/Users/xuxueli/Downloads/tmp/abc"));
         System.out.println(json2);
         System.out.println(json.equals(json2));
-
-        List<Object> list2 = BasicJson.parseList(json2);
-        System.out.println(list2);
     }
 
 }
