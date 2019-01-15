@@ -86,6 +86,7 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
     public boolean report(List<XxlApmMsg> msgList) {
 
         /**
+         * todo:
          * consume msg
          *
          *  - async queue process; 200 msg per take

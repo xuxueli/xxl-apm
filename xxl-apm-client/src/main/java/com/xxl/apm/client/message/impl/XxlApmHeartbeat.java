@@ -275,13 +275,20 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         this.system_info.setFree_swap_space(OsHelper.getInstance().getFreeSwapSpaceSize()/kb_bytes);
         this.system_info.setTotal_physical_memory(OsHelper.getInstance().getTotalPhysicalMemorySize()/kb_bytes);
         this.system_info.setFree_physical_memory(OsHelper.getInstance().getFreePhysicalMemorySize()/kb_bytes);
-        this.system_info.setProcess_cpu_time( (OsHelper.getInstance().getProcessCpuTime()-system_info.getProcess_cpu_time())/ms_nanoseconds);
+
+
+        long process_cpu_time = (OsHelper.getInstance().getProcessCpuTime() - SystemInfo.last_process_cpu_time)/ms_nanoseconds;
+        SystemInfo.last_process_cpu_time = OsHelper.getInstance().getProcessCpuTime();
+
+        this.system_info.setProcess_cpu_time(process_cpu_time);
         this.system_info.setSystem_cpu_load(OsHelper.getInstance().getSystemCpuLoad());
         this.system_info.setProcess_cpu_load(OsHelper.getInstance().getProcessCpuLoad());
 
         this.system_info.setCpu_count(ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
         this.system_info.setCpu_load_average_1min(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
 
+        this.system_info.setCpu_system_load_percent(OsHelper.getInstance().getCpu_system_load_percent());
+        this.system_info.setCpu_jvm_load_percent(OsHelper.getInstance().getCpu_jvm_load_percent());
     }
 
 
@@ -403,6 +410,8 @@ public class XxlApmHeartbeat extends XxlApmMsg {
 
     public static class SystemInfo{
 
+        public static long last_process_cpu_time = OsHelper.getInstance().getProcessCpuTime();  // last already use cpu time, in ns
+
         // os
         private String os_name;
         private String os_arch ;
@@ -419,15 +428,16 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         // physical memory, in km
         private long total_physical_memory;
         private long free_physical_memory;
-        // cpu time
-        private long process_cpu_time = OsHelper.getInstance().getProcessCpuTime();  // already use cpu time, in ms
+
+        // cpu
+        private long process_cpu_time;      // in ms
         private double system_cpu_load;
         private double process_cpu_load;
 
-        // cpu load
         private int cpu_count;
         private double cpu_load_average_1min;
-        //private float cpu_used_percent;   // todo cpu used percent
+        private double cpu_system_load_percent;
+        private double cpu_jvm_load_percent;
 
 
         public String getOs_name() {
@@ -558,6 +568,21 @@ public class XxlApmHeartbeat extends XxlApmMsg {
             this.cpu_load_average_1min = cpu_load_average_1min;
         }
 
+        public double getCpu_system_load_percent() {
+            return cpu_system_load_percent;
+        }
+
+        public void setCpu_system_load_percent(double cpu_system_load_percent) {
+            this.cpu_system_load_percent = cpu_system_load_percent;
+        }
+
+        public double getCpu_jvm_load_percent() {
+            return cpu_jvm_load_percent;
+        }
+
+        public void setCpu_jvm_load_percent(double cpu_jvm_load_percent) {
+            this.cpu_jvm_load_percent = cpu_jvm_load_percent;
+        }
     }
 
 }

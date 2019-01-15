@@ -2,11 +2,14 @@ package com.xxl.apm.client.os;
 
 import com.xxl.apm.client.os.impl.JdkOsHelper;
 import com.xxl.apm.client.os.impl.SunOsHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author xuxueli 2019-01-11
  */
 public abstract class OsHelper {
+    protected static transient Logger logger = LoggerFactory.getLogger(OsHelper.class);
 
     private static OsHelper instance = null;
     public static OsHelper getInstance() {
@@ -23,6 +26,7 @@ public abstract class OsHelper {
         }
     }
 
+    //
     public abstract long getCommittedVirtualMemorySize();
 
     public abstract long getTotalSwapSpaceSize();
@@ -38,5 +42,9 @@ public abstract class OsHelper {
     public abstract double getSystemCpuLoad();
 
     public abstract double getProcessCpuLoad();
+
+    //
+    public abstract double getCpu_system_load_percent();
+    public abstract double getCpu_jvm_load_percent();
 
 }

@@ -47,4 +47,14 @@ public class JdkOsHelper extends OsHelper {
         return 0;
     }
 
+    @Override
+    public double getCpu_system_load_percent() {
+        return 0;
+    }
+
+    @Override
+    public double getCpu_jvm_load_percent() {
+        return 0;
+    }
+
 }
