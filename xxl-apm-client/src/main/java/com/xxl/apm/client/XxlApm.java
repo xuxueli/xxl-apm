@@ -2,7 +2,9 @@ package com.xxl.apm.client;
 
 import com.xxl.apm.client.factory.XxlApmFactory;
 import com.xxl.apm.client.message.XxlApmMsg;
-import com.xxl.registry.client.util.json.BasicJson;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author xuxueli 2018-12-22 18:31:48
@@ -17,7 +19,7 @@ public class XxlApm {
     }
 
 
-    // ---------------------- tool ----------------------
+    // ---------------------- instance tool ----------------------
 
     private static XxlApm instance = null;
 
@@ -71,27 +73,40 @@ public class XxlApm {
 
 
     /**
-     * submit msg
+     * report msg
      *
      * @param apmMsg
      * @return
      */
-    public static boolean submit(XxlApmMsg apmMsg){
+    public static boolean report(XxlApmMsg apmMsg){
+        // valid
+        if (apmMsg == null) {
+            return false;
+        }
 
-        // complete message
-        apmMsg.complete();
-
-        /**
-         * todo: send message
-         *
-         *  - async queue send; 200 msg per invoke
-         *  - queue-max or fail, write file
-         *  - fail-retry thread, read file
-         */
-        System.out.println(BasicJson.toJson(apmMsg));;
-
-        return true;
+        // async report
+        return report(Arrays.asList(apmMsg));
     }
 
+    /**
+     * report msg
+     *
+     * @param msgList
+     * @return
+     */
+    public static boolean report(List<XxlApmMsg> msgList){
+        // valid
+        if (msgList==null || msgList.size()==0) {
+            return false;
+        }
+
+        // complete msg
+        for (XxlApmMsg apmMsg: msgList) {
+            apmMsg.complete();
+        }
+
+        // async report
+        return instance.xxlApmFactory.report(msgList);
+    }
 
 }
