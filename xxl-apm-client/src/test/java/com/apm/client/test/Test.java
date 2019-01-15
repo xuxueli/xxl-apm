@@ -1,6 +1,7 @@
 package com.apm.client.test;
 
 import com.xxl.apm.client.XxlApm;
+import com.xxl.apm.client.factory.XxlApmFactory;
 import com.xxl.apm.client.message.impl.XxlApmEvent;
 import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
 import com.xxl.apm.client.message.impl.XxlApmMetric;
@@ -16,9 +17,12 @@ public class Test {
 
     public static void main(String[] args) throws InterruptedException {
 
-        // init
-        XxlApm.init("demo-project");
-        XxlApm.parentMsgId.set("parent-xxxx");
+        // start
+        XxlApmFactory xxlApmFactory = new XxlApmFactory();
+        xxlApmFactory.setAppname("demo-project");
+        xxlApmFactory.setAdminAddress("http://localhost:8080/xxl-apm-admin/");
+        xxlApmFactory.setAccessToken(null);
+        xxlApmFactory.start();
 
 
         // event message
@@ -41,6 +45,9 @@ public class Test {
         // metric
         XxlApm.submit(new XxlApmMetric("booking_count"));
 
+
+        // stop
+        xxlApmFactory.stop();
     }
 
 }

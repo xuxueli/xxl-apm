@@ -1,5 +1,6 @@
 package com.xxl.apm.client;
 
+import com.xxl.apm.client.factory.XxlApmFactory;
 import com.xxl.apm.client.message.XxlApmMsg;
 import com.xxl.registry.client.util.json.BasicJson;
 
@@ -9,42 +10,65 @@ import com.xxl.registry.client.util.json.BasicJson;
 public class XxlApm {
 
 
-    // ---------------------- env param ----------------------
+    private XxlApmFactory xxlApmFactory;
 
-    private static String appname;
-    public static final ThreadLocal<String> parentMsgId = new ThreadLocal<String>();
-
-
-    // ---------------------- init / destory ----------------------
-
-    /**
-     * init
-     */
-    public static void init(String appname){
-        // valid appname
-        if (appname==null || appname.trim().length()==0) {
-            throw new RuntimeException("xxl-apm, appname cannot be empty.");
-        }
-        XxlApm.appname = appname;
+    public XxlApm(XxlApmFactory xxlApmFactory) {
+        this.xxlApmFactory = xxlApmFactory;
     }
-
-    public static void destory(){
-
-    }
-
-
-    // ---------------------- client thread ----------------------
-
 
 
     // ---------------------- tool ----------------------
 
+    private static XxlApm instance = null;
+
     /**
-     * appname
+     * set instance of XxlApm
+     *
+     * @param xxlApmFactory
      */
-    public static String getAppname() {
-        return appname;
+    public synchronized static void setInstance(XxlApmFactory xxlApmFactory) {
+        if (XxlApm.instance != null) {
+            throw new RuntimeException("xxl-apm, repeat generate XxlApm.");
+        }
+        XxlApm.instance = new XxlApm(xxlApmFactory);
     }
+
+
+    /**
+     * remove ParentMsgId
+     */
+    public static void removeParentMsgId(){
+        instance.xxlApmFactory.parentMsgId.remove();
+    }
+
+    /**
+     * set ParentMsgId
+     *
+     * @param value
+     */
+    public static void setParentMsgId(String value){
+        instance.xxlApmFactory.parentMsgId.set(value);
+    }
+
+    /**
+     * get ParentMsgId
+     *
+     * @return
+     */
+    public static String getParentMsgId(){
+        return instance.xxlApmFactory.parentMsgId.get();
+    }
+
+
+    /**
+     * generate MsgId
+     *
+     * @return
+     */
+    public static String generateMsgId(){
+        return instance.xxlApmFactory.generateMsgId();
+    }
+
 
     /**
      * submit msg

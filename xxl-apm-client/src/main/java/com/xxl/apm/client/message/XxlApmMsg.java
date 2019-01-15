@@ -4,7 +4,6 @@ import com.xxl.apm.client.XxlApm;
 import com.xxl.rpc.util.IpUtil;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * xxl-apm msg
@@ -65,8 +64,8 @@ public abstract class XxlApmMsg implements Serializable {
 
     // tool
     public void complete(){
-        this.parentMsgId = XxlApm.parentMsgId.get();
-        this.msgId = XxlApm.getAppname().concat("-").concat(UUID.randomUUID().toString().replaceAll("-", ""));
+        this.parentMsgId = XxlApm.getParentMsgId();
+        this.msgId = XxlApm.generateMsgId();
 
         this.addtime = System.currentTimeMillis();
         this.ip = IpUtil.getIp();
