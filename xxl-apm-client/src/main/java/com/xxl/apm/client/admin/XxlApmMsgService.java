@@ -9,6 +9,8 @@ import java.util.List;
  */
 public interface XxlApmMsgService {
 
+    public boolean beat();
+
     public boolean report(List<XxlApmMsg> msgList);
 
 }

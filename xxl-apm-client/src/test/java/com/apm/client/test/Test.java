@@ -24,10 +24,7 @@ public class Test {
         xxlApmFactory.setAccessToken(null);
         xxlApmFactory.setMsglogpath("/data/applogs/xxl-apm/msglogpath");
         xxlApmFactory.start();
-
-
-        TimeUnit.MINUTES.sleep(5);
-
+        TimeUnit.SECONDS.sleep(1);
 
         // event message
         XxlApm.report(new XxlApmEvent("URL", "/user/add"));
@@ -50,9 +47,8 @@ public class Test {
         XxlApm.report(new XxlApmMetric("booking_count"));
 
 
-        TimeUnit.MINUTES.sleep(2);
-
         // stop
+        TimeUnit.MINUTES.sleep(2);
         xxlApmFactory.stop();
     }
 

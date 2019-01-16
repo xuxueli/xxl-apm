@@ -83,6 +83,11 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
     // ---------------------- service ----------------------
 
     @Override
+    public boolean beat() {
+        return true;
+    }
+
+    @Override
     public boolean report(List<XxlApmMsg> msgList) {
 
         /**

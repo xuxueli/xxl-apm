@@ -16,10 +16,9 @@ public class FileUtil {
     private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
 
-    public static void writeFileContent(String fileName, String content) {
+    public static void writeFileContent(File file, String content) {
 
         // file
-        File file = new File(fileName);
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -82,7 +81,7 @@ public class FileUtil {
 
         String json = BasicJson.toJson(Arrays.asList(1,2,3));
         System.out.println(json);
-        FileUtil.writeFileContent("/Users/xuxueli/Downloads/tmp/abc", json);
+        FileUtil.writeFileContent(new File("/Users/xuxueli/Downloads/tmp/abc"), json);
 
         String json2= FileUtil.readFileContent(new File("/Users/xuxueli/Downloads/tmp/abc"));
         System.out.println(json2);
