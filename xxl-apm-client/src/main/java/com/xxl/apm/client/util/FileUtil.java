@@ -1,11 +1,9 @@
 package com.xxl.apm.client.util;
 
-import com.xxl.registry.client.util.json.BasicJson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.Arrays;
 
 /**
  * file tool
@@ -16,7 +14,7 @@ public class FileUtil {
     private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
 
-    public static void writeFileContent(File file, String content) {
+    public static void writeFileContent(File file, byte[] data) {
 
         // file
         if (!file.exists()) {
@@ -32,7 +30,7 @@ public class FileUtil {
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(file);
-            fos.write(content.getBytes("utf-8"));
+            fos.write(data);
             fos.flush();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -48,8 +46,7 @@ public class FileUtil {
 
     }
 
-    public static String readFileContent(File file) {
-
+    public static byte[] readFileContent(File file) {
         Long filelength = file.length();
         byte[] filecontent = new byte[filelength.intValue()];
 
@@ -69,23 +66,18 @@ public class FileUtil {
                 }
             }
         }
-        try {
-            return new String(filecontent, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        }
+        return filecontent;
     }
 
     public static void main(String[] args) {
 
-        String json = BasicJson.toJson(Arrays.asList(1,2,3));
-        System.out.println(json);
-        FileUtil.writeFileContent(new File("/Users/xuxueli/Downloads/tmp/abc"), json);
+        byte[] data = "asdfasdf".getBytes();
+        FileUtil.writeFileContent(new File("/Users/xuxueli/Downloads/tmp/abc"), data);
 
-        String json2= FileUtil.readFileContent(new File("/Users/xuxueli/Downloads/tmp/abc"));
-        System.out.println(json2);
-        System.out.println(json.equals(json2));
+        byte[] data2 = FileUtil.readFileContent(new File("/Users/xuxueli/Downloads/tmp/abc"));
+        String data22 = new String(data2);
+        System.out.println(data22);
+        System.out.println(data.equals(data22));
     }
 
 }

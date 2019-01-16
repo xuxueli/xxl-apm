@@ -8,7 +8,6 @@ import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
 import com.xxl.apm.client.message.impl.XxlApmMetric;
 import com.xxl.apm.client.message.impl.XxlApmTransaction;
 import com.xxl.apm.client.util.FileUtil;
-import com.xxl.registry.client.util.json.BasicJson;
 import com.xxl.rpc.registry.impl.XxlRegistryServiceRegistry;
 import com.xxl.rpc.remoting.invoker.XxlRpcInvokerFactory;
 import com.xxl.rpc.remoting.invoker.call.CallType;
@@ -102,6 +101,7 @@ public class XxlApmFactory {
 
     private XxlRpcInvokerFactory xxlRpcInvokerFactory;
     private XxlApmMsgService xxlApmMsgService;
+    private Serializer serializer;
 
     private ExecutorService clientFactoryThreadPool = Executors.newCachedThreadPool();
     public volatile boolean clientFactoryPoolStoped = false;
@@ -150,6 +150,7 @@ public class XxlApmFactory {
                 null,
                 null,
                 xxlRpcInvokerFactory).getObject();
+        serializer = Serializer.SerializeEnum.HESSIAN.getSerializer();
 
 
         // start msg-queue thread
@@ -264,8 +265,8 @@ public class XxlApmFactory {
                                     try {
 
                                         // read msg-file
-                                        String msgListJson = FileUtil.readFileContent(fileItem);
-                                        List<XxlApmMsg> messageList = (List<XxlApmMsg>) BasicJson.parseList(msgListJson, msgType);
+                                        byte[] serialize_data = FileUtil.readFileContent(fileItem);
+                                        List<XxlApmMsg> messageList = (List<XxlApmMsg>) serializer.deserialize(serialize_data, msgType);
 
                                         // retry report
                                         boolean ret = xxlApmMsgService.report(messageList);
@@ -388,8 +389,8 @@ public class XxlApmFactory {
         String msgListFileName = filePrefix.concat("-").concat(msgList.get(0).getMsgId());
         File msgFile = new File(msgFileDir, msgListFileName);
 
-        String eventListJson = BasicJson.toJson(msgList);
-        FileUtil.writeFileContent(msgFile, eventListJson);
+        byte[] serialize_data = serializer.serialize(msgList);
+        FileUtil.writeFileContent(msgFile, serialize_data);
     }
 
 }

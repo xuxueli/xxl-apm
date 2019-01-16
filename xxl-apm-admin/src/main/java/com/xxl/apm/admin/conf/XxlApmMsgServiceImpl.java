@@ -4,7 +4,6 @@ import com.xxl.apm.admin.core.model.XxlCommonRegistryData;
 import com.xxl.apm.admin.service.impl.XxlCommonRegistryServiceImpl;
 import com.xxl.apm.client.admin.XxlApmMsgService;
 import com.xxl.apm.client.message.XxlApmMsg;
-import com.xxl.registry.client.util.json.BasicJson;
 import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
 import com.xxl.rpc.serialize.Serializer;
@@ -103,7 +102,7 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
          *      - real-time-thread: event、transaction、metric
          */
 
-        System.out.println(BasicJson.toJson(msgList));
+        System.out.println(msgList);
 
         return true;
     }
