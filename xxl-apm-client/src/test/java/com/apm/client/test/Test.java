@@ -22,6 +22,7 @@ public class Test {
 
         if (true) {
             XxlApmHeartbeat heartbeat = new XxlApmHeartbeat();
+            heartbeat.setThread_list(Arrays.asList(new XxlApmHeartbeat.ThreadInfo()));
 
             String json = BasicJson.toJson(Arrays.asList(heartbeat));
             System.out.println(json);
