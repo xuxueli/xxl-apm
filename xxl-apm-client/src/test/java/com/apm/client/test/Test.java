@@ -21,11 +21,11 @@ public class Test {
     public static void main(String[] args) throws InterruptedException {
 
         if (true) {
-            XxlApmMetric metric = new XxlApmMetric("booking_count");
+            XxlApmTransaction transaction = new XxlApmTransaction("URL", "/user/query");
 
-            String json = BasicJson.toJson(Arrays.asList(metric));
+            String json = BasicJson.toJson(Arrays.asList(transaction));
 
-            List<XxlApmMetric> metrics = BasicJson.parseList(json, XxlApmMetric.class);
+            List<XxlApmTransaction> metrics = BasicJson.parseList(json, XxlApmTransaction.class);
 
             return;
         }
