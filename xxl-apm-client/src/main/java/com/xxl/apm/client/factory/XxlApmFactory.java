@@ -230,50 +230,56 @@ public class XxlApmFactory {
                         if (beatResult && msglogpathDir.list()!=null && msglogpathDir.list().length>0) {
                             waitTim = 5;
 
-                            // retry msg
-                            for (File msgFileDir : msglogpathDir.listFiles()) {     // {msglogpath}/{yyyy-MM-dd}_xxx
+                            // {msglogpath}/{yyyy-MM-dd}_xxx
+                            for (File msgFileDir : msglogpathDir.listFiles()) {
 
-                                if (msgFileDir.list()!=null && msgFileDir.list().length>0) {        // {msglogpath}/{yyyy-MM-dd}_xxx/xxxxxx
-                                    for (File fileItem: msgFileDir.listFiles()) {
-
-                                        Class<? extends XxlApmMsg> msgType = null;
-                                        if (fileItem.getName().startsWith("XxlApmEvent")) {
-                                            msgType = XxlApmEvent.class;
-                                        } else if (fileItem.getName().startsWith("XxlApmTransaction")) {
-                                            msgType = XxlApmTransaction.class;
-                                        } else if (fileItem.getName().startsWith("XxlApmMetric")) {
-                                            msgType = XxlApmMetric.class;
-                                        } else if (fileItem.getName().startsWith("XxlApmHeartbeat")) {
-                                            msgType = XxlApmHeartbeat.class;
-                                        } else {
-                                            continue;
-                                        }
-
-                                        try {
-
-                                            // read msg-file
-                                            String msgListJson = FileUtil.readFileContent(fileItem);
-                                            List<XxlApmMsg> messageList = (List<XxlApmMsg>) BasicJson.parseList(msgListJson, msgType);
-
-                                            // retry report
-                                            boolean ret = xxlApmMsgService.report(messageList);
-
-                                            // delete
-                                            if (ret) {
-                                                fileItem.delete();
-                                            }
-                                        } catch (Exception e) {
-                                            if (!clientFactoryPoolStoped) {
-                                                logger.error(e.getMessage(), e);
-                                            }
-                                        }
-
-                                    }
+                                // clean invalid file
+                                if (msgFileDir.isFile()) {
+                                    msgFileDir.delete();
+                                    continue;
                                 }
-
                                 // clean empty dir
                                 if (!(msgFileDir.list()!=null && msgFileDir.list().length>0)) {
                                     msgFileDir.delete();
+                                    continue;
+                                }
+
+                                // {msglogpath}/{yyyy-MM-dd}_xxx/xxxxxx
+                                for (File fileItem: msgFileDir.listFiles()) {
+
+                                    Class<? extends XxlApmMsg> msgType = null;
+                                    if (fileItem.getName().startsWith("XxlApmEvent")) {
+                                        msgType = XxlApmEvent.class;
+                                    } else if (fileItem.getName().startsWith("XxlApmTransaction")) {
+                                        msgType = XxlApmTransaction.class;
+                                    } else if (fileItem.getName().startsWith("XxlApmMetric")) {
+                                        msgType = XxlApmMetric.class;
+                                    } else if (fileItem.getName().startsWith("XxlApmHeartbeat")) {
+                                        msgType = XxlApmHeartbeat.class;
+                                    } else {
+                                        fileItem.delete();
+                                        continue;
+                                    }
+
+                                    try {
+
+                                        // read msg-file
+                                        String msgListJson = FileUtil.readFileContent(fileItem);
+                                        List<XxlApmMsg> messageList = (List<XxlApmMsg>) BasicJson.parseList(msgListJson, msgType);
+
+                                        // retry report
+                                        boolean ret = xxlApmMsgService.report(messageList);
+
+                                        // delete
+                                        if (ret) {
+                                            fileItem.delete();
+                                        }
+                                    } catch (Exception e) {
+                                        if (!clientFactoryPoolStoped) {
+                                            logger.error(e.getMessage(), e);
+                                        }
+                                    }
+
                                 }
 
                             }

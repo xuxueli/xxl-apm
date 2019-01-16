@@ -6,8 +6,11 @@ import com.xxl.apm.client.message.impl.XxlApmEvent;
 import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
 import com.xxl.apm.client.message.impl.XxlApmMetric;
 import com.xxl.apm.client.message.impl.XxlApmTransaction;
+import com.xxl.registry.client.util.json.BasicJson;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,6 +20,17 @@ public class Test {
 
     public static void main(String[] args) throws InterruptedException {
 
+        if (false) {
+            XxlApmMetric metric = new XxlApmMetric("booking_count");
+
+            String json = BasicJson.toJson(Arrays.asList(metric));
+
+            List<XxlApmMetric> metrics = BasicJson.parseList(json, XxlApmMetric.class);
+
+            return;
+        }
+
+
         // start
         XxlApmFactory xxlApmFactory = new XxlApmFactory();
         xxlApmFactory.setAppname("demo-project");
@@ -24,7 +38,7 @@ public class Test {
         xxlApmFactory.setAccessToken(null);
         xxlApmFactory.setMsglogpath("/data/applogs/xxl-apm/msglogpath");
         xxlApmFactory.start();
-        TimeUnit.SECONDS.sleep(1);
+        TimeUnit.SECONDS.sleep(11111111);
 
         // event message
         XxlApm.report(new XxlApmEvent("URL", "/user/add"));
