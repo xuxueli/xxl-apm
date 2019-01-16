@@ -76,7 +76,7 @@ public class XxlApmFactory {
         }
 
         // start XxlApmMsgService
-        startApmMsgService(adminAddress, accessToken, msglogpathDir);
+        startApmMsgService(adminAddress, accessToken);
 
         // generate XxlApm
         XxlApm.setInstance(this);
@@ -109,8 +109,8 @@ public class XxlApmFactory {
     private LinkedBlockingQueue<XxlApmMsg> newMessageQueue = new LinkedBlockingQueue<>();
     private int newMessageQueueMax = 100000;
 
-    private File msglogpathDir;
-    private long maxFileLengh_32M_byte = 32 * 1024 * 1024;
+    private volatile File msgFileDir = null;
+    private Object msgFileDirLock = new Object();
 
     /**
      * async report msg
@@ -125,7 +125,7 @@ public class XxlApmFactory {
 
 
     // start stop
-    private void startApmMsgService(final String adminAddress, final String accessToken, final File msglogpath){
+    private void startApmMsgService(final String adminAddress, final String accessToken){
         // start invoker factory
         xxlRpcInvokerFactory = new XxlRpcInvokerFactory(XxlRegistryServiceRegistry.class, new HashMap<String, String>(){{
             put(XxlRegistryServiceRegistry.XXL_REGISTRY_ADDRESS, adminAddress);
@@ -152,9 +152,6 @@ public class XxlApmFactory {
                 xxlRpcInvokerFactory).getObject();
 
 
-        // msg logpathDir
-        this.msglogpathDir = msglogpath;
-
         // start msg-queue thread
         for (int i = 0; i < 5; i++) {
             clientFactoryThreadPool.execute(new Runnable() {
@@ -172,7 +169,7 @@ public class XxlApmFactory {
                                 messageList.add(message);
 
                                 List<XxlApmMsg> otherMessageList = new ArrayList<>();
-                                int drainToNum = newMessageQueue.drainTo(otherMessageList, 400);
+                                int drainToNum = newMessageQueue.drainTo(otherMessageList, 200);
                                 if (drainToNum > 0) {
                                     messageList.addAll(otherMessageList);
                                 }
@@ -228,40 +225,55 @@ public class XxlApmFactory {
                     int waitTim = 5;
                     try {
                         boolean beatResult = xxlApmMsgService.beat();
-                        if (beatResult && msglogpathDir.listFiles()!=null && msglogpathDir.listFiles().length>0) {
-                            waitTim = 5;
-                            for (File fileItem : msglogpathDir.listFiles()) {
 
-                                Class<? extends XxlApmMsg> msgType = null;
-                                if (fileItem.getName().startsWith("XxlApmEvent")) {
-                                    msgType = XxlApmEvent.class;
-                                } else if (fileItem.getName().startsWith("XxlApmTransaction")) {
-                                    msgType = XxlApmTransaction.class;
-                                } else if (fileItem.getName().startsWith("XxlApmMetric")) {
-                                    msgType = XxlApmMetric.class;
-                                } else if (fileItem.getName().startsWith("XxlApmHeartbeat")) {
-                                    msgType = XxlApmHeartbeat.class;
-                                } else {
-                                    continue;
+                        File msglogpathDir = new File(msglogpath);
+                        if (beatResult && msglogpathDir.list()!=null && msglogpathDir.list().length>0) {
+                            waitTim = 5;
+
+                            // retry msg
+                            for (File msgFileDir : msglogpathDir.listFiles()) {     // {msglogpath}/{yyyy-MM-dd}_xxx
+
+                                if (msgFileDir.list()!=null && msgFileDir.list().length>0) {        // {msglogpath}/{yyyy-MM-dd}_xxx/xxxxxx
+                                    for (File fileItem: msgFileDir.listFiles()) {
+
+                                        Class<? extends XxlApmMsg> msgType = null;
+                                        if (fileItem.getName().startsWith("XxlApmEvent")) {
+                                            msgType = XxlApmEvent.class;
+                                        } else if (fileItem.getName().startsWith("XxlApmTransaction")) {
+                                            msgType = XxlApmTransaction.class;
+                                        } else if (fileItem.getName().startsWith("XxlApmMetric")) {
+                                            msgType = XxlApmMetric.class;
+                                        } else if (fileItem.getName().startsWith("XxlApmHeartbeat")) {
+                                            msgType = XxlApmHeartbeat.class;
+                                        } else {
+                                            continue;
+                                        }
+
+                                        try {
+
+                                            // read msg-file
+                                            String msgListJson = FileUtil.readFileContent(fileItem);
+                                            List<XxlApmMsg> messageList = (List<XxlApmMsg>) BasicJson.parseList(msgListJson, msgType);
+
+                                            // retry report
+                                            boolean ret = xxlApmMsgService.report(messageList);
+
+                                            // delete
+                                            if (ret) {
+                                                fileItem.delete();
+                                            }
+                                        } catch (Exception e) {
+                                            if (!clientFactoryPoolStoped) {
+                                                logger.error(e.getMessage(), e);
+                                            }
+                                        }
+
+                                    }
                                 }
 
-                                try {
-
-                                    // read msg-file
-                                    String msgListJson = FileUtil.readFileContent(fileItem);
-                                    List<XxlApmMsg> messageList = (List<XxlApmMsg>) BasicJson.parseList(msgListJson, msgType);
-
-                                    // retry report
-                                    boolean ret = xxlApmMsgService.report(messageList);
-
-                                    // delete
-                                    if (ret) {
-                                        fileItem.delete();
-                                    }
-                                } catch (Exception e) {
-                                    if (!clientFactoryPoolStoped) {
-                                        logger.error(e.getMessage(), e);
-                                    }
+                                // clean empty dir
+                                if (!(msgFileDir.list()!=null && msgFileDir.list().length>0)) {
+                                    msgFileDir.delete();
                                 }
 
                             }
@@ -343,51 +355,35 @@ public class XxlApmFactory {
             }
         }
 
-        // dispatch msg-file
-        File file_XxlApmEvent = null;
-        File file_XxlApmTransaction = null;
-        File file_XxlApmMetric = null;
-        File file_XxlApmHeartbeat = null;
-
-        if (msglogpathDir.listFiles()!=null && msglogpathDir.listFiles().length>0) {
-            for (File file : msglogpathDir.listFiles()) {
-                if (file.length() > maxFileLengh_32M_byte) {
-                    continue;
-                }
-                if (file_XxlApmEvent==null && file.getName().startsWith("XxlApmEvent")) {
-                    file_XxlApmEvent = file;
-                } else if (file_XxlApmTransaction==null && file.getName().startsWith("XxlApmTransaction")) {
-                    file_XxlApmTransaction = file;
-                } else if (file_XxlApmMetric==null && file.getName().startsWith("XxlApmMetric")) {
-                    file_XxlApmMetric = file;
-                } else if (file_XxlApmHeartbeat==null && file.getName().startsWith("XxlApmHeartbeat")) {
-                    file_XxlApmHeartbeat = file;
-                }
+        // make msg-file dir
+        if (msgFileDir==null || msgFileDir.list().length>10000) {
+            synchronized (msgFileDirLock) {
+                // {msglogpath}/{yyyy-MM-dd}_xxx
+                msgFileDir = new File(msglogpath, String.valueOf(System.currentTimeMillis()));
+                msgFileDir.mkdirs();
             }
         }
 
         // write msg-file
-        writeMsgList(eventList, file_XxlApmEvent, "XxlApmEvent");
-        writeMsgList(transactionList, file_XxlApmTransaction, "XxlApmTransaction");
-        writeMsgList(metricList, file_XxlApmMetric, "XxlApmMetric");
-        writeMsgList(heartbeatList, file_XxlApmHeartbeat, "XxlApmHeartbeat");
+        writeMsgList(eventList,  "XxlApmEvent", msgFileDir);
+        writeMsgList(transactionList, "XxlApmTransaction", msgFileDir);
+        writeMsgList(metricList, "XxlApmMetric", msgFileDir);
+        writeMsgList(heartbeatList, "XxlApmHeartbeat", msgFileDir);
 
         return true;
     }
 
-    private void writeMsgList(List<? extends XxlApmMsg> msgList, File msgFile, String filePrefix){
+
+    private void writeMsgList(List<? extends XxlApmMsg> msgList, String filePrefix, File msgFileDir ){
         if (msgList == null) {
             return;
         }
 
-        if (msgFile == null) {
-            String msgListFileName = msglogpath.concat(File.separator)
-                    .concat(filePrefix).concat("-").concat(msgList.get(0).getMsgId());
-            msgFile = new File(msgListFileName);
-        }
+        String msgListFileName = filePrefix.concat("-").concat(msgList.get(0).getMsgId());
+        File msgFile = new File(msgFileDir, msgListFileName);
+
         String eventListJson = BasicJson.toJson(msgList);
         FileUtil.writeFileContent(msgFile, eventListJson);
     }
-
 
 }
