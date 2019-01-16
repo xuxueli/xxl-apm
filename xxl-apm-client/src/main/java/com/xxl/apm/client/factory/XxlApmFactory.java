@@ -233,24 +233,31 @@ public class XxlApmFactory {
                         if (file.listFiles()!=null && file.listFiles().length>0) {
                             waitTim = 5;
                             for (File fileItem : file.listFiles()) {
-                                // read msg-file
-                                String msgListJson = FileUtil.readFileContent(fileItem);
-                                List<XxlApmMsg> messageList = BasicJson.parseList(msgListJson, XxlApmMsg.class);
 
-                                // retry report
-                                boolean ret = xxlApmMsgService.report(messageList);
+                                try {
+                                    // read msg-file
+                                    String msgListJson = FileUtil.readFileContent(fileItem);
+                                    List<XxlApmMsg> messageList = BasicJson.parseList(msgListJson, XxlApmMsg.class);
 
-                                // delete
-                                if (ret) {
-                                    fileItem.delete();
+                                    // retry report
+                                    boolean ret = xxlApmMsgService.report(messageList);
+
+                                    // delete
+                                    if (ret) {
+                                        fileItem.delete();
+                                    }
+                                } catch (Exception e) {
+                                    if (!clientFactoryPoolStoped) {
+                                        logger.error(e.getMessage(), e);
+                                    }
                                 }
+
                             }
 
 
                         } else {
                             waitTim = (waitTim+5<=60)?(waitTim+5):60;
                         }
-
 
                     } catch (Exception e) {
                         if (!clientFactoryPoolStoped) {

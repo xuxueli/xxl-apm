@@ -3,6 +3,7 @@ package com.xxl.apm.client.message.impl;
 import com.xxl.apm.client.message.XxlApmMsg;
 import com.xxl.apm.client.os.OsHelper;
 
+import java.io.Serializable;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
@@ -294,7 +295,9 @@ public class XxlApmHeartbeat extends XxlApmMsg {
 
     // sub class
 
-    public static class MemoryInfo{
+    public static class MemoryInfo implements Serializable {
+        private static final long serialVersionUID = 42L;
+
         private float used_space;   // in kb units
         private float max_space;  // in kb units, to generate used percent
 
@@ -322,7 +325,8 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         }
     }
 
-    public static class GcInfo{
+    public static class GcInfo implements Serializable {
+        private static final long serialVersionUID = 42L;
 
         // last
         public static GcInfo last_young_gc = new GcInfo();
@@ -357,7 +361,9 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         }
     }
 
-    public static class ThreadInfo {
+    public static class ThreadInfo implements Serializable {
+        private static final long serialVersionUID = 42L;
+
         private String name;
         private String status;      // java.lang.Thread.State
         private String stack_info;
@@ -387,7 +393,9 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         }
     }
 
-    public static class ClassInfo{
+    public static class ClassInfo implements Serializable {
+        private static final long serialVersionUID = 42L;
+
         private int loaded_count;
         private long unload_count;
 
@@ -408,7 +416,8 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         }
     }
 
-    public static class SystemInfo{
+    public static class SystemInfo implements Serializable {
+        private static final long serialVersionUID = 42L;
 
         public static long last_process_cpu_time = OsHelper.getInstance().getProcessCpuTime();  // last already use cpu time, in ns
 
