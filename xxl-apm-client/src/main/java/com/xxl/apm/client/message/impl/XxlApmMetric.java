@@ -12,7 +12,7 @@ import java.util.Map;
 public class XxlApmMetric extends XxlApmMsg {
 
     private String name;                    // like "online_user"
-    private int count;
+    private long count;
     private Map<String, String> param;      // like "platform=app、app_version=1.2"
 
 
@@ -37,11 +37,11 @@ public class XxlApmMetric extends XxlApmMsg {
         this.name = name;
     }
 
-    public int getCount() {
+    public long getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(long count) {
         this.count = count;
     }
 

@@ -20,7 +20,7 @@ public class Test {
 
     public static void main(String[] args) throws InterruptedException {
 
-        if (false) {
+        if (true) {
             XxlApmMetric metric = new XxlApmMetric("booking_count");
 
             String json = BasicJson.toJson(Arrays.asList(metric));

@@ -248,13 +248,13 @@ public class XxlApmFactory {
                                 for (File fileItem: msgFileDir.listFiles()) {
 
                                     Class<? extends XxlApmMsg> msgType = null;
-                                    if (fileItem.getName().startsWith("XxlApmEvent")) {
+                                    if (fileItem.getName().startsWith(XxlApmEvent.class.getSimpleName())) {
                                         msgType = XxlApmEvent.class;
-                                    } else if (fileItem.getName().startsWith("XxlApmTransaction")) {
+                                    } else if (fileItem.getName().startsWith(XxlApmTransaction.class.getSimpleName())) {
                                         msgType = XxlApmTransaction.class;
-                                    } else if (fileItem.getName().startsWith("XxlApmMetric")) {
+                                    } else if (fileItem.getName().startsWith(XxlApmMetric.class.getSimpleName())) {
                                         msgType = XxlApmMetric.class;
-                                    } else if (fileItem.getName().startsWith("XxlApmHeartbeat")) {
+                                    } else if (fileItem.getName().startsWith(XxlApmHeartbeat.class.getSimpleName())) {
                                         msgType = XxlApmHeartbeat.class;
                                     } else {
                                         fileItem.delete();
@@ -371,10 +371,10 @@ public class XxlApmFactory {
         }
 
         // write msg-file
-        writeMsgList(eventList,  "XxlApmEvent", msgFileDir);
-        writeMsgList(transactionList, "XxlApmTransaction", msgFileDir);
-        writeMsgList(metricList, "XxlApmMetric", msgFileDir);
-        writeMsgList(heartbeatList, "XxlApmHeartbeat", msgFileDir);
+        writeMsgList(eventList,  XxlApmEvent.class.getSimpleName(), msgFileDir);
+        writeMsgList(transactionList, XxlApmTransaction.class.getSimpleName(), msgFileDir);
+        writeMsgList(metricList, XxlApmMetric.class.getSimpleName(), msgFileDir);
+        writeMsgList(heartbeatList, XxlApmHeartbeat.class.getSimpleName(), msgFileDir);
 
         return true;
     }
