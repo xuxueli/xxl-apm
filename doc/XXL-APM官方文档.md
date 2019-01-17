@@ -35,6 +35,9 @@ A distributed APM(application-performance-management) platform.
     - springboot [done]
     - frameless [done]
     
+- Support
+    - XxlApmWebFilter: support trance [done]
+    
 ---
 
 - other
@@ -88,6 +91,8 @@ A distributed APM(application-performance-management) platform.
          时间-指标柱状图，如内存、CPU等；
      线程堆栈：IP + 分钟维度；
          线程堆栈列表：线程数 + 状态分布 + 线程列表-详情；
+     数据结构：
+                 
 
 
  大盘：分钟维度；

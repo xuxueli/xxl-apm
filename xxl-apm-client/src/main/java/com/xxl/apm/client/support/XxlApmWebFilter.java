@@ -16,6 +16,7 @@ import java.io.IOException;
 public class XxlApmWebFilter implements Filter {
     private static Logger logger = LoggerFactory.getLogger(XxlApmWebFilter.class);
 
+    public static final String PARENT_MSGID = "xxl_apm_parent_msgid";
     public static final String EXCLUDE_URLS = "excluded_urls";
 
     private String excludedUrls;
@@ -54,7 +55,20 @@ public class XxlApmWebFilter implements Filter {
             transaction.setError(e);
             throw e;
         } finally {
+
+            // set parentMsgId, support trance
+            String parentMsgId = req.getHeader(PARENT_MSGID);
+            if (parentMsgId!=null && parentMsgId.trim().length()>0) {
+                XxlApm.setParentMsgId(parentMsgId);
+            }
+
+            // do report
             XxlApm.report(transaction);
+
+            // set parentMsgId
+            if (parentMsgId!=null && parentMsgId.trim().length()>0) {
+                XxlApm.removeParentMsgId();
+            }
         }
 
     }
