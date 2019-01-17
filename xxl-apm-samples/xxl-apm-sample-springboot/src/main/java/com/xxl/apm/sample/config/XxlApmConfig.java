@@ -1,9 +1,13 @@
 package com.xxl.apm.sample.config;
 
 import com.xxl.apm.client.factory.XxlApmFactory;
+import com.xxl.apm.client.support.XxlApmWebFilter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 /**
  * @author xuxueli 2019-01-17
@@ -26,6 +30,7 @@ public class XxlApmConfig {
 
 
     @Bean(initMethod="start", destroyMethod = "stop")
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public XxlApmFactory xxlApmFactory() {
 
         XxlApmFactory xxlApmFactory = new XxlApmFactory();
@@ -36,5 +41,26 @@ public class XxlApmConfig {
 
         return xxlApmFactory;
     }
+
+
+    /**
+     * 可选：针对 Web 请求埋点；
+     *
+     * @return
+     */
+    @Bean
+    public FilterRegistrationBean xxlApmFilterRegistration() {
+
+        // xxl-apm, web filter init
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+
+        registration.setName("XxlApmWebFilter");
+        registration.setOrder(1);
+        registration.addUrlPatterns("/*");
+        registration.setFilter(new XxlApmWebFilter());
+
+        return registration;
+    }
+
 
 }

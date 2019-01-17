@@ -32,6 +32,7 @@ public class XxlApmTransaction extends XxlApmEvent {
     public void complete() {
         super.complete();
 
+        // etc
         int ms_nanoseconds = 1000000;
         this.time = (System.nanoTime() - time)/ms_nanoseconds;
     }

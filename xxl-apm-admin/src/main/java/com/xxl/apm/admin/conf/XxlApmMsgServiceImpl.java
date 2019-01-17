@@ -9,6 +9,7 @@ import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
 import com.xxl.apm.client.message.impl.XxlApmMetric;
 import com.xxl.apm.client.message.impl.XxlApmTransaction;
 import com.xxl.apm.client.util.FileUtil;
+import com.xxl.registry.client.util.json.BasicJson;
 import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
 import com.xxl.rpc.serialize.Serializer;
@@ -281,8 +282,9 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
     private boolean processMsg(List<XxlApmMsg> messageList){
 
         // todo, process msg
+        System.out.println(BasicJson.toJson(messageList));
 
-        return false;
+        return true;
     }
 
 

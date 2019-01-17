@@ -17,8 +17,11 @@ public class IndexController {
 
     @RequestMapping("")
     @ResponseBody
-    public String index(){
-        return "hello world.";
+    public String index(String name){
+        if ("error".equals(name)) {
+            int error_result = 10/0;
+        }
+        return "hello world. " + (name!=null?name:"");
     }
 
 

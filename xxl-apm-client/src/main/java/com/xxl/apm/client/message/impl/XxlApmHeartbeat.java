@@ -165,6 +165,8 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     public void complete() {
         super.complete();
 
+        // etc
+
         // memory
         int kb_bytes = 1024;
         for (final MemoryPoolMXBean memoryPool : ManagementFactory.getMemoryPoolMXBeans()) {
