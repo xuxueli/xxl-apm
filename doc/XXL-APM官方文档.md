@@ -37,14 +37,13 @@ A distributed APM(application-performance-management) platform.
     
 - Support
     - XxlApmWebFilter: support trance [done]
-    
+    - Restful
 ---
 
 - other
     - api：tcp + http
     - mvc、rpc、db、cache
-    - trace拓扑
-    - 机器指标，时间折线图；
+    - trace, 拓扑
 
 ```
 
@@ -87,21 +86,28 @@ A distributed APM(application-performance-management) platform.
      指标列表：时间-次数折线图，全量平铺；
      指标详情：大图展示，；
 4、Heartbeat：时间折线图；
+     筛选 time：限制 hour 范围内；
      报表列表：
          时间-指标柱状图，如内存、CPU等；
      线程堆栈：IP + 分钟维度；
          线程堆栈列表：线程数 + 状态分布 + 线程列表-详情；
      数据结构：
-                 
+        Mysql 表：
 
-
- 大盘：分钟维度；
+---
+数据：
+    报表（Mysql 存储）：汇聚到 min、hour 维度上；
+    LogView（文件、ES）：全量 LogView ;
+---                
+大盘：分钟维度；
      报错大盘：Transaction、Event 报错，统计 name 汇总次数；
      Metric 大盘：设置展示在大盘里；
- 告警：阈值，应用负责人邮箱；
+告警：阈值，应用负责人邮箱；
      报错报警：针对Type设置报警阈值，百分比或次数，超过告警；
      Metric 告警：针对 Metric 设置报警阈值，百分比或次数，超过告警；
      Heartbeat 告警：针对 Heartbeat 设置报警阈值，百分比或次数，超过告警；
+     
+------
 
 
 ```

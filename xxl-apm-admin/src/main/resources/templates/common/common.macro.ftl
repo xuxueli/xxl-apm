@@ -104,8 +104,8 @@
                 <li class="nav-click <#if pageName == "index">active</#if>" ><a href="${request.contextPath}/"><i class="fa fa-circle-o text-aqua"></i><span>Dashboard</span></a></li>
                 <li class="nav-click <#if pageName == "event">active</#if>" ><a href="${request.contextPath}/event"><i class="fa fa-circle-o text-yellow"></i><span>Event</span></a></li>
 				<li class="nav-click <#if pageName == "Transaction">active</#if>" ><a href="${request.contextPath}/transaction"><i class="fa fa-circle-o text-green"></i><span>Transaction</span></a></li>
-                <li class="nav-click <#if pageName == "heartbeat">active</#if>" ><a href="${request.contextPath}/heartbeat"><i class="fa fa-circle-o text-red"></i><span>Heartbeat</span></a></li>
-                <li class="nav-click <#if pageName == "metric">active</#if>" ><a href="${request.contextPath}/metric"><i class="fa fa-circle-o text-aqua"></i><span>Metric</span></a></li>
+                <li class="nav-click <#if pageName == "metric">active</#if>" ><a href="${request.contextPath}/metric"><i class="fa fa-circle-o text-red"></i><span>Metric</span></a></li>
+                <li class="nav-click <#if pageName == "heartbeat">active</#if>" ><a href="${request.contextPath}/heartbeat"><i class="fa fa-circle-o text-aqua"></i><span>Heartbeat</span></a></li>
                 <li class="nav-click <#if pageName == "help">active</#if>" ><a href="${request.contextPath}/help"><i class="fa fa-circle-o text-gray"></i><span>使用教程</span></a></li>
 			</ul>
 		</section>

@@ -1,6 +1,7 @@
 package com.xxl.apm.admin.conf;
 
 import com.xxl.apm.admin.core.model.XxlCommonRegistryData;
+import com.xxl.apm.admin.service.XxlApmStoreService;
 import com.xxl.apm.admin.service.impl.XxlCommonRegistryServiceImpl;
 import com.xxl.apm.client.admin.XxlApmMsgService;
 import com.xxl.apm.client.message.XxlApmMsg;
@@ -9,7 +10,6 @@ import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
 import com.xxl.apm.client.message.impl.XxlApmMetric;
 import com.xxl.apm.client.message.impl.XxlApmTransaction;
 import com.xxl.apm.client.util.FileUtil;
-import com.xxl.registry.client.util.json.BasicJson;
 import com.xxl.rpc.remoting.net.NetEnum;
 import com.xxl.rpc.remoting.provider.XxlRpcProviderFactory;
 import com.xxl.rpc.serialize.Serializer;
@@ -21,6 +21,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +44,33 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
     private int port;
     @Value("${xxl-apm.msglog.path}")
     private String msglogpath;
+    @Value("${xxl-apm.msglog.storage.day}")
+    private int msglogStorageDay;
 
+
+    @Resource
+    private XxlApmStoreService xxlApmStoreService;
 
     // ---------------------- start stop ----------------------
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        // valid
+        if (msglogpath==null || msglogpath.trim().length()==0) {
+            throw new RuntimeException("xxl-apm, msglogpath cannot be empty.");
+        }
+        if (!(msglogStorageDay>=1 && msglogStorageDay<=30)) {
+            throw new RuntimeException("xxl-apm, msglogStorageDay invalid[1~30].");
+        }
+
+        // msglogpath
+        File msglogpathDir = new File(msglogpath);
+        if (!msglogpathDir.exists()) {
+            msglogpathDir.mkdirs();
+        }
+
+
+        // do start
         startServer();
 
         startApmThread();
@@ -271,6 +293,39 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
             }
         });
 
+
+        // apm msg clean thread
+        innerThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                while (!innerThreadPoolStoped) {
+
+                    try {
+
+                        cleanMsg(msglogStorageDay);
+
+                    } catch (Exception e) {
+                        if (!innerThreadPoolStoped) {
+                            logger.error(e.getMessage(), e);
+                        }
+
+                    }
+
+                    // wait
+                    try {
+                        TimeUnit.MINUTES.sleep(10);
+                    } catch (Exception e) {
+                        if (!innerThreadPoolStoped) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+
+                }
+
+            }
+        });
+
     }
     private void stopApmThread(){
         // stop thread
@@ -280,10 +335,12 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
 
 
     private boolean processMsg(List<XxlApmMsg> messageList){
+        xxlApmStoreService.processMsg(messageList);
+        return true;
+    }
 
-        // todo, process msg
-        System.out.println(BasicJson.toJson(messageList));
-
+    private boolean cleanMsg(int msglogStorageDay){
+        xxlApmStoreService.cleanMsg(msglogStorageDay);
         return true;
     }
 
