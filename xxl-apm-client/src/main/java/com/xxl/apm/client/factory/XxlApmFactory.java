@@ -173,12 +173,25 @@ public class XxlApmFactory {
                                 messageList = new ArrayList<>();
                                 messageList.add(message);
 
+                                // attempt to report mult msg
                                 List<XxlApmMsg> otherMessageList = new ArrayList<>();
                                 int drainToNum = newMessageQueue.drainTo(otherMessageList, 200);
                                 if (drainToNum > 0) {
                                     messageList.addAll(otherMessageList);
                                 }
 
+                                // msg too small, just wait 1s, avoid report too quick
+                                if (otherMessageList.size() < 100) {
+                                    TimeUnit.SECONDS.sleep(1);
+
+                                    otherMessageList = new ArrayList<>();
+                                    drainToNum = newMessageQueue.drainTo(otherMessageList, 100);
+                                    if (drainToNum > 0) {
+                                        messageList.addAll(otherMessageList);
+                                    }
+                                }
+
+                                // queue small to remote support；queue large, quick move to msg-file
                                 if (newMessageQueue.size() < newMessageQueueMax) {
                                     // report
                                     boolean ret = xxlApmMsgService.report(messageList);

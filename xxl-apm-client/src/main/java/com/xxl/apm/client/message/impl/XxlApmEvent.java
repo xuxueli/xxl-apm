@@ -28,7 +28,6 @@ public class XxlApmEvent extends XxlApmMsg {
     public XxlApmEvent(String type, String name) {
         this.type = type;
         this.name = name;
-        this.status = SUCCESS_STATUS;
     }
     public XxlApmEvent(String type, String name, String status, Map<String, String> param) {
         this.type = type;

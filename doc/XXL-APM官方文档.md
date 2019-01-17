@@ -16,10 +16,10 @@ A distributed APM(application-performance-management) platform.
     - [Trace]: ApmMsg all support [done]
         - parentMsgId: null as root
         - msgId: appname-uuid
-    - Event: type + status, qps/suc rate; [done]
     - Transaction: type + status + time, qps/99line [done]
-    - Heartbeat: app and machine info, time line chart  [done]
+    - Event: type + status, qps/suc rate; [done]
     - Metric: biz index, order/booking info, time line [done]
+    - Heartbeat: app and machine info, time line chart  [done]
 - Probleam: 
     - [Trace]: by msg impl;
     - Event: threshold for 'suc rate'
