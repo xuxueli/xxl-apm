@@ -5,17 +5,21 @@ A distributed APM(application-performance-management) platform.
 ### todo
 - core model
     - admin rpc discovery: xxl-reigtry [done]
-    - transfer log: xxl-rpc, async + mult send [ing]
-    - log storage: file(client) + es(admin)
+    - transfer log: xxl-rpc, async + mult send [done]
+    - log storage: file(client + server) + es(admin)
+        - client file store [done]
+        - server file store [done]
+        - es store [ing]
+    - analysize log
     - view: ui  
 - Msg: msg type [done]
     - [Trace]: ApmMsg all support [done]
         - parentMsgId: null as root
         - msgId: appname-uuid
-    - Event: type + status, qps/suc rate;
-    - Transaction: type + status + time, qps/99line
-    - Heartbeat: app and machine info, time line chart 
-    - Metric: biz index, order/booking info, time line
+    - Event: type + status, qps/suc rate; [done]
+    - Transaction: type + status + time, qps/99line [done]
+    - Heartbeat: app and machine info, time line chart  [done]
+    - Metric: biz index, order/booking info, time line [done]
 - Probleam: 
     - [Trace]: by msg impl;
     - Event: threshold for 'suc rate'
@@ -25,6 +29,9 @@ A distributed APM(application-performance-management) platform.
 - Alarm: bind with appname
     - Email: email
     - WebHook: http://.....{error_msg}...
+
+---
+
 - other
     - api：tcp + http
     - mvc、rpc、db、cache

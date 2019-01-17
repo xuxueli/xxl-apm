@@ -22,9 +22,9 @@ public class Test {
         xxlApmFactory.setAppname("demo-project");
         xxlApmFactory.setAdminAddress("http://localhost:8080/xxl-apm-admin");
         xxlApmFactory.setAccessToken(null);
-        xxlApmFactory.setMsglogpath("/data/applogs/xxl-apm/msglogpath");
+        xxlApmFactory.setMsglogpath("/data/applogs/xxl-apm/client_msglogpath");
         xxlApmFactory.start();
-        TimeUnit.SECONDS.sleep(1);
+        TimeUnit.SECONDS.sleep(111111);
 
         // event message
         XxlApm.report(new XxlApmEvent("URL", "/user/add"));

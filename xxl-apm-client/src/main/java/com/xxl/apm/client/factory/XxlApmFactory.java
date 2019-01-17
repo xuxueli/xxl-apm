@@ -103,11 +103,11 @@ public class XxlApmFactory {
     private XxlApmMsgService xxlApmMsgService;
     private Serializer serializer;
 
-    private ExecutorService clientFactoryThreadPool = Executors.newCachedThreadPool();
-    public volatile boolean clientFactoryPoolStoped = false;
+    private ExecutorService innerThreadPool = Executors.newCachedThreadPool();
+    public volatile boolean innerThreadPoolStoped = false;
 
     private LinkedBlockingQueue<XxlApmMsg> newMessageQueue = new LinkedBlockingQueue<>();
-    private int newMessageQueueMax = 100000;
+    private int newMessageQueueMax = 50000;
 
     private volatile File msgFileDir = null;
     private Object msgFileDirLock = new Object();
@@ -153,13 +153,13 @@ public class XxlApmFactory {
         serializer = Serializer.SerializeEnum.HESSIAN.getSerializer();
 
 
-        // start msg-queue thread
+        // apm msg remote report thread, report-fail or queue-max, write msg-file
         for (int i = 0; i < 5; i++) {
-            clientFactoryThreadPool.execute(new Runnable() {
+            innerThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
 
-                    while (!clientFactoryPoolStoped) {
+                    while (!innerThreadPoolStoped) {
                         List<XxlApmMsg> messageList = null;
                         try {
                             XxlApmMsg message = newMessageQueue.take();
@@ -185,7 +185,7 @@ public class XxlApmFactory {
 
                             }
                         } catch (Exception e) {
-                            if (!clientFactoryPoolStoped) {
+                            if (!innerThreadPoolStoped) {
                                 logger.error(e.getMessage(), e);
                             }
                         } finally {
@@ -216,12 +216,12 @@ public class XxlApmFactory {
             });
         }
 
-        // start msg-file thread
-        clientFactoryThreadPool.execute(new Runnable() {
+        // apm msg-file retry remote report thread, cycle retry
+        innerThreadPool.execute(new Runnable() {
             @Override
             public void run() {
 
-                while (!clientFactoryPoolStoped) {
+                while (!innerThreadPoolStoped) {
 
                     int waitTim = 5;
                     try {
@@ -231,7 +231,7 @@ public class XxlApmFactory {
                         if (beatResult && msglogpathDir.list()!=null && msglogpathDir.list().length>0) {
                             waitTim = 5;
 
-                            // {msglogpath}/{yyyy-MM-dd}_xxx
+                            // {msglogpath}/{timestamp}
                             for (File msgFileDir : msglogpathDir.listFiles()) {
 
                                 // clean invalid file
@@ -245,7 +245,7 @@ public class XxlApmFactory {
                                     continue;
                                 }
 
-                                // {msglogpath}/{yyyy-MM-dd}_xxx/xxxxxx
+                                // {msglogpath}/{timestamp}/xxxxxx
                                 for (File fileItem: msgFileDir.listFiles()) {
 
                                     Class<? extends XxlApmMsg> msgType = null;
@@ -276,7 +276,7 @@ public class XxlApmFactory {
                                             fileItem.delete();
                                         }
                                     } catch (Exception e) {
-                                        if (!clientFactoryPoolStoped) {
+                                        if (!innerThreadPoolStoped) {
                                             logger.error(e.getMessage(), e);
                                         }
                                     }
@@ -290,7 +290,7 @@ public class XxlApmFactory {
                         }
 
                     } catch (Exception e) {
-                        if (!clientFactoryPoolStoped) {
+                        if (!innerThreadPoolStoped) {
                             logger.error(e.getMessage(), e);
                         }
 
@@ -300,7 +300,7 @@ public class XxlApmFactory {
                     try {
                         TimeUnit.SECONDS.sleep(waitTim);
                     } catch (Exception e) {
-                        if (!clientFactoryPoolStoped) {
+                        if (!innerThreadPoolStoped) {
                             logger.error(e.getMessage(), e);
                         }
                     }
@@ -310,13 +310,39 @@ public class XxlApmFactory {
             }
         });
 
+
+        // heartbeat thread, cycle report for 1min ("heartbeat" for 1min, "event、transaction、metric" for real-time)
+        innerThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                while (!innerThreadPoolStoped) {
+                    // heartbeat report
+                    try {
+                        XxlApm.report(new XxlApmHeartbeat());
+                    } catch (Exception e) {
+                        if (!innerThreadPoolStoped) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                    // wait
+                    try {
+                        TimeUnit.MINUTES.sleep(1);
+                    } catch (Exception e) {
+                        if (!innerThreadPoolStoped) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
     private void stopApmMsgService(){
 
         // stop thread
-        clientFactoryPoolStoped = true;
-        clientFactoryThreadPool.shutdownNow();
+        innerThreadPoolStoped = true;
+        innerThreadPool.shutdownNow();
 
         // stop invoker factory
         if (xxlRpcInvokerFactory != null) {
@@ -365,7 +391,7 @@ public class XxlApmFactory {
         // make msg-file dir
         if (msgFileDir==null || msgFileDir.list().length>10000) {
             synchronized (msgFileDirLock) {
-                // {msglogpath}/{yyyy-MM-dd}_xxx
+                // {msglogpath}/{timestamp}/xxxxxx
                 msgFileDir = new File(msglogpath, String.valueOf(System.currentTimeMillis()));
                 msgFileDir.mkdirs();
             }
