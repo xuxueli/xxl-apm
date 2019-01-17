@@ -12,6 +12,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>xxl-apm-sample-frameless</module>
         <module>xxl-apm-sample-springboot</module>
     </modules>
 
