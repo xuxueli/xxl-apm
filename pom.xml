@@ -13,7 +13,8 @@
 	<modules>
         <module>xxl-apm-client</module>
 		<module>xxl-apm-admin</module>
-	</modules>
+        <module>xxl-apm-samples</module>
+    </modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

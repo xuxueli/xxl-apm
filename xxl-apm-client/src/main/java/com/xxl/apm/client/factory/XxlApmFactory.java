@@ -79,11 +79,15 @@ public class XxlApmFactory {
 
         // generate XxlApm
         XxlApm.setInstance(this);
+
+        logger.info(">>>>>>>>>>> xxl-apm start.");
     }
 
     public void stop(){
         // stop XxlApmMsgService
         stopApmMsgService();
+
+        logger.info(">>>>>>>>>>> xxl-apm stop.");
     }
 
 

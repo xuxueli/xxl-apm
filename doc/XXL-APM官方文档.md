@@ -31,6 +31,9 @@ A distributed APM(application-performance-management) platform.
     - WebHook: http://.....{error_msg}...
 
 ---
+- Sample
+    - springboot [ing 50%]
+---
 
 - other
     - api：tcp + http
