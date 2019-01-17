@@ -44,57 +44,59 @@ A distributed APM(application-performance-management) platform.
     - 机器指标，时间折线图；
 
 ```
-/**
- * 筛选：
- *      appname：required
- *      machine：all | ip
- *      time：自定义时间跨度 hour ~ 24hour
- * 1、Transaction
- *      Type列表：
- *          字段：Type、总数、失败次数、失败率、QPS、LogView-最近3条；+ Max、Avg、90line、95line、99line、99.9line
- *          列表报表：
- *              全量-时间柱状图；
- *              失败-时间柱状图；
- *              耗时折线图-Max、Avg、90line、95line、99line、99.9line
- *          分布统计：
- *              IP分布列表：Ip、Hostname、总数、失败次数、失败率、QPS；+ Max、Avg、90line、95line、99line、99.9line
- *              IP分布比例饼图：
- *                  全量-比例图；
- *                  失败-比例图；
- *      Name列表：
- *          字段：Name、总数、失败次数、失败率、QPS、LogView-最近3条、占比；+ Max、Avg、90line、95line、99line、99.9line
- *          整体报表：占比饼图；
- *          单个Name报表：属性同Type；
- * 2、Event：
- *      Type列表：
- *          列表字段：Type、总数、失败次数、失败率、QPS、LogView-最近3条；
- *          列表报表：
- *              全量-时间柱状图；
- *              失败-时间柱状图；
- *          分布统计：
- *              IP分布列表：Ip、Hostname、总数、失败次数、失败率、QPS
- *              IP分布比例饼图：
- *                  全量-比例图；
- *                  失败-比例图；
- *      Name列表：
- *          字段：Name、总数、失败次数、失败率、QPS、LogView-最近3条、占比
- *          整体报表：占比饼图；
- *          单个Name报表：属性同Type；
- * 3、Metric：时间折线图；标签筛选；
- *      指标列表：时间-次数折线图，全量平铺；
- *      指标详情：大图展示，；
- * 4、Heartbeat：时间折线图；
- *      报表列表：
- *          时间-指标柱状图，如内存、CPU等；
- *
- *
- *  大盘：分钟维度；
- *      报错大盘：Transaction、Event 报错，统计 name 汇总次数；
- *      Metric 大盘：设置展示在大盘里；
- *  告警：阈值，应用负责人邮箱；
- *      报错报警：针对Type设置报警阈值，百分比或次数，超过告警；
- *      Metric 告警：针对 Metric 设置报警阈值，百分比或次数，超过告警；
- *      Heartbeat 告警：针对 Heartbeat 设置报警阈值，百分比或次数，超过告警；
- *
- */
+
+筛选：
+     appname：required
+     machine：all | ip
+     time：自定义时间跨度 hour ~ 24hour
+1、Transaction
+     Type列表：
+         字段：Type、总数、失败次数、失败率、QPS、LogView-最近3条；+ Max、Avg、90line、95line、99line、99.9line
+         列表报表：
+             全量-时间柱状图；
+             失败-时间柱状图；
+             耗时折线图-Max、Avg、90line、95line、99line、99.9line
+         分布统计：
+             IP分布列表：Ip、Hostname、总数、失败次数、失败率、QPS；+ Max、Avg、90line、95line、99line、99.9line
+             IP分布比例饼图：
+                 全量-比例图；
+                 失败-比例图；
+     Name列表：
+         字段：Name、总数、失败次数、失败率、QPS、LogView-最近3条、占比；+ Max、Avg、90line、95line、99line、99.9line
+         整体报表：占比饼图；
+         单个Name报表：属性同Type；
+2、Event：
+     Type列表：
+         列表字段：Type、总数、失败次数、失败率、QPS、LogView-最近3条；
+         列表报表：
+             全量-时间柱状图；
+             失败-时间柱状图；
+         分布统计：
+             IP分布列表：Ip、Hostname、总数、失败次数、失败率、QPS
+             IP分布比例饼图：
+                 全量-比例图；
+                 失败-比例图；
+     Name列表：
+         字段：Name、总数、失败次数、失败率、QPS、LogView-最近3条、占比
+         整体报表：占比饼图；
+         单个Name报表：属性同Type；
+3、Metric：时间折线图；标签筛选；
+     指标列表：时间-次数折线图，全量平铺；
+     指标详情：大图展示，；
+4、Heartbeat：时间折线图；
+     报表列表：
+         时间-指标柱状图，如内存、CPU等；
+     线程堆栈：IP + 分钟维度；
+         线程堆栈列表：线程数 + 状态分布 + 线程列表-详情；
+
+
+ 大盘：分钟维度；
+     报错大盘：Transaction、Event 报错，统计 name 汇总次数；
+     Metric 大盘：设置展示在大盘里；
+ 告警：阈值，应用负责人邮箱；
+     报错报警：针对Type设置报警阈值，百分比或次数，超过告警；
+     Metric 告警：针对 Metric 设置报警阈值，百分比或次数，超过告警；
+     Heartbeat 告警：针对 Heartbeat 设置报警阈值，百分比或次数，超过告警；
+
+
 ```
