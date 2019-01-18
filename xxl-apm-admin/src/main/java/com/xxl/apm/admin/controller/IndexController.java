@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * index controller
@@ -30,7 +28,7 @@ public class IndexController {
 	@RequestMapping("/")
 	public String index(Model model, HttpServletRequest request) {
 
-		// TODO，大盘
+		// todo-apm，大盘
 
 
 		return "index";
