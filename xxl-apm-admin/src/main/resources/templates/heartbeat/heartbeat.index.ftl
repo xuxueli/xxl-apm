@@ -16,61 +16,67 @@
 	
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
-		<!-- Content Header (Page header) -->
-		<section class="content-header">
-			<h1>消息主题管理<small></small></h1>
-		</section>
-		
+
 		<!-- Main content -->
 	    <section class="content">
 	    
 	    	<div class="row">
-                <div class="col-xs-4">
+
+                <div class="col-xs-3">
+                        <input type="text" class="form-control" id="topic" autocomplete="on" placeholder="${.now}" > ~
+                        <input type="text" class="form-control" id="topic" autocomplete="on" placeholder="${.now}" >
+                </div>
+
+                <div class="col-xs-3">
+                    <input type="text" class="form-control" id="topic" autocomplete="on" placeholder="请输入应用 AppName" >
+                </div>
+
+                <div class="col-xs-3">
                     <div class="input-group">
-                        <span class="input-group-addon">业务线</span>
+                        <span class="input-group-addon">请选择机器</span>
                         <select class="form-control" id="bizId" >
-                            <option value="-1">全部</option>
-                            <option value="0">无</option>
+                            <option value="">全部</option>
+                            <option value="127.0.0.1（local.machaing）">无</option>
                         </select>
                     </div>
                 </div>
-                <div class="col-xs-4">
-                    <div class="input-group">
-                        <span class="input-group-addon">消息主题</span>
-                        <input type="text" class="form-control" id="topic" autocomplete="on" placeholder="请输入消息主题，模糊匹配" >
-                    </div>
-                </div>
+
 	            <div class="col-xs-2">
-	            	<button class="btn btn-block btn-info" id="searchBtn">搜索</button>
+	            	<button class="btn btn-block btn-info" id="searchBtn">GO</button>
 	            </div>
-                <div class="col-xs-2">
-                    <button class="btn btn-block btn-default" id="topic_add">+新增消息主题</button>
-                </div>
           	</div>
+            <br>
 	    	
 			<div class="row">
-				<div class="col-xs-12">
+
+				<div class="col-md-6 col-xs-12-">
 					<div class="box">
-			            <#--<div class="box-header">
-			            	<h3 class="box-title">消息主题列表</h3>
-			            </div>-->
-			            <div class="box-body">
-			              	<table id="data_list" class="table table-bordered table-striped" width="100%" >
-				                <thead>
-					            	<tr>
-					                	<th name="bizId" >业务线</th>
-					                  	<th name="topic" >消息主题</th>
-                                        <th name="author" >负责人</th>
-                                        <th name="alarmEmails" >告警邮箱</th>
-					                  	<th>操作</th>
-					                </tr>
-				                </thead>
-				                <tbody></tbody>
-				                <tfoot></tfoot>
-							</table>
-						</div>
+
+
+                        <!-- BAR CHART -->
+                        <div class="box box-success">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Bar Chart</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body chart-responsive">
+                                <div class="chart" id="bar-chart" style="height: 300px;"></div>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+
+
 					</div>
 				</div>
+
+
+
+
 			</div>
 			
 	    </section>
@@ -82,14 +88,10 @@
 </div>
 
 <@netCommon.commonScript />
-<!-- DataTables -->
-<script src="${request.contextPath}/static/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="${request.contextPath}/static/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<script src="${request.contextPath}/static/plugins/jquery/jquery.validate.min.js"></script>
+<#-- echarts -->
+<script src="${request.contextPath}/static/plugins/echarts/echarts.common.min.js"></script>
 
 <script>
-    var bizListObj = {};
-    bizListObj['0'] = '无';
 </script>
 <script src="${request.contextPath}/static/js/heartbeat.index.js"></script>
 

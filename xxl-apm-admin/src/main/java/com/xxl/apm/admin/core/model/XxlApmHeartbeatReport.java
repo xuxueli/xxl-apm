@@ -12,7 +12,7 @@ public class XxlApmHeartbeatReport {
     private String ip;
     private String hostname;
 
-    private byte[] heartbeat_data;      // XxlApmHeartbeat data
+    private byte[] heartbeat_data;      // XxlApmHeartbeat.class
 
 
     public long getId() {
