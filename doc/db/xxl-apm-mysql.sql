@@ -27,3 +27,14 @@ CREATE TABLE `xxl_apm_common_registry_message` (
   `addTime` datetime NOT NULL COMMENT '添加时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `xxl_apm_heartbeat_report` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `appname` varchar(100) NOT NULL COMMENT '注册Key',
+  `addtime` bigint(11) NOT NULL COMMENT '注册Value有效数据',
+  `ip` varchar(100) NOT NULL,
+  `hostname` varchar(200) NOT NULL,
+  `heartbeat_data` mediumblob NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

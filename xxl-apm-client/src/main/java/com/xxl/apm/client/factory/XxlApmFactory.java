@@ -19,10 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -55,6 +52,10 @@ public class XxlApmFactory {
 
     public void setMsglogpath(String msglogpath) {
         this.msglogpath = msglogpath;
+    }
+
+    public String getAppname() {
+        return appname;
     }
 
     // ---------------------- start、stop ----------------------
@@ -332,10 +333,31 @@ public class XxlApmFactory {
         innerThreadPool.execute(new Runnable() {
             @Override
             public void run() {
+
+                // align to minute
+                try {
+                    long sleepSecond = 0;
+                    Calendar nextMin = Calendar.getInstance();
+                    nextMin.add(Calendar.MINUTE, 1);
+                    nextMin.set(Calendar.SECOND, 0);
+                    nextMin.set(Calendar.MILLISECOND, 0);
+                    sleepSecond = (nextMin.getTime().getTime() - System.currentTimeMillis())/1000;
+                    if (sleepSecond>0 && sleepSecond<60) {
+                        TimeUnit.SECONDS.sleep(sleepSecond);
+                    }
+                } catch (Exception e) {
+                    if (!innerThreadPoolStoped) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+
                 while (!innerThreadPoolStoped) {
                     // heartbeat report
                     try {
-                        XxlApm.report(new XxlApmHeartbeat());
+                        XxlApmHeartbeat heartbeat = new XxlApmHeartbeat();
+                        heartbeat.setAddtime((System.currentTimeMillis()/60000)*60000);     // format to minute
+
+                        XxlApm.report(heartbeat);
                     } catch (Exception e) {
                         if (!innerThreadPoolStoped) {
                             logger.error(e.getMessage(), e);

@@ -1,7 +1,5 @@
 package com.xxl.apm.admin.core.model;
 
-import java.util.Date;
-
 /**
  * @author xuxueli 2019-01-17
  */
@@ -9,11 +7,13 @@ public class XxlApmHeartbeatReport {
 
     private long id;
 
+    private String appname;
+    private long addtime;
     private String ip;
     private String hostname;
-    private Date period;                // accurate to min, 'yyyy-MM-dd HH-mm'
 
     private byte[] heartbeat_data;      // XxlApmHeartbeat data
+
 
     public long getId() {
         return id;
@@ -21,6 +21,22 @@ public class XxlApmHeartbeatReport {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getAppname() {
+        return appname;
+    }
+
+    public void setAppname(String appname) {
+        this.appname = appname;
+    }
+
+    public long getAddtime() {
+        return addtime;
+    }
+
+    public void setAddtime(long addtime) {
+        this.addtime = addtime;
     }
 
     public String getIp() {
@@ -37,14 +53,6 @@ public class XxlApmHeartbeatReport {
 
     public void setHostname(String hostname) {
         this.hostname = hostname;
-    }
-
-    public Date getPeriod() {
-        return period;
-    }
-
-    public void setPeriod(Date period) {
-        this.period = period;
     }
 
     public byte[] getHeartbeat_data() {

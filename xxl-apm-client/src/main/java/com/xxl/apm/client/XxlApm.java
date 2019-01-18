@@ -71,6 +71,13 @@ public class XxlApm {
         return instance.xxlApmFactory.generateMsgId();
     }
 
+    /**
+     * get appname
+     * @return
+     */
+    public static String getAppname() {
+        return instance.xxlApmFactory.getAppname();
+    }
 
     /**
      * report msg

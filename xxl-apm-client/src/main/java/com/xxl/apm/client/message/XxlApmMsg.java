@@ -16,9 +16,10 @@ public abstract class XxlApmMsg implements Serializable {
     private String parentMsgId;
     private String msgId;
 
-    private long addtime;
+    private String appname;
     private String ip;
     private String hostname;
+    private long addtime;
 
 
     public String getParentMsgId() {
@@ -35,6 +36,14 @@ public abstract class XxlApmMsg implements Serializable {
 
     public void setMsgId(String msgId) {
         this.msgId = msgId;
+    }
+
+    public String getAppname() {
+        return appname;
+    }
+
+    public void setAppname(String appname) {
+        this.appname = appname;
     }
 
     public long getAddtime() {
@@ -67,9 +76,12 @@ public abstract class XxlApmMsg implements Serializable {
         this.parentMsgId = XxlApm.getParentMsgId();
         this.msgId = XxlApm.generateMsgId();
 
-        this.addtime = System.currentTimeMillis();
+        this.appname = XxlApm.getAppname();
         this.ip = IpUtil.getIp();
         this.hostname = IpUtil.getLocalAddress().getHostName();
+        if (this.addtime < 1) {
+            this.addtime = System.currentTimeMillis();
+        }
     }
 
 }

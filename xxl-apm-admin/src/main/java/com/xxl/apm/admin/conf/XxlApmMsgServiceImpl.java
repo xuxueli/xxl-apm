@@ -87,7 +87,10 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
     // ---------------------- apm server ----------------------
 
     private XxlRpcProviderFactory providerFactory;
-    private Serializer serializer;
+    private static Serializer serializer;
+    public static Serializer getSerializer() {
+        return serializer;
+    }
 
     private void startServer() throws Exception {
 
@@ -182,19 +185,15 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
                         }
                     }
 
-                    // finally total
+                    // finally total write msg-file
                     List<XxlApmMsg> messageList = new ArrayList<>();
-                    int drainToNum = newMessageQueue.drainTo(messageList);
-                    if (drainToNum> 0) {
+                    newMessageQueue.drainTo(messageList, 200);
+                    while (messageList.size() > 0) {
+                        // app stop, write msg-file
+                        writeMsgFile(messageList);
+                        messageList.clear();
 
-                        // process
-                        boolean ret = processMsg(messageList);
-                        if (!ret) {
-
-                            // app stop, write msg-file
-                            writeMsgFile(messageList);
-                            messageList.clear();
-                        }
+                        newMessageQueue.drainTo(messageList, 200);
                     }
 
                 }
@@ -304,12 +303,10 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
                     try {
 
                         cleanMsg(msglogStorageDay);
-
                     } catch (Exception e) {
                         if (!innerThreadPoolStoped) {
                             logger.error(e.getMessage(), e);
                         }
-
                     }
 
                     // wait

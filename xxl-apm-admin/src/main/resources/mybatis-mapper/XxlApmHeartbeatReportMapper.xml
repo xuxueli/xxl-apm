@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xxl.apm.admin.dao.IXxlApmHeartbeatReportDao" >
+	
+	<resultMap id="xxlApmHeartbeatReport" type="com.xxl.apm.admin.core.model.XxlApmHeartbeatReport" >
+		<result column="id" property="id" />
+		<result column="appname" property="appname" />
+		<result column="addtime" property="addtime" />
+		<result column="ip" property="ip" />
+		<result column="hostname" property="hostname" />
+		<result column="heartbeat_data" property="heartbeat_data" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		t.`id`,
+		t.`appname`,
+		t.`addtime`,
+		t.`ip`,
+		t.`hostname`,
+		t.`heartbeat_data`
+	</sql>
+
+	<insert id="addMult" parameterType="com.xxl.apm.admin.core.model.XxlApmHeartbeatReport" useGeneratedKeys="true" keyProperty="id" >
+		INSERT INTO xxl_apm_heartbeat_report (
+			`appname`,
+			`addtime`,
+			`ip`,
+			`hostname`,
+			`heartbeat_data`
+		) VALUES
+		<foreach collection ="heartbeatReportList" item="heartbeatReportItem" index= "index" separator =",">
+			(
+				#{heartbeatReportItem.appname},
+				#{heartbeatReportItem.addtime},
+				#{heartbeatReportItem.ip},
+				#{heartbeatReportItem.hostname},
+				#{heartbeatReportItem.heartbeat_data}
+			)
+		</foreach >
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<delete id="clean" parameterType="java.util.HashMap" >
+		DELETE FROM xxl_apm_heartbeat_report
+		WHERE addtime <![CDATA[ < ]]> #{timeoutTime}
+	</delete>
+
+	<select id="find" parameterType="java.util.HashMap" resultMap="xxlApmHeartbeatReport">
+		SELECT <include refid="Base_Column_List" />
+		FROM xxl_apm_heartbeat_report AS t
+		WHERE t.appname = #{appname}
+			AND t.addtime between #{addtime_from} and #{addtime_to}
+			AND t.ip = #{ip}
+		ORDER BY t.addtime ASC
+	</select>
+
+</mapper>

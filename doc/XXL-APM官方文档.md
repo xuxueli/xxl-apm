@@ -98,6 +98,11 @@ A distributed APM(application-performance-management) platform.
 数据：
     报表（Mysql 存储）：汇聚到 min、hour 维度上；
     LogView（文件、ES）：全量 LogView ;
+全量采集、异常采集；
+客户端采集：
+    多机器集群：appname + ip 定位到机器；
+    单机器集群：appname + ip (+instance) 
+    
 ---                
 大盘：分钟维度；
      报错大盘：Transaction、Event 报错，统计 name 汇总次数；
