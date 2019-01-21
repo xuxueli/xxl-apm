@@ -53,7 +53,9 @@
 		FROM xxl_apm_heartbeat_report AS t
 		WHERE t.appname = #{appname}
 			AND t.addtime between #{addtime_from} and #{addtime_to}
-			AND t.ip = #{ip}
+			<if test="ip != null and ip != ''">
+				AND t.ip = #{ip}
+			</if>
 		ORDER BY t.addtime ASC
 	</select>
 

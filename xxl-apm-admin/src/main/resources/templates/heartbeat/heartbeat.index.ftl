@@ -34,7 +34,7 @@
                 <div class="col-xs-4">
                     <div class="input-group">
                         <span class="input-group-addon">AppName</span>
-                        <input type="text" class="form-control" id="appname" autocomplete="on" placeholder="请输入应用 AppName" value="${appname}" maxlength="100" >
+                        <input type="text" class="form-control" id="appname" autocomplete="on" placeholder="请输入应用 AppName" value="${appname!''}" maxlength="100" >
                     </div>
                 </div>
 
@@ -42,8 +42,8 @@
                     <div class="input-group">
                         <span class="input-group-addon">机器</span>
                         <select class="form-control select2" style2="width: 100%;" id="ip" >
-                            <option value="" >全部</option>
-                            <option value="127.0.0.1" <#if ip?exists && ip=="127.0.0.1">selected="selected"</#if> >127.0.0.1(local.machaing)</option>
+                            <option value="" >未选择</option>
+                            <option value="172.23.20.197" <#if ip?exists && ip=="127.0.0.1">selected="selected"</#if> >172.23.20.197(local.machaing)</option>
                         </select>
                     </div>
                 </div>
@@ -95,6 +95,13 @@
 <#-- select2 -->
 <script src="${request.contextPath}/static/adminlte/bower_components/select2/js/select2.min.js"></script>
 
+<script>
+    var heartbeatList;
+    <#if heartbeatList?exists>
+        heartbeatList = '${heartbeatList}';
+    </#if>
+
+</script>
 <script src="${request.contextPath}/static/js/heartbeat.index.js"></script>
 
 </body>

@@ -13,6 +13,15 @@ $(function() {
 
         // querytime
         var querytime_input = $('#querytime').val();
+        if (!querytime_input) {
+            layer.open({
+                title: '系统提示' ,
+                btn: [ '确定' ],
+                content: '请选择查询时间',
+                icon: '2'
+            });
+            return;
+        }
 
         var time = new Date(querytime_input)
         var y = time.getFullYear();
@@ -32,6 +41,15 @@ $(function() {
         var appname = $('#appname').val()?$('#appname').val().trim():'';
         var ip = $('#ip').val()?$('#ip').val().trim():'';
 
+        if (!appname) {
+            layer.open({
+                title: '系统提示' ,
+                btn: [ '确定' ],
+                content: '请输入应用 AppName',
+                icon: '2'
+            });
+            return;
+        }
 
         // redirct
         var redirct_url = base_url + "/heartbeat?querytime={querytime}&appname={appname}&ip={ip}";
