@@ -6,6 +6,7 @@ import com.xxl.apm.admin.core.util.DateUtil;
 import com.xxl.apm.admin.dao.IXxlApmHeartbeatReportDao;
 import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
@@ -23,18 +24,21 @@ public class HeartbeatController {
 
 
     @RequestMapping("")
-    public String index(String appname, String addtime, String ip){
+    public String index(Model model, String querytime, String appname, String ip){
 
         // parse param
+        Date querytime_date = null;
+        if (querytime!=null && querytime.trim().length()>0) {
+            querytime_date = DateUtil.parse(querytime, "yyyyMMddHH");
+        }
+        if (querytime_date == null) {
+            querytime_date = DateUtil.parse(DateUtil.format(new Date(), "yyyyMMddHH"), "yyyyMMddHH");
+        }
         long addtime_from = 0;
         long addtime_to = 0;
-        if (appname!=null && appname.trim().length()>0
-                && ip!=null && ip.trim().length()>0) {
-            Date addtime_ = DateUtil.parse(addtime, "yyyy-MM-dd HH");
-            if (addtime_ != null) {
-                addtime_from = addtime_.getTime();
-                addtime_to = addtime_from + 60*60*1000;
-            }
+        if (appname!=null && appname.trim().length()>0 && ip!=null && ip.trim().length()>0) {
+            addtime_from = querytime_date.getTime();
+            addtime_to = addtime_from + 60*60*1000;
         }
 
         // load data
@@ -50,11 +54,12 @@ public class HeartbeatController {
         }
 
         // parse data
-
+        model.addAttribute("querytime", querytime_date);
+        model.addAttribute("appname", appname);
+        model.addAttribute("ip", ip);
 
         return "heartbeat/heartbeat.index";
     }
-
 
 
 }

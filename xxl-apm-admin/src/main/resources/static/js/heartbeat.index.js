@@ -1,5 +1,23 @@
 $(function() {
 
+
+    // filter
+    $('#querytime').datetimepicker({
+        format: 'Y-m-d H:i',
+        lang:"ch"
+    });
+
+    $('#searchBtn').click(function () {
+        var redirct_url = base_url + "/heartbeat?querytime={querytime}&appname={appname}&ip={ip}";
+        redirct_url = redirct_url.replace('{querytime}', $('#querytime').val());
+        redirct_url = redirct_url.replace('{appname}', $('#appname').val());
+        redirct_url = redirct_url.replace('{ip}', $('#ip').val());
+
+        console.log(redirct_url);
+    });
+
+
+    // chart
     var option = {
         title : {
             text: '某地区蒸发量和降水量',

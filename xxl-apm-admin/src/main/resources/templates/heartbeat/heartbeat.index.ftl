@@ -4,8 +4,8 @@
   	<#import "../common/common.macro.ftl" as netCommon>
     <title>应用性能管理平台</title>
 	<@netCommon.commonStyle />
-    <!-- DataTables -->
-    <link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <#-- datetimepicker -->
+    <link rel="stylesheet" href="${request.contextPath}/static/plugins/datetimepicker/jquery.datetimepicker.min.css">
 </head>
 <body class="hold-transition skin-blue sidebar-mini <#if cookieMap?exists && cookieMap["xxlapm_adminlte_settings"]?exists && "off" == cookieMap["xxlapm_adminlte_settings"].value >sidebar-collapse</#if>">
 <div class="wrapper">
@@ -23,20 +23,25 @@
 	    	<div class="row">
 
                 <div class="col-xs-3">
-                        <input type="text" class="form-control" id="topic" autocomplete="on" placeholder="${.now}" > ~
-                        <input type="text" class="form-control" id="topic" autocomplete="on" placeholder="${.now}" >
-                </div>
-
-                <div class="col-xs-3">
-                    <input type="text" class="form-control" id="topic" autocomplete="on" placeholder="请输入应用 AppName" >
+                    <div class="input-group">
+                        <span class="input-group-addon">时间</span>
+                        <input type="text" class="form-control" id="querytime" value="${querytime?string('yyyy-MM-dd HH:mm')}" >
+                    </div>
                 </div>
 
                 <div class="col-xs-3">
                     <div class="input-group">
-                        <span class="input-group-addon">请选择机器</span>
-                        <select class="form-control" id="bizId" >
+                        <span class="input-group-addon">AppName</span>
+                        <input type="text" class="form-control" id="appname" autocomplete="on" placeholder="请输入应用 AppName" >
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">机器</span>
+                        <select class="form-control" id="ip" >
                             <option value="">全部</option>
-                            <option value="127.0.0.1（local.machaing）">无</option>
+                            <option value="127.0.0.1">127.0.0.1(local.machaing)</option>
                         </select>
                     </div>
                 </div>
@@ -90,9 +95,9 @@
 <@netCommon.commonScript />
 <#-- echarts -->
 <script src="${request.contextPath}/static/plugins/echarts/echarts.common.min.js"></script>
+<#-- datetimepicker -->
+<script src="${request.contextPath}/static/plugins/datetimepicker/jquery.datetimepicker.full.min.js"></script>
 
-<script>
-</script>
 <script src="${request.contextPath}/static/js/heartbeat.index.js"></script>
 
 </body>
