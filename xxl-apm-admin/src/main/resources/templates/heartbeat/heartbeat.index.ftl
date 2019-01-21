@@ -41,7 +41,7 @@
                 <div class="col-xs-3">
                     <div class="input-group">
                         <span class="input-group-addon">机器</span>
-                        <select class="form-control select2-" style2="width: 100%;" id="ip" >
+                        <select class="form-control select2" style2="width: 100%;" id="ip" >
                             <option value="" >全部</option>
                             <option value="127.0.0.1" <#if ip?exists && ip=="127.0.0.1">selected="selected"</#if> >127.0.0.1(local.machaing)</option>
                         </select>
@@ -56,14 +56,11 @@
 	    	
 			<div class="row">
 
-				<div class="col-md-6 col-xs-12-">
-					<div class="box">
-
-
-                        <!-- BAR CHART -->
+                <div id="bar-sample" style="display: none;" >
+                    <div class="col-md-6 col-xs-12-" >
                         <div class="box box-success">
                             <div class="box-header with-border">
-                                <h3 class="box-title">Bar Chart</h3>
+                                <h3 class="box-title">{name}</h3>
                                 <div class="box-tools pull-right">
                                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                                     </button>
@@ -71,18 +68,14 @@
                                 </div>
                             </div>
                             <div class="box-body chart-responsive">
-                                <div class="chart" id="bar-chart" style="height: 300px;"></div>
+                                <div class="chart bar-item" id="{id}" style="height: 300px;" ></div>
                             </div>
-                            <!-- /.box-body -->
                         </div>
-                        <!-- /.box -->
+                    </div>
+                </div>
 
-
-					</div>
+				<div id="bar-parent" >
 				</div>
-
-
-
 
 			</div>
 			
