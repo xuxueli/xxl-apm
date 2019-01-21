@@ -6,6 +6,8 @@
 	<@netCommon.commonStyle />
     <#-- datetimepicker -->
     <link rel="stylesheet" href="${request.contextPath}/static/plugins/datetimepicker/jquery.datetimepicker.min.css">
+    <#-- select2 -->
+    <link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/select2/css/select2.min.css">
 </head>
 <body class="hold-transition skin-blue sidebar-mini <#if cookieMap?exists && cookieMap["xxlapm_adminlte_settings"]?exists && "off" == cookieMap["xxlapm_adminlte_settings"].value >sidebar-collapse</#if>">
 <div class="wrapper">
@@ -29,19 +31,19 @@
                     </div>
                 </div>
 
-                <div class="col-xs-3">
+                <div class="col-xs-4">
                     <div class="input-group">
                         <span class="input-group-addon">AppName</span>
-                        <input type="text" class="form-control" id="appname" autocomplete="on" placeholder="请输入应用 AppName" >
+                        <input type="text" class="form-control" id="appname" autocomplete="on" placeholder="请输入应用 AppName" value="${appname}" maxlength="100" >
                     </div>
                 </div>
 
                 <div class="col-xs-3">
                     <div class="input-group">
                         <span class="input-group-addon">机器</span>
-                        <select class="form-control" id="ip" >
-                            <option value="">全部</option>
-                            <option value="127.0.0.1">127.0.0.1(local.machaing)</option>
+                        <select class="form-control select2-" style2="width: 100%;" id="ip" >
+                            <option value="" >全部</option>
+                            <option value="127.0.0.1" <#if ip?exists && ip=="127.0.0.1">selected="selected"</#if> >127.0.0.1(local.machaing)</option>
                         </select>
                     </div>
                 </div>
@@ -97,6 +99,8 @@
 <script src="${request.contextPath}/static/plugins/echarts/echarts.common.min.js"></script>
 <#-- datetimepicker -->
 <script src="${request.contextPath}/static/plugins/datetimepicker/jquery.datetimepicker.full.min.js"></script>
+<#-- select2 -->
+<script src="${request.contextPath}/static/adminlte/bower_components/select2/js/select2.min.js"></script>
 
 <script src="${request.contextPath}/static/js/heartbeat.index.js"></script>
 
