@@ -103,14 +103,34 @@ $(function() {
     }
 
 
-    // test
-    var arr = [];
+    // init chat
+    if (heartbeatList) {
+
+        var xData = [];
+        var heap_all_used_space = [];
+        var heap_all_max_space = [];
+
+        for (var index in heartbeatList) {
+            var heartbeat = heartbeatList[index];
+
+            console.log(heartbeat);
+
+            xData[index] = heartbeat.addtime
+            heap_all_used_space[index] = heartbeat.heap_all.used_space;
+            heap_all_max_space[index] = heartbeat.heap_all.max_space;
+        }
+
+        makeBar('heap_all used_space', xData, heap_all_used_space);
+        makeBar('heap_all max_space', xData, heap_all_max_space);
+    }
+
+    /*var arr = [];
     var arr2 = [];
     for (var i = 0; i < 60; i++) {
         arr[i] = i;
         arr2[i] = Math.floor((Math.random()*100)+1);
     }
     makeBar('FullGc Count', arr, arr2);
-    makeBar('FullGc Count2', arr, arr2);
+    makeBar('FullGc Count2', arr, arr2);*/
 
 });

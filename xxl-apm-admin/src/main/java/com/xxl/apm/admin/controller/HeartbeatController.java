@@ -60,6 +60,12 @@ public class HeartbeatController {
             List<XxlApmHeartbeat> heartbeatList_filter_ip = new ArrayList<>();
             for (XxlApmHeartbeat item: heartbeatList) {
                 if (item.getIp().equals(ip)) {
+
+                    // temp
+                    for (XxlApmHeartbeat.ThreadInfo threadInfo:item.getThread_list()) {
+                        threadInfo.setStack_info(null);
+                    };
+
                     heartbeatList_filter_ip.add(item);
                 }
             }

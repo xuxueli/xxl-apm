@@ -98,7 +98,7 @@
 <script>
     var heartbeatList;
     <#if heartbeatList?exists>
-        heartbeatList = '${heartbeatList}';
+        heartbeatList = JSON.parse('${heartbeatList}');
     </#if>
 
 </script>
