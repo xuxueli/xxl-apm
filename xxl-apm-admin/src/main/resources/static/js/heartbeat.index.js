@@ -148,15 +148,28 @@ $(function() {
         // memory, km -> mb
         setYData('heap_all', 'used_space', index, toDecimal( heartbeat.heap_all.used_space/kb_mb ) );
         setYData('heap_all', 'used_percent', index, toDecimal( heartbeat.heap_all.used_space*100/heartbeat.heap_all.max_space ) );
+
         setYData('heap_eden_space', 'used_space', index, toDecimal( heartbeat.heap_eden_space.used_space/kb_mb ) );
         setYData('heap_eden_space', 'used_percent', index, toDecimal( heartbeat.heap_eden_space.used_space*100/heartbeat.heap_eden_space.max_space ) );
+
+        setYData('heap_survivor_space', 'used_space', index, toDecimal( heartbeat.heap_survivor_space.used_space/kb_mb ) );
+        setYData('heap_survivor_space', 'used_percent', index, toDecimal( heartbeat.heap_survivor_space.used_space*100/heartbeat.heap_survivor_space.max_space ) );
+
+        setYData('heap_old_gen', 'used_space', index, toDecimal( heartbeat.heap_old_gen.used_space/kb_mb ) );
+        setYData('heap_old_gen', 'used_percent', index, toDecimal( heartbeat.heap_old_gen.used_space*100/heartbeat.heap_old_gen.max_space ) );
     }
 
+    // make bar
     makeBar('heap_all(used_space)', xData, yData.heap_all.used_space, "MB");
     makeBar('heap_all(used_percent)', xData, yData.heap_all.used_percent, "%");
 
     makeBar('heap_eden_space(used_space)', xData, yData.heap_eden_space.used_space, "MB");
     makeBar('heap_eden_space(used_percent)', xData, yData.heap_eden_space.used_percent, "%");
 
+    makeBar('heap_survivor_space(used_space)', xData, yData.heap_survivor_space.used_space, "MB");
+    makeBar('heap_survivor_space(used_percent)', xData, yData.heap_survivor_space.used_percent, "%");
+
+    makeBar('heap_old_gen(used_space)', xData, yData.heap_old_gen.used_space, "MB");
+    makeBar('heap_old_gen(used_percent)', xData, yData.heap_old_gen.used_percent, "%");
 
 });
