@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import java.util.*;
 
+/**
+ * @author xuxueli 2019-01-28
+ */
 @Controller
 @RequestMapping("/heartbeat")
 public class HeartbeatController {
