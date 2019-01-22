@@ -181,6 +181,8 @@ public class XxlApmFactory {
                                     messageList.addAll(otherMessageList);
                                 }
 
+                                // todo, async send, each second
+
                                 // msg too small, just wait 1s, avoid report too quick
                                 if (otherMessageList.size() < 100) {
                                     TimeUnit.SECONDS.sleep(1);
