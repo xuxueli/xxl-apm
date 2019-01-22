@@ -56,8 +56,7 @@
 	            	<button class="btn btn-block btn-info" id="searchBtn">GO</button>
 	            </div>
           	</div>
-            <br>
-	    	
+
 			<div class="row">
 
                 <div id="bar-sample" style="display: none;" >

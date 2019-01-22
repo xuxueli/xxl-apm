@@ -117,6 +117,12 @@ $(function() {
         barChart.setOption(barOption);
     }
 
+    // tips
+    function appendTips(title) {
+        var tipsTmp = '<section class="content-header"><h1>{title}<small></small></h1></section>'.replace('{title}', title)
+        $('#bar-parent').append(tipsTmp);
+    }
+
     // 四舍五入，两位小数
     function toDecimal(x) {
         var f = parseFloat(x);
@@ -164,9 +170,18 @@ $(function() {
         setYData('non_heap_perm_gen', 'used_percent', index, toDecimal( heartbeat.non_heap_perm_gen.used_space*100/heartbeat.non_heap_perm_gen.max_space ) );
         setYData('non_heap_metaspace', 'used_space', index, toDecimal( heartbeat.non_heap_metaspace.used_space/kb_mb ) );
         setYData('non_heap_metaspace', 'used_percent', index, toDecimal( heartbeat.non_heap_metaspace.used_space*100/heartbeat.non_heap_metaspace.max_space ) );
+
+        // gc, km -> mb
+        setYData('young_gc', 'count', index, heartbeat.young_gc.count );
+        setYData('young_gc', 'time', index, heartbeat.young_gc.time );
+        setYData('full_gc', 'count', index, heartbeat.full_gc.count );
+        setYData('full_gc', 'time', index, heartbeat.full_gc.time );
+        setYData('unknown_gc', 'count', index, heartbeat.unknown_gc.count );
+        setYData('unknown_gc', 'time', index, heartbeat.unknown_gc.time );
     }
 
-    // make bar
+    // memory bar
+    appendTips("Memory Info");
     makeBar('heap_all', 'used_space', xData, yData.heap_all.used_space, "MB");
     makeBar('heap_all', 'used_percent', xData, yData.heap_all.used_percent, "%");
     makeBar('heap_eden_space', 'used_space', xData, yData.heap_eden_space.used_space, "MB");
@@ -184,5 +199,14 @@ $(function() {
     makeBar('non_heap_perm_gen', 'used_percent', xData, yData.non_heap_perm_gen.used_percent, "%");
     makeBar('non_heap_metaspace', 'used_space', xData, yData.non_heap_metaspace.used_space, "MB");
     makeBar('non_heap_metaspace', 'used_percent', xData, yData.non_heap_metaspace.used_percent, "%");
+
+    // gc bar
+    appendTips("Gc Info");
+    makeBar('young_gc', 'count', xData, yData.young_gc.count, "");
+    makeBar('young_gc', 'time', xData, yData.young_gc.time, "ms");
+    makeBar('full_gc', 'count', xData, yData.full_gc.count, "");
+    makeBar('full_gc', 'time', xData, yData.full_gc.time, "ms");
+    makeBar('unknown_gc', 'count', xData, yData.unknown_gc.count, "");
+    makeBar('unknown_gc', 'time', xData, yData.unknown_gc.time, "ms");
 
 });
