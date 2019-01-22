@@ -64,12 +64,7 @@ $(function() {
 
     // valid heartbeat data
     if (!heartbeatList) {
-        layer.open({
-            title: '系统提示' ,
-            btn: [ '确定' ],
-            content: '暂无数据',
-            icon: '0'
-        });
+        appendTips("暂无数据");
         return;
     }
 
