@@ -40,7 +40,7 @@ public class HeartbeatController {
 
         if (appname!=null && appname.trim().length()>0) {
             long addtime_from = querytime_date.getTime();
-            long addtime_to = addtime_from + 60*60*1000;
+            long addtime_to = addtime_from + 59*60*1000;
             List<XxlApmHeartbeatReport> heartbeatReportList = xxlApmHeartbeatReportDao.find(appname, addtime_from, addtime_to, ip);
             if (heartbeatReportList!=null && heartbeatReportList.size()>0) {
                 for (XxlApmHeartbeatReport heartbeatReport: heartbeatReportList) {
@@ -69,8 +69,9 @@ public class HeartbeatController {
                     heartbeatList_filter_ip.add(item);
                 }
             }
+            model.addAttribute("ipInfo", ipInfo);
             if (heartbeatList_filter_ip.size() > 0) {
-                model.addAttribute("heartbeatList", JacksonUtil.writeValueAsString(heartbeatList));
+                model.addAttribute("heartbeatList", JacksonUtil.writeValueAsString(heartbeatList_filter_ip));
             }
         }
 

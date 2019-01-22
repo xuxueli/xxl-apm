@@ -60,11 +60,21 @@ $(function() {
         window.location.href = redirct_url;
     });
 
+    // valid heartbeat data
+    if (!heartbeatList) {
+        layer.open({
+            title: '系统提示' ,
+            btn: [ '确定' ],
+            content: '暂无数据',
+            icon: '0'
+        });
+        return;
+    }
 
-    // chart
+    // heartbeat chart tool
     var baaSample = $('#bar-sample').html();
     var barNo = 1;
-    function makeBar(name, xData, yData){
+    function makeBar(name, xData, yData, yDataUnit){
 
         var barItemId = 'bar-item-'+(barNo++);
         var fullgcBar = baaSample.replace('{name}', name).replace('{id}', barItemId)
@@ -92,7 +102,7 @@ $(function() {
                 type: 'value'
             },
             series: [{
-                name:'count',
+                name: yDataUnit,
                 data: yData,
                 type: 'bar'
             }]
@@ -102,35 +112,35 @@ $(function() {
         barChart.setOption(barOption);
     }
 
-
-    // init chat
-    if (heartbeatList) {
-
-        var xData = [];
-        var heap_all_used_space = [];
-        var heap_all_max_space = [];
-
-        for (var index in heartbeatList) {
-            var heartbeat = heartbeatList[index];
-
-            console.log(heartbeat);
-
-            xData[index] = heartbeat.addtime
-            heap_all_used_space[index] = heartbeat.heap_all.used_space;
-            heap_all_max_space[index] = heartbeat.heap_all.max_space;
-        }
-
-        makeBar('heap_all used_space', xData, heap_all_used_space);
-        makeBar('heap_all max_space', xData, heap_all_max_space);
+    // 四舍五入，两位小数
+    function toDecimal(x) {
+        var f = parseFloat(x);
+        f = Math.round(x*100)/100;
+        return f;
     }
 
-    /*var arr = [];
-    var arr2 = [];
-    for (var i = 0; i < 60; i++) {
-        arr[i] = i;
-        arr2[i] = Math.floor((Math.random()*100)+1);
+    // heartbeat chat
+    var xData = [];
+    var heap_all_used_space = [];
+    var heap_all_max_space = [];
+
+    for (var index in heartbeatList) {
+        var heartbeat = heartbeatList[index];
+
+        // x-data, ms -> min
+        xData[index] = (heartbeat.addtime/(1000*60))%60;
+
+        // memory, km -> mb
+        var kb_mb = 1024;
+        heap_all_used_space[index] = toDecimal( heartbeat.heap_all.used_space/kb_mb );
+        heap_all_max_space[index] = toDecimal( heartbeat.heap_all.max_space/kb_mb );
     }
-    makeBar('FullGc Count', arr, arr2);
-    makeBar('FullGc Count2', arr, arr2);*/
+
+    makeBar('heap_all used_space', xData, heap_all_used_space, "MB");
+    makeBar('heap_all max_space', xData, heap_all_max_space, "MB");
+
+
+
+
 
 });

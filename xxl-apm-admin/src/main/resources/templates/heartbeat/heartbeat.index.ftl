@@ -43,7 +43,11 @@
                         <span class="input-group-addon">机器</span>
                         <select class="form-control select2" style2="width: 100%;" id="ip" >
                             <option value="" >未选择</option>
-                            <option value="172.23.20.197" <#if ip?exists && ip=="127.0.0.1">selected="selected"</#if> >172.23.20.197(local.machaing)</option>
+                            <#if list?exists>
+                                <#list ipInfo?keys as key>
+                                    <option value="${key}" <#if ip?exists && ip==key>selected="selected"</#if> >${ipInfo[key]}</option>
+                                </#list>
+                            </#if>
                         </select>
                     </div>
                 </div>

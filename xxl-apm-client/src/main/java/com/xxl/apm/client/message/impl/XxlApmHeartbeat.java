@@ -20,7 +20,7 @@ import java.util.List;
 public class XxlApmHeartbeat extends XxlApmMsg {
 
 
-    // heap, in Mb units, max for used percent
+    // heap, in KB units, max for used percent
     private MemoryInfo heap_all = new MemoryInfo();
     private MemoryInfo heap_eden_space = new MemoryInfo();
     private MemoryInfo heap_survivor_space = new MemoryInfo();
