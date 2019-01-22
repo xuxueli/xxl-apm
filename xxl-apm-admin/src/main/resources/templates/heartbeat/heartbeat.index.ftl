@@ -38,7 +38,7 @@
                     </div>
                 </div>
 
-                <div class="col-xs-3">
+                <div class="col-xs-4">
                     <div class="input-group">
                         <span class="input-group-addon">机器</span>
                         <select class="form-control select2" style2="width: 100%;" id="ip" >
@@ -52,7 +52,7 @@
                     </div>
                 </div>
 
-	            <div class="col-xs-2">
+	            <div class="col-xs-1">
 	            	<button class="btn btn-block btn-info" id="searchBtn">GO</button>
 	            </div>
           	</div>
