@@ -264,7 +264,7 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         this.class_info.setLoaded_count(ManagementFactory.getClassLoadingMXBean().getLoadedClassCount());
         this.class_info.setUnload_count(ManagementFactory.getClassLoadingMXBean().getUnloadedClassCount());
 
-        // system
+        // system, in kb、ms
         int ms_nanoseconds = 1000000;
         this.system_info.setOs_name(System.getProperty("os.name"));
         this.system_info.setOs_arch(System.getProperty("os.arch"));

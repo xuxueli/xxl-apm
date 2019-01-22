@@ -76,7 +76,7 @@ $(function() {
     // heartbeat chart tool
     var baaSample = $('#bar-sample').html();
     var barNo = 1;
-    function makeBar(name, subName, xData, yData, yDataUnit){
+    function makeBar(name, xData, yData, yDataUnit){
 
         var barItemId = 'bar-item-'+(barNo++);
         var fullgcBar = baaSample.replace('{id}', barItemId)
@@ -85,8 +85,7 @@ $(function() {
 
         var barOption = {
             title: {
-                text: name,
-                subtext: yDataUnit? ( subName + ' /'+ yDataUnit ) : subName
+                text: name
             },
             toolbox: {
                 show : true,
@@ -102,14 +101,14 @@ $(function() {
             },
             xAxis: {
                 name: 'Min',
-                data: xData,
-                type: 'category'
+                type: 'category',
+                data: xData
             },
             yAxis: {
+                name: yDataUnit,
                 type: 'value'
             },
             series: [{
-                name: subName,
                 data: yData,
                 type: 'bar'
             }]
@@ -225,51 +224,57 @@ $(function() {
         setYData('class_info', 'loaded_count', index, heartbeat.class_info.loaded_count );
         setYData('class_info', 'unload_count', index, heartbeat.class_info.unload_count );
 
+        // system
+        setYData('system_info', 'committed_virtual_memory', index, toDecimal( heartbeat.system_info.committed_virtual_memory/kb_mb ) );
+
     }
 
     // memory bar
     appendTips("Memory Info");
-    makeBar('heap_all', 'used_space', xData, yData.heap_all.used_space, "MB");
-    makeBar('heap_all', 'used_percent', xData, yData.heap_all.used_percent, "%");
-    makeBar('heap_eden_space', 'used_space', xData, yData.heap_eden_space.used_space, "MB");
-    makeBar('heap_eden_space', 'used_percent', xData, yData.heap_eden_space.used_percent, "%");
-    makeBar('heap_survivor_space', 'used_space', xData, yData.heap_survivor_space.used_space, "MB");
-    makeBar('heap_survivor_space', 'used_percent', xData, yData.heap_survivor_space.used_percent, "%");
-    makeBar('heap_old_gen', 'used_space', xData, yData.heap_old_gen.used_space, "MB");
-    makeBar('heap_old_gen', 'used_percent', xData, yData.heap_old_gen.used_percent, "%");
+    makeBar('heap_all | used_space', xData, yData.heap_all.used_space, "MB");
+    makeBar('heap_all | used_percent', xData, yData.heap_all.used_percent, "%");
+    makeBar('heap_eden_space | used_space', xData, yData.heap_eden_space.used_space, "MB");
+    makeBar('heap_eden_space | used_percent', xData, yData.heap_eden_space.used_percent, "%");
+    makeBar('heap_survivor_space | used_space', xData, yData.heap_survivor_space.used_space, "MB");
+    makeBar('heap_survivor_space | used_percent', xData, yData.heap_survivor_space.used_percent, "%");
+    makeBar('heap_old_gen | used_space', xData, yData.heap_old_gen.used_space, "MB");
+    makeBar('heap_old_gen | used_percent', xData, yData.heap_old_gen.used_percent, "%");
 
-    makeBar('non_heap_all', 'used_space', xData, yData.non_heap_all.used_space, "MB");
-    makeBar('non_heap_all', 'used_percent', xData, yData.non_heap_all.used_percent, "%");
-    makeBar('non_heap_code_cache', 'used_space', xData, yData.non_heap_code_cache.used_space, "MB");
-    makeBar('non_heap_code_cache', 'used_percent', xData, yData.non_heap_code_cache.used_percent, "%");
-    makeBar('non_heap_perm_gen', 'used_space', xData, yData.non_heap_perm_gen.used_space, "MB");
-    makeBar('non_heap_perm_gen', 'used_percent', xData, yData.non_heap_perm_gen.used_percent, "%");
-    makeBar('non_heap_metaspace', 'used_space', xData, yData.non_heap_metaspace.used_space, "MB");
-    makeBar('non_heap_metaspace', 'used_percent', xData, yData.non_heap_metaspace.used_percent, "%");
+    makeBar('non_heap_all | used_space', xData, yData.non_heap_all.used_space, "MB");
+    makeBar('non_heap_all | used_percent', xData, yData.non_heap_all.used_percent, "%");
+    makeBar('non_heap_code_cache | used_space', xData, yData.non_heap_code_cache.used_space, "MB");
+    makeBar('non_heap_code_cache | used_percent', xData, yData.non_heap_code_cache.used_percent, "%");
+    makeBar('non_heap_perm_gen | used_space', xData, yData.non_heap_perm_gen.used_space, "MB");
+    makeBar('non_heap_perm_gen | used_percent', xData, yData.non_heap_perm_gen.used_percent, "%");
+    makeBar('non_heap_metaspace | used_space', xData, yData.non_heap_metaspace.used_space, "MB");
+    makeBar('non_heap_metaspace | used_percent', xData, yData.non_heap_metaspace.used_percent, "%");
 
     // gc bar
     appendTips("Gc Info");
-    makeBar('young_gc', 'count', xData, yData.young_gc.count, "");
-    makeBar('young_gc', 'time', xData, yData.young_gc.time, "ms");
-    makeBar('full_gc', 'count', xData, yData.full_gc.count, "");
-    makeBar('full_gc', 'time', xData, yData.full_gc.time, "ms");
-    makeBar('unknown_gc', 'count', xData, yData.unknown_gc.count, "");
-    makeBar('unknown_gc', 'time', xData, yData.unknown_gc.time, "ms");
+    makeBar('young_gc | count', xData, yData.young_gc.count, "count");
+    makeBar('young_gc | time', xData, yData.young_gc.time, "ms");
+    makeBar('full_gc | count', xData, yData.full_gc.count, "count");
+    makeBar('full_gc | time', xData, yData.full_gc.time, "ms");
+    makeBar('unknown_gc | count', xData, yData.unknown_gc.count, "count");
+    makeBar('unknown_gc | time', xData, yData.unknown_gc.time, "ms");
 
     // thread bar
     appendTips("Thread Info");
-    makeBar('thread_all', 'count', xData, yData.thread_all.count, "");
-    makeBar('thread_new', 'count', xData, yData.thread_new.count, "");
-    makeBar('thread_runnable', 'count', xData, yData.thread_runnable.count, "");
-    makeBar('thread_blocked', 'count', xData, yData.thread_blocked.count, "");
-    makeBar('thread_waiting', 'count', xData, yData.thread_waiting.count, "");
-    makeBar('thread_timed_waiting', 'count', xData, yData.thread_timed_waiting.count, "");
-    makeBar('thread_terminated', 'count', xData, yData.thread_terminated.count, "");
+    makeBar('thread_all | count', xData, yData.thread_all.count, "count");
+    makeBar('thread_new | count', xData, yData.thread_new.count, "count");
+    makeBar('thread_runnable | count', xData, yData.thread_runnable.count, "count");
+    makeBar('thread_blocked | count', xData, yData.thread_blocked.count, "count");
+    makeBar('thread_waiting | count', xData, yData.thread_waiting.count, "count");
+    makeBar('thread_timed_waiting | count', xData, yData.thread_timed_waiting.count, "count");
+    makeBar('thread_terminated | count', xData, yData.thread_terminated.count, "count");
 
     // class bar
     appendTips("Class Info");
-    makeBar('class_info_loaded', 'count', xData, yData.class_info.loaded_count, "");
-    makeBar('class_info_unload', 'count', xData, yData.class_info.unload_count, "");
+    makeBar('class_loaded | count', xData, yData.class_info.loaded_count, "count");
+    makeBar('class_unload | count', xData, yData.class_info.unload_count, "count");
 
+    // system bar
+    appendTips("System Info");
+    makeBar('committed_virtual_memory', xData, yData.system_info.committed_virtual_memory, "MB");
 
 });
