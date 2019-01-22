@@ -74,7 +74,7 @@ $(function() {
     // heartbeat chart tool
     var baaSample = $('#bar-sample').html();
     var barNo = 1;
-    function makeBar(name, xData, yData, yDataUnit){
+    function makeBar(name, subName, xData, yData, yDataUnit){
 
         var barItemId = 'bar-item-'+(barNo++);
         var fullgcBar = baaSample.replace('{id}', barItemId)
@@ -83,7 +83,8 @@ $(function() {
 
         var barOption = {
             title: {
-                text: name
+                text: name,
+                subtext: subName + ' /'+ yDataUnit
             },
             toolbox: {
                 show : true,
@@ -106,7 +107,7 @@ $(function() {
                 type: 'value'
             },
             series: [{
-                name: yDataUnit,
+                name: subName,
                 data: yData,
                 type: 'bar'
             }]
@@ -148,28 +149,40 @@ $(function() {
         // memory, km -> mb
         setYData('heap_all', 'used_space', index, toDecimal( heartbeat.heap_all.used_space/kb_mb ) );
         setYData('heap_all', 'used_percent', index, toDecimal( heartbeat.heap_all.used_space*100/heartbeat.heap_all.max_space ) );
-
         setYData('heap_eden_space', 'used_space', index, toDecimal( heartbeat.heap_eden_space.used_space/kb_mb ) );
         setYData('heap_eden_space', 'used_percent', index, toDecimal( heartbeat.heap_eden_space.used_space*100/heartbeat.heap_eden_space.max_space ) );
-
         setYData('heap_survivor_space', 'used_space', index, toDecimal( heartbeat.heap_survivor_space.used_space/kb_mb ) );
         setYData('heap_survivor_space', 'used_percent', index, toDecimal( heartbeat.heap_survivor_space.used_space*100/heartbeat.heap_survivor_space.max_space ) );
-
         setYData('heap_old_gen', 'used_space', index, toDecimal( heartbeat.heap_old_gen.used_space/kb_mb ) );
         setYData('heap_old_gen', 'used_percent', index, toDecimal( heartbeat.heap_old_gen.used_space*100/heartbeat.heap_old_gen.max_space ) );
+
+        setYData('non_heap_all', 'used_space', index, toDecimal( heartbeat.non_heap_all.used_space/kb_mb ) );
+        setYData('non_heap_all', 'used_percent', index, toDecimal( heartbeat.non_heap_all.used_space*100/heartbeat.non_heap_all.max_space ) );
+        setYData('non_heap_code_cache', 'used_space', index, toDecimal( heartbeat.non_heap_code_cache.used_space/kb_mb ) );
+        setYData('non_heap_code_cache', 'used_percent', index, toDecimal( heartbeat.non_heap_code_cache.used_space*100/heartbeat.non_heap_code_cache.max_space ) );
+        setYData('non_heap_perm_gen', 'used_space', index, toDecimal( heartbeat.non_heap_perm_gen.used_space/kb_mb ) );
+        setYData('non_heap_perm_gen', 'used_percent', index, toDecimal( heartbeat.non_heap_perm_gen.used_space*100/heartbeat.non_heap_perm_gen.max_space ) );
+        setYData('non_heap_metaspace', 'used_space', index, toDecimal( heartbeat.non_heap_metaspace.used_space/kb_mb ) );
+        setYData('non_heap_metaspace', 'used_percent', index, toDecimal( heartbeat.non_heap_metaspace.used_space*100/heartbeat.non_heap_metaspace.max_space ) );
     }
 
     // make bar
-    makeBar('heap_all(used_space)', xData, yData.heap_all.used_space, "MB");
-    makeBar('heap_all(used_percent)', xData, yData.heap_all.used_percent, "%");
+    makeBar('heap_all', 'used_space', xData, yData.heap_all.used_space, "MB");
+    makeBar('heap_all', 'used_percent', xData, yData.heap_all.used_percent, "%");
+    makeBar('heap_eden_space', 'used_space', xData, yData.heap_eden_space.used_space, "MB");
+    makeBar('heap_eden_space', 'used_percent', xData, yData.heap_eden_space.used_percent, "%");
+    makeBar('heap_survivor_space', 'used_space', xData, yData.heap_survivor_space.used_space, "MB");
+    makeBar('heap_survivor_space', 'used_percent', xData, yData.heap_survivor_space.used_percent, "%");
+    makeBar('heap_old_gen', 'used_space', xData, yData.heap_old_gen.used_space, "MB");
+    makeBar('heap_old_gen', 'used_percent', xData, yData.heap_old_gen.used_percent, "%");
 
-    makeBar('heap_eden_space(used_space)', xData, yData.heap_eden_space.used_space, "MB");
-    makeBar('heap_eden_space(used_percent)', xData, yData.heap_eden_space.used_percent, "%");
-
-    makeBar('heap_survivor_space(used_space)', xData, yData.heap_survivor_space.used_space, "MB");
-    makeBar('heap_survivor_space(used_percent)', xData, yData.heap_survivor_space.used_percent, "%");
-
-    makeBar('heap_old_gen(used_space)', xData, yData.heap_old_gen.used_space, "MB");
-    makeBar('heap_old_gen(used_percent)', xData, yData.heap_old_gen.used_percent, "%");
+    makeBar('non_heap_all', 'used_space', xData, yData.non_heap_all.used_space, "MB");
+    makeBar('non_heap_all', 'used_percent', xData, yData.non_heap_all.used_percent, "%");
+    makeBar('non_heap_code_cache', 'used_space', xData, yData.non_heap_code_cache.used_space, "MB");
+    makeBar('non_heap_code_cache', 'used_percent', xData, yData.non_heap_code_cache.used_percent, "%");
+    makeBar('non_heap_perm_gen', 'used_space', xData, yData.non_heap_perm_gen.used_space, "MB");
+    makeBar('non_heap_perm_gen', 'used_percent', xData, yData.non_heap_perm_gen.used_percent, "%");
+    makeBar('non_heap_metaspace', 'used_space', xData, yData.non_heap_metaspace.used_space, "MB");
+    makeBar('non_heap_metaspace', 'used_percent', xData, yData.non_heap_metaspace.used_percent, "%");
 
 });
