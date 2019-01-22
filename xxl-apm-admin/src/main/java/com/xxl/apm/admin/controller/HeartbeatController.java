@@ -61,7 +61,7 @@ public class HeartbeatController {
             for (XxlApmHeartbeat item: heartbeatList) {
                 if (item.getIp().equals(ip)) {
 
-                    // temp
+                    // hide thread stack
                     for (XxlApmHeartbeat.ThreadInfo threadInfo:item.getThread_list()) {
                         threadInfo.setStack_info(null);
                     };

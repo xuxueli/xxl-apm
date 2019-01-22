@@ -77,11 +77,14 @@ $(function() {
     function makeBar(name, xData, yData, yDataUnit){
 
         var barItemId = 'bar-item-'+(barNo++);
-        var fullgcBar = baaSample.replace('{name}', name).replace('{id}', barItemId)
+        var fullgcBar = baaSample.replace('{id}', barItemId)
 
         $('#bar-parent').append(fullgcBar);
 
         var barOption = {
+            title: {
+                text: name
+            },
             toolbox: {
                 show : true,
                 feature : {
@@ -95,8 +98,9 @@ $(function() {
                 trigger: 'axis'
             },
             xAxis: {
-                type: 'category',
+                name: 'Min',
                 data: xData,
+                type: 'category'
             },
             yAxis: {
                 type: 'value'
@@ -121,8 +125,19 @@ $(function() {
 
     // heartbeat chat
     var xData = [];
-    var heap_all_used_space = [];
-    var heap_all_max_space = [];
+    var yData = {};
+
+    var kb_mb = 1024;
+    function setYData(level_1_obj, level_2_arr, index, indexData){
+        if (!yData[level_1_obj]){
+            yData[level_1_obj] = {};
+        }
+        if (!yData[level_1_obj+''][level_2_arr+'']) {
+            yData[level_1_obj+''][level_2_arr+''] = [];
+        }
+
+        yData[level_1_obj+''][level_2_arr+''][index] = indexData;
+    }
 
     for (var index in heartbeatList) {
         var heartbeat = heartbeatList[index];
@@ -131,16 +146,17 @@ $(function() {
         xData[index] = (heartbeat.addtime/(1000*60))%60;
 
         // memory, km -> mb
-        var kb_mb = 1024;
-        heap_all_used_space[index] = toDecimal( heartbeat.heap_all.used_space/kb_mb );
-        heap_all_max_space[index] = toDecimal( heartbeat.heap_all.max_space/kb_mb );
+        setYData('heap_all', 'used_space', index, toDecimal( heartbeat.heap_all.used_space/kb_mb ) );
+        setYData('heap_all', 'used_percent', index, toDecimal( heartbeat.heap_all.used_space*100/heartbeat.heap_all.max_space ) );
+        setYData('heap_eden_space', 'used_space', index, toDecimal( heartbeat.heap_eden_space.used_space/kb_mb ) );
+        setYData('heap_eden_space', 'used_percent', index, toDecimal( heartbeat.heap_eden_space.used_space*100/heartbeat.heap_eden_space.max_space ) );
     }
 
-    makeBar('heap_all used_space', xData, heap_all_used_space, "MB");
-    makeBar('heap_all max_space', xData, heap_all_max_space, "MB");
+    makeBar('heap_all(used_space)', xData, yData.heap_all.used_space, "MB");
+    makeBar('heap_all(used_percent)', xData, yData.heap_all.used_percent, "%");
 
-
-
+    makeBar('heap_eden_space(used_space)', xData, yData.heap_eden_space.used_space, "MB");
+    makeBar('heap_eden_space(used_percent)', xData, yData.heap_eden_space.used_percent, "%");
 
 
 });
