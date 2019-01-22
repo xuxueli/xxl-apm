@@ -19,6 +19,10 @@ import java.util.List;
  */
 public class XxlApmHeartbeat extends XxlApmMsg {
 
+    // gc
+    private GcInfo young_gc = new GcInfo();
+    private GcInfo full_gc = new GcInfo();
+    private GcInfo unknown_gc = new GcInfo();
 
     // heap, in KB units, max for used percent
     private MemoryInfo heap_all = new MemoryInfo();
@@ -31,11 +35,6 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     private MemoryInfo non_heap_code_cache = new MemoryInfo();
     private MemoryInfo non_heap_perm_gen = new MemoryInfo();
     private MemoryInfo non_heap_metaspace = new MemoryInfo();
-
-    // gc
-    private GcInfo young_gc = new GcInfo();
-    private GcInfo full_gc = new GcInfo();
-    private GcInfo unknown_gc = new GcInfo();
 
     // thread
     private List<ThreadInfo> thread_list = new ArrayList<ThreadInfo>();
@@ -431,24 +430,26 @@ public class XxlApmHeartbeat extends XxlApmMsg {
         private String java_home;
         private String java_version;
 
-        // virtual memory
-        private long committed_virtual_memory;
+
         // swap size
         private long total_swap_space;
         private long free_swap_space;
         // physical memory, in km
         private long total_physical_memory;
         private long free_physical_memory;
+        // virtual memory
+        private long committed_virtual_memory;
 
         // cpu
-        private long process_cpu_time;      // in ms
         private double system_cpu_load;
         private double process_cpu_load;
 
+        private long process_cpu_time;      // in ms
         private int cpu_count;
-        private double cpu_load_average_1min;
+
         private double cpu_system_load_percent;
         private double cpu_jvm_load_percent;
+        private double cpu_load_average_1min;
 
 
         public String getOs_name() {

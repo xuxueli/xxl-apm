@@ -153,6 +153,14 @@ $(function() {
         // x-data, ms -> min
         xData[index] = (heartbeat.addtime/(1000*60))%60;
 
+        // gc, km -> mb
+        setYData('young_gc', 'count', index, heartbeat.young_gc.count );
+        setYData('young_gc', 'time', index, heartbeat.young_gc.time );
+        setYData('full_gc', 'count', index, heartbeat.full_gc.count );
+        setYData('full_gc', 'time', index, heartbeat.full_gc.time );
+        setYData('unknown_gc', 'count', index, heartbeat.unknown_gc.count );
+        setYData('unknown_gc', 'time', index, heartbeat.unknown_gc.time );
+
         // memory, km -> mb
         setYData('heap_all', 'used_space', index, toDecimal( heartbeat.heap_all.used_space/kb_mb ) );
         setYData('heap_all', 'used_percent', index, toDecimal( heartbeat.heap_all.used_space*100/heartbeat.heap_all.max_space ) );
@@ -171,14 +179,6 @@ $(function() {
         setYData('non_heap_perm_gen', 'used_percent', index, toDecimal( heartbeat.non_heap_perm_gen.used_space*100/heartbeat.non_heap_perm_gen.max_space ) );
         setYData('non_heap_metaspace', 'used_space', index, toDecimal( heartbeat.non_heap_metaspace.used_space/kb_mb ) );
         setYData('non_heap_metaspace', 'used_percent', index, toDecimal( heartbeat.non_heap_metaspace.used_space*100/heartbeat.non_heap_metaspace.max_space ) );
-
-        // gc, km -> mb
-        setYData('young_gc', 'count', index, heartbeat.young_gc.count );
-        setYData('young_gc', 'time', index, heartbeat.young_gc.time );
-        setYData('full_gc', 'count', index, heartbeat.full_gc.count );
-        setYData('full_gc', 'time', index, heartbeat.full_gc.time );
-        setYData('unknown_gc', 'count', index, heartbeat.unknown_gc.count );
-        setYData('unknown_gc', 'time', index, heartbeat.unknown_gc.time );
 
         // thread
         var t_count_ALL = 0;
@@ -226,8 +226,30 @@ $(function() {
 
         // system
         setYData('system_info', 'committed_virtual_memory', index, toDecimal( heartbeat.system_info.committed_virtual_memory/kb_mb ) );
+        setYData('system_info', 'total_swap_space', index, toDecimal( heartbeat.system_info.total_swap_space/kb_mb ) );
+        setYData('system_info', 'free_swap_space', index, toDecimal( heartbeat.system_info.free_swap_space/kb_mb ) );
+        setYData('system_info', 'total_physical_memory', index, toDecimal( heartbeat.system_info.total_physical_memory/kb_mb ) );
+        setYData('system_info', 'free_physical_memory', index, toDecimal( heartbeat.system_info.free_physical_memory/kb_mb ) );
+
+        setYData('system_info', 'process_cpu_time', index, heartbeat.system_info.process_cpu_time );
+        setYData('system_info', 'system_cpu_load', index, heartbeat.system_info.system_cpu_load );
+        setYData('system_info', 'process_cpu_load', index, heartbeat.system_info.process_cpu_load );
+
+        setYData('system_info', 'cpu_count', index, heartbeat.system_info.cpu_count );
+        setYData('system_info', 'cpu_load_average_1min', index, heartbeat.system_info.cpu_load_average_1min );
+        setYData('system_info', 'cpu_system_load_percent', index, heartbeat.system_info.cpu_system_load_percent );
+        setYData('system_info', 'cpu_jvm_load_percent', index, heartbeat.system_info.cpu_jvm_load_percent );
 
     }
+
+    // gc bar
+    appendTips("Gc Info");
+    makeBar('young_gc | count', xData, yData.young_gc.count, "count");
+    makeBar('young_gc | time', xData, yData.young_gc.time, "ms");
+    makeBar('full_gc | count', xData, yData.full_gc.count, "count");
+    makeBar('full_gc | time', xData, yData.full_gc.time, "ms");
+    makeBar('unknown_gc | count', xData, yData.unknown_gc.count, "count");
+    makeBar('unknown_gc | time', xData, yData.unknown_gc.time, "ms");
 
     // memory bar
     appendTips("Memory Info");
@@ -249,15 +271,6 @@ $(function() {
     makeBar('non_heap_metaspace | used_space', xData, yData.non_heap_metaspace.used_space, "MB");
     makeBar('non_heap_metaspace | used_percent', xData, yData.non_heap_metaspace.used_percent, "%");
 
-    // gc bar
-    appendTips("Gc Info");
-    makeBar('young_gc | count', xData, yData.young_gc.count, "count");
-    makeBar('young_gc | time', xData, yData.young_gc.time, "ms");
-    makeBar('full_gc | count', xData, yData.full_gc.count, "count");
-    makeBar('full_gc | time', xData, yData.full_gc.time, "ms");
-    makeBar('unknown_gc | count', xData, yData.unknown_gc.count, "count");
-    makeBar('unknown_gc | time', xData, yData.unknown_gc.time, "ms");
-
     // thread bar
     appendTips("Thread Info");
     makeBar('thread_all | count', xData, yData.thread_all.count, "count");
@@ -274,7 +287,23 @@ $(function() {
     makeBar('class_unload | count', xData, yData.class_info.unload_count, "count");
 
     // system bar
-    appendTips("System Info");
+    appendTips("System Info | Space");
+    makeBar('total_swap_space', xData, yData.system_info.total_swap_space, "MB");
+    makeBar('free_swap_space', xData, yData.system_info.free_swap_space, "MB");
+    makeBar('total_physical_memory', xData, yData.system_info.total_physical_memory, "MB");
+    makeBar('free_physical_memory', xData, yData.system_info.free_physical_memory, "MB");
     makeBar('committed_virtual_memory', xData, yData.system_info.committed_virtual_memory, "MB");
+
+    // system bar
+    appendTips("System Info | CPU/LOAD");
+    makeBar('system_cpu_load', xData, yData.system_info.system_cpu_load, "load");
+    makeBar('process_cpu_load', xData, yData.system_info.process_cpu_load, "load");
+
+    makeBar('process_cpu_time', xData, yData.system_info.process_cpu_time, "ms");
+    makeBar('cpu_count', xData, yData.system_info.cpu_count, "count");
+
+    makeBar('cpu_system_load_percent', xData, yData.system_info.cpu_system_load_percent, "%");
+    makeBar('cpu_jvm_load_percent', xData, yData.system_info.cpu_jvm_load_percent, "%");
+    makeBar('cpu_load_average_1min', xData, yData.system_info.cpu_load_average_1min, "load");
 
 });
