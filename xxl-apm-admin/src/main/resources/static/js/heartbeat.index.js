@@ -6,7 +6,9 @@ $(function() {
     // filter
     $('#querytime').datetimepicker({
         format: 'Y-m-d H:i',
-        lang:"ch"
+        lang: 'ch',
+        step: 60,
+        maxDate: 0  // 0 means today
     });
 
     $('#searchBtn').click(function () {
@@ -84,7 +86,7 @@ $(function() {
         var barOption = {
             title: {
                 text: name,
-                subtext: subName + ' /'+ yDataUnit
+                subtext: yDataUnit? ( subName + ' /'+ yDataUnit ) : subName
             },
             toolbox: {
                 show : true,
@@ -119,7 +121,7 @@ $(function() {
 
     // tips
     function appendTips(title) {
-        var tipsTmp = '<section class="content-header"><h1>{title}<small></small></h1></section>'.replace('{title}', title)
+        var tipsTmp = '<section class="content-header col-md-12"><h1>{title}<small></small></h1></section>'.replace('{title}', title)
         $('#bar-parent').append(tipsTmp);
     }
 
@@ -178,6 +180,51 @@ $(function() {
         setYData('full_gc', 'time', index, heartbeat.full_gc.time );
         setYData('unknown_gc', 'count', index, heartbeat.unknown_gc.count );
         setYData('unknown_gc', 'time', index, heartbeat.unknown_gc.time );
+
+        // thread
+        var t_count_ALL = 0;
+        var t_count_NEW = 0;
+        var t_count_RUNNABLE = 0;
+        var t_count_BLOCKED = 0;
+        var t_count_WAITING = 0;
+        var t_count_TIMED_WAITING = 0;
+        var t_count_TERMINATED = 0;
+        for (var t_index in heartbeat.thread_list) {
+            t_count_ALL++;
+            switch (heartbeat.thread_list[t_index].status) {
+                case 'NEW':
+                    t_count_NEW++;
+                    break;
+                case 'RUNNABLE':
+                    t_count_RUNNABLE++;
+                    break;
+                case 'BLOCKED':
+                    t_count_BLOCKED++;
+                    break;
+                case 'WAITING':
+                    t_count_WAITING++;
+                    break;
+                case 'TIMED_WAITING':
+                    t_count_TIMED_WAITING++;
+                    break;
+                case 'TERMINATED':
+                    t_count_TERMINATED++;
+                    break;
+            }
+        }
+
+        setYData('thread_all', 'count', index, t_count_ALL );
+        setYData('thread_new', 'count', index, t_count_NEW );
+        setYData('thread_runnable', 'count', index, t_count_RUNNABLE );
+        setYData('thread_blocked', 'count', index, t_count_BLOCKED );
+        setYData('thread_waiting', 'count', index, t_count_WAITING );
+        setYData('thread_timed_waiting', 'count', index, t_count_TIMED_WAITING );
+        setYData('thread_terminated', 'count', index, t_count_TERMINATED );
+
+        // class
+        setYData('class_info', 'loaded_count', index, heartbeat.class_info.loaded_count );
+        setYData('class_info', 'unload_count', index, heartbeat.class_info.unload_count );
+
     }
 
     // memory bar
@@ -208,5 +255,21 @@ $(function() {
     makeBar('full_gc', 'time', xData, yData.full_gc.time, "ms");
     makeBar('unknown_gc', 'count', xData, yData.unknown_gc.count, "");
     makeBar('unknown_gc', 'time', xData, yData.unknown_gc.time, "ms");
+
+    // thread bar
+    appendTips("Thread Info");
+    makeBar('thread_all', 'count', xData, yData.thread_all.count, "");
+    makeBar('thread_new', 'count', xData, yData.thread_new.count, "");
+    makeBar('thread_runnable', 'count', xData, yData.thread_runnable.count, "");
+    makeBar('thread_blocked', 'count', xData, yData.thread_blocked.count, "");
+    makeBar('thread_waiting', 'count', xData, yData.thread_waiting.count, "");
+    makeBar('thread_timed_waiting', 'count', xData, yData.thread_timed_waiting.count, "");
+    makeBar('thread_terminated', 'count', xData, yData.thread_terminated.count, "");
+
+    // class bar
+    appendTips("Class Info");
+    makeBar('class_info_loaded', 'count', xData, yData.class_info.loaded_count, "");
+    makeBar('class_info_unload', 'count', xData, yData.class_info.unload_count, "");
+
 
 });
