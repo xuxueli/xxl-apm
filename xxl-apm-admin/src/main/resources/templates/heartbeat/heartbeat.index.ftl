@@ -3,13 +3,15 @@
 <head>
   	<#import "../common/common.macro.ftl" as netCommon>
     <title>应用性能管理平台</title>
-	<@netCommon.commonStyle />
-    <#-- datetimepicker -->
-    <link rel="stylesheet" href="${request.contextPath}/static/plugins/datetimepicker/jquery.datetimepicker.min.css">
+
     <#-- select2 -->
     <link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/select2/css/select2.min.css">
+    <@netCommon.commonStyle />
+    <#-- datetimepicker -->
+    <link rel="stylesheet" href="${request.contextPath}/static/plugins/datetimepicker/jquery.datetimepicker.min.css">
     <#-- jquery-ui -->
     <link rel="stylesheet" href="${request.contextPath}/static/plugins/jquery-ui/jquery-ui.min.css">
+
 </head>
 <body class="hold-transition skin-blue sidebar-mini <#if cookieMap?exists && cookieMap["xxlapm_adminlte_settings"]?exists && "off" == cookieMap["xxlapm_adminlte_settings"].value >sidebar-collapse</#if>">
 <div class="wrapper">
@@ -90,7 +92,7 @@
 <#-- datetimepicker -->
 <script src="${request.contextPath}/static/plugins/datetimepicker/jquery.datetimepicker.full.min.js"></script>
 <#-- select2 -->
-<script src="${request.contextPath}/static/adminlte/bower_components/select2/js/select2.min.js"></script>
+<script src="${request.contextPath}/static/adminlte/bower_components/select2/js/select2.full.min.js"></script>
 <#-- jquery-ui -->
 <script src="${request.contextPath}/static/plugins/jquery-ui/jquery-ui.min.js"></script>
 
