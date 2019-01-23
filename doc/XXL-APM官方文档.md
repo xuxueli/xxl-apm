@@ -18,14 +18,12 @@ A distributed APM(application-performance-management) platform.
         - msgId: appname-uuid
     - Transaction: type + status + time, qps/99line [done]
     - Event: type + status, qps/suc rate; [done]
-    - Metric: biz index, order/booking info, time line [done]
     - Heartbeat: app and machine info, time line chart  [done]
 - Probleam: 
     - [Trace]: by msg impl;
     - Event: threshold for 'suc rate'
     - Transaction: threshold for 'suc rate'、'99line long-rpc.service/long-rpc.client'
     - Heartbeat: gc
-    - Metric: order num zero
 - Alarm: bind with appname
     - Email: email
     - WebHook: http://.....{error_msg}...
@@ -82,10 +80,7 @@ A distributed APM(application-performance-management) platform.
          字段：Name、总数、失败次数、失败率、QPS、LogView-最近3条、占比
          整体报表：占比饼图；
          单个Name报表：属性同Type；
-3、Metric：时间折线图；标签筛选；
-     指标列表：时间-次数折线图，全量平铺；
-     指标详情：大图展示，；
-4、Heartbeat：时间折线图；
+3、Heartbeat：时间折线图；
      筛选 time：限制 hour 范围内；
      报表列表：
          时间-指标柱状图，如内存、CPU等；
@@ -106,10 +101,8 @@ A distributed APM(application-performance-management) platform.
 ---                
 大盘：分钟维度；
      报错大盘：Transaction、Event 报错，统计 name 汇总次数；
-     Metric 大盘：设置展示在大盘里；
 告警：阈值，应用负责人邮箱；
      报错报警：针对Type设置报警阈值，百分比或次数，超过告警；
-     Metric 告警：针对 Metric 设置报警阈值，百分比或次数，超过告警；
      Heartbeat 告警：针对 Heartbeat 设置报警阈值，百分比或次数，超过告警；
      
 ------

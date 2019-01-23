@@ -3,7 +3,6 @@ package com.xxl.apm.sample.controller;
 
 import com.xxl.apm.client.XxlApm;
 import com.xxl.apm.client.message.impl.XxlApmEvent;
-import com.xxl.apm.client.message.impl.XxlApmMetric;
 import com.xxl.apm.client.message.impl.XxlApmTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,15 +55,7 @@ public class IndexController {
 
 
         /**
-         *  3、Metric 消息
-         *
-         *      说明："指标" 性质的消息，记录一个指标的数量；如 "在线人数、订单量 …… " 等；
-         *      示例：可参考如下示例；
-         */
-        XxlApm.report(new XxlApmMetric("demo_random_metric"));
-
-        /**
-         *  4、Heartbeat 消息
+         *  3、Heartbeat 消息
          *
          *      说明：机器和应用JVM信息，心跳方式上报，如 "CPU、Load、磁盘、内存、GC、线程……" 等信息；
          *      示例：接入 XxlApm 之后，原生内置该功能；不需做其他操作；

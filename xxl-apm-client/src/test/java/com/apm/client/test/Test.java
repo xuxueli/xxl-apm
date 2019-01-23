@@ -4,7 +4,6 @@ import com.xxl.apm.client.XxlApm;
 import com.xxl.apm.client.factory.XxlApmFactory;
 import com.xxl.apm.client.message.impl.XxlApmEvent;
 import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
-import com.xxl.apm.client.message.impl.XxlApmMetric;
 import com.xxl.apm.client.message.impl.XxlApmTransaction;
 
 import java.util.HashMap;
@@ -42,9 +41,6 @@ public class Test {
 
         // heartbeat
         XxlApm.report(new XxlApmHeartbeat());
-
-        // metric
-        XxlApm.report(new XxlApmMetric("booking_count"));
 
 
         // stop

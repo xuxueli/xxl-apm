@@ -2,13 +2,11 @@ package com.xxl.apm.admin.service.impl;
 
 import com.xxl.apm.admin.conf.XxlApmMsgServiceImpl;
 import com.xxl.apm.admin.core.model.XxlApmHeartbeatReport;
-import com.xxl.apm.admin.core.model.XxlApmMetricReport;
 import com.xxl.apm.admin.dao.IXxlApmHeartbeatReportDao;
 import com.xxl.apm.admin.service.XxlApmStoreService;
 import com.xxl.apm.client.message.XxlApmMsg;
 import com.xxl.apm.client.message.impl.XxlApmEvent;
 import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
-import com.xxl.apm.client.message.impl.XxlApmMetric;
 import com.xxl.apm.client.message.impl.XxlApmTransaction;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +32,6 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
         // dispatch msg
         List<XxlApmEvent> eventList = null;
         List<XxlApmTransaction> transactionList = null;
-        List<XxlApmMetric> metricList = null;
         List<XxlApmHeartbeat> heartbeatList = null;
 
         for (XxlApmMsg apmMsg: messageList) {
@@ -48,11 +45,6 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
                     transactionList = new ArrayList<>();
                 }
                 transactionList.add((XxlApmTransaction) apmMsg);
-            } else if (apmMsg instanceof XxlApmMetric) {
-                if (metricList == null) {
-                    metricList = new ArrayList<>();
-                }
-                metricList.add((XxlApmMetric) apmMsg);
             } else if (apmMsg instanceof XxlApmHeartbeat) {
                 if (heartbeatList == null) {
                     heartbeatList = new ArrayList<>();
@@ -62,30 +54,18 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
         }
 
         // dispatch process
-
-        if (metricList!=null && metricList.size() > 0) {
-            List<XxlApmMetricReport> metricReportList = new ArrayList<>();
-            for (XxlApmMetric metricItem: metricList) {
-                XxlApmMetricReport metricReport = new XxlApmMetricReport();
-
-
-                metricReportList.add(metricReport);
-            }
-
-            // todo, update or add
-
-        }
-
         if (heartbeatList!=null && heartbeatList.size() > 0) {
 
             List<XxlApmHeartbeatReport> heartbeatReportList = new ArrayList<>();
             for (XxlApmHeartbeat heartbeat: heartbeatList) {
 
+                // addtime -> min
+                long addtime = (heartbeat.getAddtime()/60000)*60000;
                 byte[] heartbeat_data = XxlApmMsgServiceImpl.getSerializer().serialize(heartbeat);
 
                 XxlApmHeartbeatReport heartbeatReport = new XxlApmHeartbeatReport();
                 heartbeatReport.setAppname(heartbeat.getAppname());
-                heartbeatReport.setAddtime(heartbeat.getAddtime());
+                heartbeatReport.setAddtime(addtime);
                 heartbeatReport.setIp(heartbeat.getIp());
                 heartbeatReport.setHostname(heartbeat.getHostname());
 

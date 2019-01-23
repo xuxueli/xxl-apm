@@ -7,7 +7,6 @@ import com.xxl.apm.client.admin.XxlApmMsgService;
 import com.xxl.apm.client.message.XxlApmMsg;
 import com.xxl.apm.client.message.impl.XxlApmEvent;
 import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
-import com.xxl.apm.client.message.impl.XxlApmMetric;
 import com.xxl.apm.client.message.impl.XxlApmTransaction;
 import com.xxl.apm.client.util.FileUtil;
 import com.xxl.rpc.remoting.net.NetEnum;
@@ -235,8 +234,6 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
                                         msgType = XxlApmEvent.class;
                                     } else if (fileItem.getName().startsWith(XxlApmTransaction.class.getSimpleName())) {
                                         msgType = XxlApmTransaction.class;
-                                    } else if (fileItem.getName().startsWith(XxlApmMetric.class.getSimpleName())) {
-                                        msgType = XxlApmMetric.class;
                                     } else if (fileItem.getName().startsWith(XxlApmHeartbeat.class.getSimpleName())) {
                                         msgType = XxlApmHeartbeat.class;
                                     } else {
@@ -348,7 +345,6 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
         // dispatch msg
         List<XxlApmEvent> eventList = null;
         List<XxlApmTransaction> transactionList = null;
-        List<XxlApmMetric> metricList = null;
         List<XxlApmHeartbeat> heartbeatList = null;
 
         for (XxlApmMsg apmMsg: msgList) {
@@ -362,11 +358,6 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
                     transactionList = new ArrayList<>();
                 }
                 transactionList.add((XxlApmTransaction) apmMsg);
-            } else if (apmMsg instanceof XxlApmMetric) {
-                if (metricList == null) {
-                    metricList = new ArrayList<>();
-                }
-                metricList.add((XxlApmMetric) apmMsg);
             } else if (apmMsg instanceof XxlApmHeartbeat) {
                 if (heartbeatList == null) {
                     heartbeatList = new ArrayList<>();
@@ -387,7 +378,6 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
         // write msg-file
         writeMsgList(eventList,  XxlApmEvent.class.getSimpleName(), msgFileDir);
         writeMsgList(transactionList, XxlApmTransaction.class.getSimpleName(), msgFileDir);
-        writeMsgList(metricList, XxlApmMetric.class.getSimpleName(), msgFileDir);
         writeMsgList(heartbeatList, XxlApmHeartbeat.class.getSimpleName(), msgFileDir);
 
         return true;

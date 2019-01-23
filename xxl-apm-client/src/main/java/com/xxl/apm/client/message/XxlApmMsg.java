@@ -18,6 +18,7 @@ public abstract class XxlApmMsg implements Serializable {
 
     private String appname;
     private String ip;
+    //private String instanceid;    // todo, support Single machine multiple applications
     private String hostname;
     private long addtime;
 

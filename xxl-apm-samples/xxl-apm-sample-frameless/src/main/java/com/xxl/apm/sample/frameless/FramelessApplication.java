@@ -4,7 +4,6 @@ package com.xxl.apm.sample.frameless;
 import com.xxl.apm.client.XxlApm;
 import com.xxl.apm.client.message.impl.XxlApmEvent;
 import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
-import com.xxl.apm.client.message.impl.XxlApmMetric;
 import com.xxl.apm.client.message.impl.XxlApmTransaction;
 import com.xxl.apm.sample.frameless.conf.FrameLessXxlApmConfig;
 import org.slf4j.Logger;
@@ -43,9 +42,6 @@ public class FramelessApplication {
 
             // heartbeat
             XxlApm.report(new XxlApmHeartbeat());
-
-            // metric
-            XxlApm.report(new XxlApmMetric("booking_count"));
 
 
             while (true) {
