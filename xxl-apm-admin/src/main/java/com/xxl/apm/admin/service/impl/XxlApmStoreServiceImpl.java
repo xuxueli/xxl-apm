@@ -60,12 +60,12 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
             for (XxlApmHeartbeat heartbeat: heartbeatList) {
 
                 // addtime -> min
-                long addtime = (heartbeat.getAddtime()/60000)*60000;
+                heartbeat.setAddtime((heartbeat.getAddtime()/60000)*60000);
                 byte[] heartbeat_data = XxlApmMsgServiceImpl.getSerializer().serialize(heartbeat);
 
                 XxlApmHeartbeatReport heartbeatReport = new XxlApmHeartbeatReport();
                 heartbeatReport.setAppname(heartbeat.getAppname());
-                heartbeatReport.setAddtime(addtime);
+                heartbeatReport.setAddtime(heartbeat.getAddtime());
                 heartbeatReport.setIp(heartbeat.getIp());
                 heartbeatReport.setHostname(heartbeat.getHostname());
 
@@ -77,6 +77,11 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
             xxlApmHeartbeatReportDao.addMult(heartbeatReportList);  // for minute
         }
 
+        if (eventList!=null && eventList.size()>0) {
+            for (XxlApmEvent event:eventList) {
+
+            }
+        }
 
         /**
          * todo-apm:

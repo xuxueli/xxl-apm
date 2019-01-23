@@ -2,6 +2,7 @@ package com.xxl.apm.admin.controller;
 
 import com.xxl.apm.admin.conf.XxlApmMsgServiceImpl;
 import com.xxl.apm.admin.core.model.XxlApmHeartbeatReport;
+import com.xxl.apm.admin.core.result.ReturnT;
 import com.xxl.apm.admin.core.util.DateUtil;
 import com.xxl.apm.admin.core.util.JacksonUtil;
 import com.xxl.apm.admin.dao.IXxlApmHeartbeatReportDao;
@@ -9,6 +10,7 @@ import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -86,5 +88,15 @@ public class HeartbeatController {
         return "heartbeat/heartbeat.index";
     }
 
+
+    @RequestMapping("/findAppNameList")
+    @ResponseBody
+    public ReturnT<List<String>> findAppNameList(String appname){
+        List<String> appnameList = xxlApmHeartbeatReportDao.findAppNameList(appname);
+        if (appnameList==null || appnameList.isEmpty()) {
+            return new ReturnT<>(ReturnT.FAIL_CODE, null);
+        }
+        return new ReturnT<>(appnameList);
+    }
 
 }

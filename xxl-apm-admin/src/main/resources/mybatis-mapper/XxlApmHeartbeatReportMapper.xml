@@ -59,4 +59,11 @@
 		ORDER BY t.addtime ASC
 	</select>
 
+    <select id="findAppNameList" parameterType="java.util.HashMap" resultType="java.lang.String" >
+        SELECT distinct t.appname
+        FROM xxl_apm_heartbeat_report AS t
+        WHERE t.appname like CONCAT(CONCAT('%', #{appname}), '%')
+        ORDER BY t.appname ASC
+    </select>
+
 </mapper>

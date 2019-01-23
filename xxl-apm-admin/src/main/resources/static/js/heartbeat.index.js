@@ -3,7 +3,7 @@ $(function() {
     // base
     $('.select2').select2();
 
-    // filter
+    // querytime
     $('#querytime').datetimepicker({
         format: 'Y-m-d H:i',
         lang: 'ch',
@@ -11,6 +11,27 @@ $(function() {
         maxDate: 0  // 0 means today
     });
 
+    // appname
+    $( "#appname" ).autocomplete({
+
+        source: function( request, response ) {
+            $.ajax({
+                url: base_url + "/heartbeat/findAppNameList",
+                dataType: "json",
+                data: {
+                    "appname": request.term
+                },
+                success: function( data ) {
+                    if(data.code == 200){
+                        response(data.data);
+                    }
+                }
+            });
+        },
+
+    });
+
+    // search
     $('#searchBtn').click(function () {
 
         // querytime
