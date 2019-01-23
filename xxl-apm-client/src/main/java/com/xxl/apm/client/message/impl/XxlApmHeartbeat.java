@@ -164,7 +164,8 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     public void complete() {
         super.complete();
 
-        // etc
+        // addtime -> min
+        super.setAddtime( (super.getAddtime()/60000)*60000 );
 
         // memory
         int kb_bytes = 1024;

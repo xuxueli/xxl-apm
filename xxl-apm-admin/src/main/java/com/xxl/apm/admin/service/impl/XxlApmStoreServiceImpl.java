@@ -2,6 +2,7 @@ package com.xxl.apm.admin.service.impl;
 
 import com.xxl.apm.admin.conf.XxlApmMsgServiceImpl;
 import com.xxl.apm.admin.core.model.XxlApmHeartbeatReport;
+import com.xxl.apm.admin.core.model.XxlApmMetricReport;
 import com.xxl.apm.admin.dao.IXxlApmHeartbeatReportDao;
 import com.xxl.apm.admin.service.XxlApmStoreService;
 import com.xxl.apm.client.message.XxlApmMsg;
@@ -62,6 +63,19 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
 
         // dispatch process
 
+        if (metricList!=null && metricList.size() > 0) {
+            List<XxlApmMetricReport> metricReportList = new ArrayList<>();
+            for (XxlApmMetric metricItem: metricList) {
+                XxlApmMetricReport metricReport = new XxlApmMetricReport();
+
+
+                metricReportList.add(metricReport);
+            }
+
+            // todo, update or add
+
+        }
+
         if (heartbeatList!=null && heartbeatList.size() > 0) {
 
             List<XxlApmHeartbeatReport> heartbeatReportList = new ArrayList<>();
@@ -80,7 +94,7 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
                 heartbeatReportList.add(heartbeatReport);
             }
 
-            xxlApmHeartbeatReportDao.addMult(heartbeatReportList);
+            xxlApmHeartbeatReportDao.addMult(heartbeatReportList);  // for minute
         }
 
 

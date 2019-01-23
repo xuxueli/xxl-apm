@@ -58,6 +58,10 @@ public class XxlApmMetric extends XxlApmMsg {
     @Override
     public void complete() {
         super.complete();
+
+        // addtime -> min
+        super.setAddtime( (super.getAddtime()/60000)*60000 );
+
     }
 
 }

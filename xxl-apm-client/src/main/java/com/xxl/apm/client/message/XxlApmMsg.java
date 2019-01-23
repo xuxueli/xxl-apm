@@ -79,9 +79,7 @@ public abstract class XxlApmMsg implements Serializable {
         this.appname = XxlApm.getAppname();
         this.ip = IpUtil.getIp();
         this.hostname = IpUtil.getLocalAddress().getHostName();
-        if (this.addtime < 1) {
-            this.addtime = System.currentTimeMillis();
-        }
+        this.addtime = System.currentTimeMillis();
     }
 
 }

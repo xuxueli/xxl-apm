@@ -176,19 +176,16 @@ public class XxlApmFactory {
 
                                 // attempt to report mult msg
                                 List<XxlApmMsg> otherMessageList = new ArrayList<>();
-                                int drainToNum = newMessageQueue.drainTo(otherMessageList, 200);
+                                int drainToNum = newMessageQueue.drainTo(otherMessageList, 100);
                                 if (drainToNum > 0) {
                                     messageList.addAll(otherMessageList);
                                 }
 
-                                // todo, async send, each second
-
                                 // msg too small, just wait 1s, avoid report too quick
-                                if (otherMessageList.size() < 100) {
+                                if (otherMessageList.size() < 50) {
                                     TimeUnit.SECONDS.sleep(1);
 
-                                    otherMessageList = new ArrayList<>();
-                                    drainToNum = newMessageQueue.drainTo(otherMessageList, 100);
+                                    drainToNum = newMessageQueue.drainTo(otherMessageList, 50);
                                     if (drainToNum > 0) {
                                         messageList.addAll(otherMessageList);
                                     }
@@ -356,10 +353,7 @@ public class XxlApmFactory {
                 while (!innerThreadPoolStoped) {
                     // heartbeat report
                     try {
-                        XxlApmHeartbeat heartbeat = new XxlApmHeartbeat();
-                        heartbeat.setAddtime((System.currentTimeMillis()/60000)*60000);     // format to minute
-
-                        XxlApm.report(heartbeat);
+                        XxlApm.report(new XxlApmHeartbeat());
                     } catch (Exception e) {
                         if (!innerThreadPoolStoped) {
                             logger.error(e.getMessage(), e);
