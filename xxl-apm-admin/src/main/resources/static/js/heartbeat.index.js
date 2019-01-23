@@ -4,9 +4,9 @@ $(function() {
     $('.select2').select2();
 
     // querytime
+    $.datetimepicker.setLocale('ch');
     $('#querytime').datetimepicker({
         format: 'Y-m-d H:i',
-        lang: 'ch',
         step: 60,
         maxDate: 0  // 0 means today
     });
