@@ -74,9 +74,7 @@
 		FROM xxl_apm_event_report AS t
 		WHERE t.appname = #{appname}
 			AND t.addtime between #{addtime_from} and #{addtime_to}
-			<if test="ip != null and ip != ''">
-				AND t.ip = #{ip}
-			</if>
+			AND t.type = #{type}
 		ORDER BY t.addtime ASC
 	</select>
 
@@ -85,6 +83,14 @@
         FROM xxl_apm_event_report AS t
         WHERE t.appname like CONCAT(CONCAT('%', #{appname}), '%')
         ORDER BY t.appname ASC
+    </select>
+
+    <select id="findTypeList" parameterType="java.util.HashMap" resultType="java.lang.String" >
+        SELECT distinct t.type
+        FROM xxl_apm_event_report AS t
+        WHERE t.appname = #{appname}
+          AND t.addtime between #{addtime_from} and #{addtime_to}
+        ORDER BY t.type ASC
     </select>
 
 </mapper>

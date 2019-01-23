@@ -44,12 +44,12 @@
 
                 <div class="col-xs-4">
                     <div class="input-group">
-                        <span class="input-group-addon">机器</span>
-                        <select class="form-control select2" style2="width: 100%;" id="ip" >
+                        <span class="input-group-addon">Type</span>
+                        <select class="form-control select2" style2="width: 100%;" id="type" >
                             <option value="" >未选择</option>
-                            <#if ipInfo?exists >
-                                <#list ipInfo?keys as key>
-                                    <option value="${key}" <#if ip?exists && ip==key>selected="selected"</#if> >${ipInfo[key]}</option>
+                            <#if typeList?exists >
+                                <#list typeList as item>
+                                    <option value="${item}" <#if type?exists && type==item>selected="selected"</#if> >${item}</option>
                                 </#list>
                             </#if>
                         </select>
@@ -76,6 +76,58 @@
 				<div id="bar-parent" >
 				</div>
 
+                <br>
+                <div class="col-md-12 col-xs-12">
+                    <div class="box ">
+                        <div class="box-body no-padding">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th style="width: 10px">Name</th>
+                                    <th>Total</th>
+                                    <th>Failure</th>
+                                    <th>Failure%</th>
+                                    <th>QPS</th>
+                                    <th>Percent%</th>
+                                    <th>LogView</th>
+                                    <th style="width: 40px">Chart</th>
+                                </tr>
+                                <tr>
+                                    <td><b>Total</b></td>
+                                    <td>2000</td>
+                                    <td>5</td>
+                                    <td><span class="badge bg-green">0%</span></td>
+                                    <td>26.2</td>
+                                    <td>20%</td>
+                                    <td>--</td>
+                                    <td>Show</td>
+                                </tr>
+                                <tr>
+                                    <td>/user/add</td>
+                                    <td>2000</td>
+                                    <td>5</td>
+                                    <td><span class="badge bg-green">0%</span></td>
+                                    <td>26.2</td>
+                                    <td>20%</td>
+                                    <td>--</td>
+                                    <td>Show</td>
+                                </tr>
+                                <tr>
+                                    <td>/user/query</td>
+                                    <td>50000</td>
+                                    <td>10</td>
+                                    <td><span class="badge bg-red">0.3%</span></td>
+                                    <td>155.2</td>
+                                    <td>80%</td>
+                                    <td>--</td>
+                                    <td>Show</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+
+
 			</div>
 			
 	    </section>
@@ -97,9 +149,9 @@
 <script src="${request.contextPath}/static/plugins/jquery-ui/jquery-ui.min.js"></script>
 
 <script>
-    var heartbeatList;
-    <#if heartbeatList?exists>
-        heartbeatList = JSON.parse('${heartbeatList}');
+    var eventReportList;
+    <#if eventReportList?exists>
+        eventReportList = JSON.parse('${eventReportList}');
     </#if>
 
 </script>

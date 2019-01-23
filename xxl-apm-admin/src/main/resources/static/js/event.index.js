@@ -60,7 +60,7 @@ $(function() {
         }
         var querytime = y + "" + m + "" + d + "" + h;
         var appname = $('#appname').val()?$('#appname').val().trim():'';
-        var ip = $('#ip').val()?$('#ip').val().trim():'';
+        var type = $('#type').val()?$('#type').val().trim():'';
 
         if (!appname) {
             layer.open({
@@ -73,19 +73,33 @@ $(function() {
         }
 
         // redirct
-        var redirct_url = base_url + "/event?querytime={querytime}&appname={appname}&ip={ip}";
+        var redirct_url = base_url + "/event?querytime={querytime}&appname={appname}&type={type}";
         redirct_url = redirct_url.replace('{querytime}', querytime);
         redirct_url = redirct_url.replace('{appname}', appname);
-        redirct_url = redirct_url.replace('{ip}', ip);
+        redirct_url = redirct_url.replace('{type}', type);
 
         window.location.href = redirct_url;
     });
 
-    // valid heartbeat data
-    if (!heartbeatList) {
-        appendTips("暂无数据");
-        return;
+
+    // parse data
+    var xData = [];
+    var yData = {};
+
+    for (var index in eventReportList) {
+        var eventReport = eventReportList[index];
+
+        // x-data, ms -> min
+        xData[index] = (eventReport.addtime/(1000*60))%60;
+
+        // x-data
+
+
+        console.log(eventReport);
     }
+
+    console.log(xData);
+    return;
 
     // heartbeat chart tool
     var baaSample = $('#bar-sample').html();
