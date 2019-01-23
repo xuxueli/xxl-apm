@@ -66,4 +66,12 @@
         ORDER BY t.appname ASC
     </select>
 
+    <select id="findIpList" parameterType="java.util.HashMap" resultType="com.xxl.apm.admin.core.model.XxlApmHeartbeatReport" >
+        SELECT distinct t.ip, t.hostname
+        FROM xxl_apm_heartbeat_report AS t
+        WHERE t.appname = #{appname}
+          AND t.addtime between #{addtime_from} and #{addtime_to}
+        ORDER BY t.ip ASC
+    </select>
+
 </mapper>

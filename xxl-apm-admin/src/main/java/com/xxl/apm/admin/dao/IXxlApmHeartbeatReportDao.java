@@ -23,4 +23,8 @@ public interface IXxlApmHeartbeatReportDao {
 
     public List<String> findAppNameList(@Param("appname") String appname);
 
+    public List<XxlApmHeartbeatReport> findIpList(@Param("appname") String appname,
+                                                  @Param("addtime_from") long addtime_from,
+                                                  @Param("addtime_to") long addtime_to);
+
 }

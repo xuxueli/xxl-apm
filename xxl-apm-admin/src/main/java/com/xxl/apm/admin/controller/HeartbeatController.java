@@ -38,52 +38,56 @@ public class HeartbeatController {
         if (querytime_date == null) {
             querytime_date = DateUtil.parse(DateUtil.format(new Date(), "yyyyMMddHH"), "yyyyMMddHH");
         }
+        long addtime_from = querytime_date.getTime();
+        long addtime_to = addtime_from + 59*60*1000;
 
-        // load by appname
-        List<XxlApmHeartbeat> heartbeatList = new ArrayList<>();
+        // ipInfo
         Map<String, String> ipInfo = new TreeMap<>();
-
         if (appname!=null && appname.trim().length()>0) {
-            long addtime_from = querytime_date.getTime();
-            long addtime_to = addtime_from + 59*60*1000;
+            List<XxlApmHeartbeatReport> ipList = xxlApmHeartbeatReportDao.findIpList(appname, addtime_from, addtime_to);
+            if (ipList!=null && ipList.size()>0) {
+                for (XxlApmHeartbeatReport item: ipList) {
+                    ipInfo.put(item.getIp(), item.getIp().concat("(").concat(item.getHostname()).concat(")") );
+                }
+            }
+        }
+        model.addAttribute("ipInfo", ipInfo);
+
+        // ip
+        ip = (ip!=null&&ipInfo.containsKey(ip))
+                ? ip
+                : !ipInfo.isEmpty()
+                    ?((TreeMap<String, String>) ipInfo).firstKey()
+                    :null;
+
+        // filter data
+        model.addAttribute("querytime", querytime_date);
+        model.addAttribute("appname", appname);
+        model.addAttribute("ip", ip);
+
+
+        // load data
+        List<XxlApmHeartbeat> heartbeatList = new ArrayList<>();
+
+        if (ip != null) {
             List<XxlApmHeartbeatReport> heartbeatReportList = xxlApmHeartbeatReportDao.find(appname, addtime_from, addtime_to, ip);
             if (heartbeatReportList!=null && heartbeatReportList.size()>0) {
                 for (XxlApmHeartbeatReport heartbeatReport: heartbeatReportList) {
                     XxlApmHeartbeat heartbeat = (XxlApmHeartbeat) XxlApmMsgServiceImpl.getSerializer().deserialize(heartbeatReport.getHeartbeat_data(), XxlApmHeartbeat.class);
-                    heartbeatList.add(heartbeat);
-
-                    ipInfo.put(heartbeat.getIp(), heartbeat.getIp().concat("(").concat(heartbeat.getHostname()).concat(")") );
-                }
-            }
-        }
-
-        // filter by ip
-        if (heartbeatList.size() > 0) {
-            if (ip==null || ip.trim().length()==0 || !ipInfo.containsKey(ip)) {
-                ip = ((TreeMap<String, String>) ipInfo).firstKey();
-            }
-            List<XxlApmHeartbeat> heartbeatList_filter_ip = new ArrayList<>();
-            for (XxlApmHeartbeat item: heartbeatList) {
-                if (item.getIp().equals(ip)) {
 
                     // hide thread stack
-                    for (XxlApmHeartbeat.ThreadInfo threadInfo:item.getThread_list()) {
+                    for (XxlApmHeartbeat.ThreadInfo threadInfo:heartbeat.getThread_list()) {
                         threadInfo.setStack_info(null);
                     };
 
-                    heartbeatList_filter_ip.add(item);
+                    heartbeatList.add(heartbeat);
                 }
-            }
-            model.addAttribute("ipInfo", ipInfo);
-            if (heartbeatList_filter_ip.size() > 0) {
-                model.addAttribute("heartbeatList", JacksonUtil.writeValueAsString(heartbeatList_filter_ip));
             }
         }
 
-        // parse data
-        model.addAttribute("querytime", querytime_date);
-        model.addAttribute("appname", appname);
-        model.addAttribute("ip", ip);
+        if (heartbeatList.size() > 0) {
+            model.addAttribute("heartbeatList", JacksonUtil.writeValueAsString(heartbeatList));
+        }
 
         return "heartbeat/heartbeat.index";
     }
