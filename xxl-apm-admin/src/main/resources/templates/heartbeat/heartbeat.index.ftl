@@ -29,7 +29,7 @@
                 <div class="col-xs-3">
                     <div class="input-group">
                         <span class="input-group-addon">时间</span>
-                        <input type="text" class="form-control" id="querytime" value="${querytime?string('yyyy-MM-dd HH:mm')}" >
+                        <input type="text" class="form-control" id="querytime" value="${querytime?string('yyyy-MM-dd HH:mm')}" readonly >
                     </div>
                 </div>
 

@@ -13,7 +13,6 @@ $(function() {
 
     // appname
     $( "#appname" ).autocomplete({
-
         source: function( request, response ) {
             $.ajax({
                 url: base_url + "/heartbeat/findAppNameList",
@@ -27,8 +26,7 @@ $(function() {
                     }
                 }
             });
-        },
-
+        }
     });
 
     // search
