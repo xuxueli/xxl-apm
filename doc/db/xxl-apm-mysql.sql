@@ -31,10 +31,23 @@ CREATE TABLE `xxl_apm_common_registry_message` (
 
 CREATE TABLE `xxl_apm_heartbeat_report` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `appname` varchar(100) NOT NULL COMMENT '注册Key',
-  `addtime` bigint(11) NOT NULL COMMENT '注册Value有效数据',
+  `appname` varchar(100) NOT NULL,
+  `addtime` bigint(11) NOT NULL,
   `ip` varchar(100) NOT NULL,
   `hostname` varchar(200) NOT NULL,
   `heartbeat_data` mediumblob NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `xxl_apm_event_report` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `appname` varchar(100) NOT NULL,
+  `addtime` bigint(11) NOT NULL,
+  `ip` varchar(100) NOT NULL,
+  `hostname` varchar(200) NOT NULL,
+  `type` varchar(200) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `total_count` bigint(11) NOT NULL,
+  `fail_count` bigint(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

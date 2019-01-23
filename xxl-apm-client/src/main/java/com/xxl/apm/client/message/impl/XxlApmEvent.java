@@ -19,7 +19,8 @@ public class XxlApmEvent extends XxlApmMsg {
 
     private String type;                        // like "URL"
     private String name;                        // like "/user/add"
-    private String status;                  // "success" means success, other errorcode
+
+    private String status;                      // "success" means success, other errorcode
     private Map<String, String> param;          // like "ip=xxx"
 
 

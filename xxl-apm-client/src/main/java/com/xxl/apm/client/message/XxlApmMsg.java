@@ -17,10 +17,10 @@ public abstract class XxlApmMsg implements Serializable {
     private String msgId;
 
     private String appname;
+    private long addtime;
     private String ip;
     //private String instanceid;    // todo, support Single machine multiple applications
     private String hostname;
-    private long addtime;
 
 
     public String getParentMsgId() {
@@ -78,9 +78,9 @@ public abstract class XxlApmMsg implements Serializable {
         this.msgId = XxlApm.generateMsgId();
 
         this.appname = XxlApm.getAppname();
+        this.addtime = System.currentTimeMillis();
         this.ip = IpUtil.getIp();
         this.hostname = IpUtil.getLocalAddress().getHostName();
-        this.addtime = System.currentTimeMillis();
     }
 
 }
