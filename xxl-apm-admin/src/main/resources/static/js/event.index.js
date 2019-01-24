@@ -1,7 +1,9 @@
 $(function() {
 
     // base
-    $('.select2').select2();
+    $('.select2').select2({
+        language:'zh-CN'
+    });
 
     // querytime
     $.datetimepicker.setLocale('ch');

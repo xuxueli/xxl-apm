@@ -46,7 +46,6 @@
                     <div class="input-group">
                         <span class="input-group-addon">Type</span>
                         <select class="form-control select2" style2="width: 100%;" id="type" >
-                            <option value="" >未选择</option>
                             <#if typeList?exists >
                                 <#list typeList as item>
                                     <option value="${item}" <#if type?exists && type==item>selected="selected"</#if> >${item}</option>
@@ -145,6 +144,7 @@
 <script src="${request.contextPath}/static/plugins/datetimepicker/jquery.datetimepicker.full.min.js"></script>
 <#-- select2 -->
 <script src="${request.contextPath}/static/adminlte/bower_components/select2/js/select2.full.min.js"></script>
+<script src="${request.contextPath}/static/adminlte/bower_components/select2/js/i18n/zh-CN.js"></script>
 <#-- jquery-ui -->
 <script src="${request.contextPath}/static/plugins/jquery-ui/jquery-ui.min.js"></script>
 
