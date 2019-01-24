@@ -86,15 +86,9 @@ $(function() {
 
     // valid data
     if (!eventReportList) {
-        appendTips("暂无数据");
         return;
     }
 
-    // tips
-    function appendTips(title) {
-        var tipsTmp = '<section class="content-header col-md-12"><h1>{title}<small></small></h1></section>'.replace('{title}', title)
-        $('#bar-parent').append(tipsTmp);
-    }
     // 四舍五入，4位小数
     function toDecimal(x) {
         var f = parseFloat(x);
@@ -143,31 +137,29 @@ $(function() {
         nameMap.QPS = nameMap.Total/periodSecond;
         nameMap.Percent = nameMap.Total/all_Total;
         nameMap.LogView = '--';
-        nameMap.Chart = '--';
     }
 
     var nameMapTotal = {};      // event all
-    nameMapTotal.Name = '<span class="badge bg-gray">Total</span>';
+    nameMapTotal.Name = '_Total';
     nameMapTotal.Total = all_Total;
     nameMapTotal.Failure = all_Failure;
     nameMapTotal.Failure_percent = all_Failure/all_Total;
     nameMapTotal.QPS = all_Total/periodSecond;
     nameMapTotal.Percent = all_Total/all_Total;
     nameMapTotal.LogView = '--';
-    nameMapTotal.Chart = '--';
 
 
     // write table
     var TableData = [];
     function addTableData(nameMap){
         var nameMapArr = [];
-        nameMapArr[0] = nameMap.Name;
+        nameMapArr[0] = nameMap.Name=='_Total'?'<span class="badge bg-gray">Total</span>':nameMap.Name;
         nameMapArr[1] = nameMap.Total;
         nameMapArr[2] = '<span style="color: '+ (nameMap.Failure>0?'red':'black') +';">'+ nameMap.Failure +'</span>';
         nameMapArr[3] = '<span style="color: '+ (nameMap.Failure_percent>0?'red':'black') +';">'+ toDecimal( nameMap.Failure_percent*100 ) +'%</span>';
         nameMapArr[4] = toDecimal( nameMap.QPS );
         nameMapArr[5] = nameMap.LogView;
-        nameMapArr[6] = nameMap.Chart;
+        nameMapArr[6] = '<a href="javascript:;" class="Chart" data-name="'+ nameMap.Name +'" >Show</a>';
         nameMapArr[7] = toDecimal( nameMap.Percent*100 ) + '%';
 
         TableData.push(nameMapArr);
@@ -186,6 +178,9 @@ $(function() {
     } );
 
     // chart
-
+    $('#event-table').on('click', '.Chart', function () {
+        var name = $(this).data('name');
+        alert(name);
+    });
 
 });

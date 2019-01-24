@@ -2,6 +2,7 @@ package com.xxl.apm.admin.controller;
 
 import com.xxl.apm.admin.core.model.XxlApmEventReport;
 import com.xxl.apm.admin.core.result.ReturnT;
+import com.xxl.apm.admin.core.util.CookieUtil;
 import com.xxl.apm.admin.core.util.DateUtil;
 import com.xxl.apm.admin.core.util.JacksonUtil;
 import com.xxl.apm.admin.dao.IXxlApmEventReportDao;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -26,7 +29,22 @@ public class EventController {
 
 
     @RequestMapping("")
-    public String index(Model model, String querytime, String appname, String type){
+    public String index(Model model, HttpServletRequest request, HttpServletResponse response,
+                        String querytime, String appname, String type){
+
+        // get cookie
+        if (querytime == null) {
+            String xxlapm_querytime = CookieUtil.getValue(request, "xxlapm_querytime");
+            if (xxlapm_querytime != null) {
+                querytime = xxlapm_querytime;
+            }
+        }
+        if (appname == null) {
+            String xxlapm_appname = CookieUtil.getValue(request, "xxlapm_appname");
+            if (xxlapm_appname != null) {
+                appname = xxlapm_appname;
+            }
+        }
 
         // parse querytime
         Date querytime_date = null;
@@ -57,6 +75,11 @@ public class EventController {
         model.addAttribute("querytime", querytime_date);
         model.addAttribute("appname", appname);
         model.addAttribute("type", type);
+
+        // set cookie
+        CookieUtil.set(response, "xxlapm_querytime", querytime, false);
+        CookieUtil.set(response, "xxlapm_appname", appname, false);
+
 
         // periodSecond
         long periodSecond = (addtime_to<=System.currentTimeMillis())
