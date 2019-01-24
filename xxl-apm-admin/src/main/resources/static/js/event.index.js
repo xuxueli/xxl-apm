@@ -147,7 +147,7 @@ $(function() {
     }
 
     var nameMapTotal = {};
-    nameMapTotal.Name = "<b>Total</b>";
+    nameMapTotal.Name = '<span class="badge bg-gray">Total</span>';
     nameMapTotal.Total = all_Total;
     nameMapTotal.Failure = all_Failure;
     nameMapTotal.Failure_percent = all_Failure/all_Total;
@@ -163,8 +163,8 @@ $(function() {
         var nameMapArr = [];
         nameMapArr[0] = nameMap.Name;
         nameMapArr[1] = nameMap.Total;
-        nameMapArr[2] = nameMap.Failure;
-        nameMapArr[3] = '<span class="badge bg-'+ (nameMap.Failure_percent>0?'red':'silver') +'">'+ toDecimal( nameMap.Failure_percent*100 ) +'%</span>';
+        nameMapArr[2] = '<span style="color: '+ (nameMap.Failure>0?'red':'black') +';">'+ nameMap.Failure +'</span>';
+        nameMapArr[3] = '<span style="color: '+ (nameMap.Failure_percent>0?'red':'black') +';">'+ toDecimal( nameMap.Failure_percent*100 ) +'%</span>';
         nameMapArr[4] = toDecimal( nameMap.QPS );
         nameMapArr[5] = nameMap.LogView;
         nameMapArr[6] = nameMap.Chart;
