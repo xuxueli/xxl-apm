@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="${request.contextPath}/static/plugins/datetimepicker/jquery.datetimepicker.min.css">
     <#-- jquery-ui -->
     <link rel="stylesheet" href="${request.contextPath}/static/plugins/jquery-ui/jquery-ui.min.css">
+    <#-- dataTables -->
+    <link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 
 </head>
 <body class="hold-transition skin-blue sidebar-mini <#if cookieMap?exists && cookieMap["xxlapm_adminlte_settings"]?exists && "off" == cookieMap["xxlapm_adminlte_settings"].value >sidebar-collapse</#if>">
@@ -61,65 +63,23 @@
           	</div>
 
 			<div class="row">
-
-                <div id="bar-sample" style="display: none;" >
-                    <div class="col-md-6 col-xs-12-" >
-                        <div class="box box-success">
-                            <div class="box-body chart-responsive">
-                                <div class="chart bar-item" id="{id}" style="height: 300px;" ></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-				<div id="bar-parent" >
-				</div>
-
                 <br>
                 <div class="col-md-12 col-xs-12">
                     <div class="box ">
                         <div class="box-body no-padding">
-                            <table class="table table-striped">
-                                <tr>
-                                    <th style="width: 10px">Name</th>
-                                    <th>Total</th>
-                                    <th>Failure</th>
-                                    <th>Failure%</th>
-                                    <th>QPS</th>
-                                    <th>Percent%</th>
-                                    <th>LogView</th>
-                                    <th style="width: 40px">Chart</th>
-                                </tr>
-                                <tr>
-                                    <td><b>Total</b></td>
-                                    <td>2000</td>
-                                    <td>5</td>
-                                    <td><span class="badge bg-green">0%</span></td>
-                                    <td>26.2</td>
-                                    <td>20%</td>
-                                    <td>--</td>
-                                    <td>Show</td>
-                                </tr>
-                                <tr>
-                                    <td>/user/add</td>
-                                    <td>2000</td>
-                                    <td>5</td>
-                                    <td><span class="badge bg-green">0%</span></td>
-                                    <td>26.2</td>
-                                    <td>20%</td>
-                                    <td>--</td>
-                                    <td>Show</td>
-                                </tr>
-                                <tr>
-                                    <td>/user/query</td>
-                                    <td>50000</td>
-                                    <td>10</td>
-                                    <td><span class="badge bg-red">0.3%</span></td>
-                                    <td>155.2</td>
-                                    <td>80%</td>
-                                    <td>--</td>
-                                    <td>Show</td>
-                                </tr>
+                            <table class="table table-striped" id="event-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Total</th>
+                                        <th>Failure</th>
+                                        <th>Failure%</th>
+                                        <th>QPS</th>
+                                        <th>LogView</th>
+                                        <th>Chart</th>
+                                        <th class2="pull-right" >Percent%</th>
+                                    </tr>
+                                </thead>
                             </table>
                         </div>
                         <!-- /.box-body -->
@@ -147,12 +107,16 @@
 <script src="${request.contextPath}/static/adminlte/bower_components/select2/js/i18n/zh-CN.js"></script>
 <#-- jquery-ui -->
 <script src="${request.contextPath}/static/plugins/jquery-ui/jquery-ui.min.js"></script>
+<#-- dataTables -->
+<script src="${request.contextPath}/static/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="${request.contextPath}/static/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 
 <script>
     var eventReportList;
     <#if eventReportList?exists>
         eventReportList = JSON.parse('${eventReportList}');
     </#if>
+    var periodSecond = '${periodSecond}';
 
 </script>
 <script src="${request.contextPath}/static/js/event.index.js"></script>

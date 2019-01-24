@@ -37,7 +37,7 @@ public class EventController {
             querytime_date = DateUtil.parse(DateUtil.format(new Date(), "yyyyMMddHH"), "yyyyMMddHH");
         }
         long addtime_from = querytime_date.getTime();
-        long addtime_to = addtime_from + 59*60*1000;
+        long addtime_to = addtime_from + 59*60*1000;    // an hour
 
         // ipInfo
         List<String> typeList = null;
@@ -57,6 +57,12 @@ public class EventController {
         model.addAttribute("querytime", querytime_date);
         model.addAttribute("appname", appname);
         model.addAttribute("type", type);
+
+        // periodSecond
+        long periodSecond = (addtime_to<=System.currentTimeMillis())
+                ?3600:     // an hour -> second
+                (System.currentTimeMillis()-addtime_from)/1000;     // -> second
+        model.addAttribute("periodSecond", periodSecond);
 
 
         // load data
