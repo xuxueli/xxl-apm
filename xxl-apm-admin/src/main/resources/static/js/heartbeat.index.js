@@ -99,6 +99,19 @@ $(function() {
 
         $('#bar-parent').append(fullgcBar);
 
+        // x data, fill
+        var xData2 = [];
+        var yData2 = [];
+        if (xData.length < 30) {
+            for (var i = 0; i < 60; i++) {
+                xData2[i] = i;
+                yData2[i] = yData[i]?yData[i]:0;
+            }
+        } else {
+            xData2 = xData;
+            yData2 = yData;
+        }
+
         var barOption = {
             title: {
                 text: name
@@ -118,14 +131,14 @@ $(function() {
             xAxis: {
                 name: 'Min',
                 type: 'category',
-                data: xData
+                data: xData2
             },
             yAxis: {
                 name: yDataUnit,
                 type: 'value'
             },
             series: [{
-                data: yData,
+                data: yData2,
                 type: 'bar'
             }]
         };

@@ -104,7 +104,7 @@ $(function() {
     }
 
     // parse data
-    var nameMapList = {};       // {name:{}}
+    var nameMapList = {};           // event item, for each name: { name: {...} }
     function getNameMap(name) {
         var nameMap = nameMapList[name+''];
         if (!nameMap) {
@@ -146,7 +146,7 @@ $(function() {
         nameMap.Chart = '--';
     }
 
-    var nameMapTotal = {};
+    var nameMapTotal = {};      // event all
     nameMapTotal.Name = '<span class="badge bg-gray">Total</span>';
     nameMapTotal.Total = all_Total;
     nameMapTotal.Failure = all_Failure;
@@ -181,8 +181,11 @@ $(function() {
         "data": TableData,
         "paging": false,
         "searching": false,
-        "order": [[ 1, 'desc' ]]
+        "order": [[ 1, 'desc' ]],
+        "info": false
     } );
+
+    // chart
 
 
 });
