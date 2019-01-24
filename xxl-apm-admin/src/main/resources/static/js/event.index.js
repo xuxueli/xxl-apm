@@ -164,7 +164,7 @@ $(function() {
         nameMapArr[0] = nameMap.Name;
         nameMapArr[1] = nameMap.Total;
         nameMapArr[2] = nameMap.Failure;
-        nameMapArr[3] = '<span class="badge bg-'+ (nameMap.Failure_percent>0?'red':'green') +'">'+ toDecimal( nameMap.Failure_percent*100 ) +'%</span>';
+        nameMapArr[3] = '<span class="badge bg-'+ (nameMap.Failure_percent>0?'red':'silver') +'">'+ toDecimal( nameMap.Failure_percent*100 ) +'%</span>';
         nameMapArr[4] = toDecimal( nameMap.QPS );
         nameMapArr[5] = nameMap.LogView;
         nameMapArr[6] = nameMap.Chart;
