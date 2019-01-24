@@ -139,21 +139,21 @@ $(function() {
         nameMap.LogView = '--';
     }
 
-    var nameMapTotal = {};      // event all
-    nameMapTotal.Name = '_Total';
-    nameMapTotal.Total = all_Total;
-    nameMapTotal.Failure = all_Failure;
-    nameMapTotal.Failure_percent = all_Failure/all_Total;
-    nameMapTotal.QPS = all_Total/periodSecond;
-    nameMapTotal.Percent = all_Total/all_Total;
-    nameMapTotal.LogView = '--';
+    var nameMap_All = {};      // event all
+    nameMap_All.Name = '_All';
+    nameMap_All.Total = all_Total;
+    nameMap_All.Failure = all_Failure;
+    nameMap_All.Failure_percent = all_Failure/all_Total;
+    nameMap_All.QPS = all_Total/periodSecond;
+    nameMap_All.Percent = all_Total/all_Total;
+    nameMap_All.LogView = '--';
 
 
     // write table
     var TableData = [];
     function addTableData(nameMap){
         var nameMapArr = [];
-        nameMapArr[0] = nameMap.Name=='_Total'?'<span class="badge bg-gray">Total</span>':nameMap.Name;
+        nameMapArr[0] = nameMap.Name==nameMap_All.Name?'<span class="badge bg-gray">All</span>':nameMap.Name;
         nameMapArr[1] = nameMap.Total;
         nameMapArr[2] = '<span style="color: '+ (nameMap.Failure>0?'red':'black') +';">'+ nameMap.Failure +'</span>';
         nameMapArr[3] = '<span style="color: '+ (nameMap.Failure_percent>0?'red':'black') +';">'+ toDecimal( nameMap.Failure_percent*100 ) +'%</span>';
@@ -164,7 +164,7 @@ $(function() {
 
         TableData.push(nameMapArr);
     }
-    addTableData(nameMapTotal);
+    addTableData(nameMap_All);
     for (var i in nameMapList) {
         addTableData(nameMapList[i]);
     }
@@ -179,8 +179,66 @@ $(function() {
 
     // chart
     $('#event-table').on('click', '.Chart', function () {
+
+        // name
         var name = $(this).data('name');
-        alert(name);
+        if (name == nameMap_All.Name) {
+            $('#chartModal ._name').html('All');
+        } else {
+            $('#chartModal ._name').html('Name=' + name);
+        }
+
+        // data fail
+        var xData = [];
+        var yData = [];
+        for (var i = 0; i < 60; i++) {
+            xData[i] = i;
+            yData[i] = Math.random() * 100;
+        }
+
+        // data
+        var barOption = {
+            title: {
+                text: ''
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            xAxis: {
+                name: 'Min',
+                type: 'category',
+                data: xData
+            },
+            yAxis: {
+                name: 'count',
+                type: 'value'
+            },
+            series: [{
+                data: yData,
+                type: 'bar'
+            }]
+        };
+
+        // bar
+        var chartModal_chart_left = echarts.init(document.getElementById('chartModal_chart_left'));
+        barOption.title.text = 'Total';
+        chartModal_chart_left.setOption(barOption);
+
+        var chartModal_chart_right = echarts.init(document.getElementById('chartModal_chart_right'));
+        barOption.title.text = 'Failure';
+        chartModal_chart_right.setOption(barOption);
+
+        $('#chartModal').modal('show');
+
     });
 
 });

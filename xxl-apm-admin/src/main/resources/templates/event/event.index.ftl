@@ -92,9 +92,58 @@
 	    </section>
 	</div>
 
-
 	<!-- footer -->
 	<@netCommon.commonFooter />
+
+    <!-- 报表.模态框 -->
+    <div class="modal fade" id="chartModal" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" >报表 | <span class="_name"></span></h4>
+                </div>
+                <div class="modal-body">
+
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <!-- AREA CHART -->
+                            <div class="box box-success">
+                                <div class="box-body chart-responsive">
+                                    <div class="chart" id="chartModal_chart_left" style="height: 300px;width: 400px;"></div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+
+                        <!-- /.col (LEFT) -->
+                        <div class="col-md-6">
+                            <!-- LINE CHART -->
+                            <div class="box box-danger">
+                                <div class="box-body chart-responsive">
+                                    <div class="chart" id="chartModal_chart_right" style="height: 300px;width: 400px;"></div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <!-- /.col (RIGHT) -->
+
+                    </div>
+                    <!-- /.row -->
+
+                    <#--<div class="form-group">
+                        <div class="text-center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <@netCommon.commonScript />
