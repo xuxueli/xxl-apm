@@ -47,7 +47,7 @@
                 <div class="col-xs-4">
                     <div class="input-group">
                         <span class="input-group-addon">Type</span>
-                        <select class="form-control select2" style2="width: 100%;" id="type" >
+                        <select class="form-control select2" style="width: 100%;" id="type" >
                             <#if typeList?exists >
                                 <#list typeList as item>
                                     <option value="${item}" <#if type?exists && type==item>selected="selected"</#if> >${item}</option>
