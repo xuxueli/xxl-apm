@@ -112,9 +112,13 @@ $(function() {
      *          Failure_percent: xxx,
      *          QPS: xxx,
      *          Percent: xxx,
-     *          Total_ARRAY: [a1, b1, c1],
-     *          Failure_ARRAY: [a1, b1, c1],
-     *          'name-x-ip-x'{
+     *          Total_ARRAY: {
+     *              index, xx       // {0:y3, 1:y6, 2:y9}
+     *          },
+     *          Failure_ARRAY: {
+     *              index, xx
+     *          },
+     *          'SubIpData'{
      *              'ip-x':{
      *                  Name: 'xxx',
      *                  Total: xxx,
@@ -122,68 +126,83 @@ $(function() {
      *                  Failure_percent: xxx,
      *                  QPS: xxx,
      *                  Percent: xxx,
-     *                  Total_ARRAY: [a1, b1, c1],
-     *                  Failure_ARRAY: [a1, b1, c1],
+     *                  Total_ARRAY: {
+     *                      index, xx
+     *                  },
+     *                  Failure_ARRAY: {
+     *                      index, xx
+     *                  },
      *              }
      *          }
      *      }
      *  }
      *
      */
-    var nameMapList = {};           // event item, for each name: { name: {...} }
-    function getNameMap(name) {
-        var nameMap = nameMapList[name+''];
-        if (!nameMap) {
-            nameMap = {};
-            nameMap.Name = '';
-            nameMap.Total = 0;
-            nameMap.Failure = 0;
-            nameMap.Failure_percent = 0;
-            nameMap.QPS = 0;
-            nameMap.Percent = 0;
+    var nameMapList = {};
+    var xData = [];     // [0]=3, [1]=6, [2]=9
+    var nameMap_all_name = '_All_';
 
-            nameMapList[name+''] = nameMap;
-        }
+    function getNewNameMap(name) {
+        var nameMap = {};
+        nameMap.Name = name;
+        nameMap.Total = 0;
+        nameMap.Failure = 0;
+        nameMap.Failure_percent = 0;
+        nameMap.QPS = 0;
+        nameMap.Percent = 0;
+
+        nameMap.Total_ARRAY = {};
+        nameMap.Failure_ARRAY = {};
+
+        nameMap.SubIpData = {};
+
         return nameMap;
     }
 
-    var all_Total = 0;
-    var all_Failure = 0;
     for (var index in eventReportList) {
         var eventReport = eventReportList[index];
 
+        // x-data, ms -> min
+        xData[index] = (eventReport.addtime/(1000*60))%60;
+
         // item
-        var nameMap_item = getNameMap(eventReport.name);
-        nameMap_item.Name += eventReport.name;
+        var nameMap_item = nameMapList[eventReport.name+''];
+        if (!nameMap_item) {
+            nameMap_item = getNewNameMap(eventReport.name);
+            nameMapList[eventReport.name+''] = nameMap_item;
+        }
         nameMap_item.Total += eventReport.total_count;
         nameMap_item.Failure += eventReport.fail_count;
 
+        nameMap_item.Total_ARRAY[index] = eventReport.total_count;
+        nameMap_item.Failure_ARRAY[index] = eventReport.fail_count;
+
         // all
-        all_Total += eventReport.total_count;
-        all_Failure += eventReport.fail_count;
+        var nameMap_all = nameMapList[nameMap_all_name];
+        if (!nameMap_all) {
+            nameMap_all = getNewNameMap(nameMap_all_name);
+            nameMapList[nameMap_all_name] = nameMap_all;
+        }
+        nameMap_all.Total += eventReport.total_count;
+        nameMap_all.Failure += eventReport.fail_count;
+
+        nameMap_all.Total_ARRAY[index] = nameMap_all.Total_ARRAY[index]?nameMap_all.Total_ARRAY[index]:0 + eventReport.total_count;
+        nameMap_all.Failure_ARRAY[index] = nameMap_all.Failure_ARRAY[index]?nameMap_all.Failure_ARRAY[index]:0 + eventReport.fail_count;
     }
+    //console.log(nameMapList);
 
     for(var key in nameMapList) {
         var nameMap = nameMapList[key];
         nameMap.Failure_percent = nameMap.Failure/nameMap.Total;
         nameMap.QPS = nameMap.Total/periodSecond;
-        nameMap.Percent = nameMap.Total/all_Total;
+        nameMap.Percent = nameMap.Total/nameMapList[nameMap_all_name].Total;
     }
-
-    var nameMap_All = {};      // event all
-    nameMap_All.Name = '_All';
-    nameMap_All.Total = all_Total;
-    nameMap_All.Failure = all_Failure;
-    nameMap_All.Failure_percent = all_Failure/all_Total;
-    nameMap_All.QPS = all_Total/periodSecond;
-    nameMap_All.Percent = all_Total/all_Total;
-
 
     // write table
     var TableData = [];
     function addTableData(nameMap){
         var nameMapArr = [];
-        nameMapArr[0] = nameMap.Name==nameMap_All.Name?'<span class="badge bg-gray">All</span>':nameMap.Name;
+        nameMapArr[0] = (nameMap.Name==nameMap_all_name)?'<span class="badge bg-gray">All</span>':nameMap.Name;
         nameMapArr[1] = nameMap.Total;
         nameMapArr[2] = '<span style="color: '+ (nameMap.Failure>0?'red':'black') +';">'+ nameMap.Failure +'</span>';
         nameMapArr[3] = '<span style="color: '+ (nameMap.Failure_percent>0?'red':'black') +';">'+ toDecimal( nameMap.Failure_percent*100 ) +'%</span>';
@@ -194,7 +213,6 @@ $(function() {
 
         TableData.push(nameMapArr);
     }
-    addTableData(nameMap_All);
     for (var i in nameMapList) {
         addTableData(nameMapList[i]);
     }
@@ -212,7 +230,7 @@ $(function() {
 
         // name
         var name = $(this).data('name');
-        if (name == nameMap_All.Name) {
+        if (name == nameMap_all_name) {
             $('#chartModal ._name').html('All');
         } else {
             $('#chartModal ._name').html('Name=' + name);
@@ -266,6 +284,19 @@ $(function() {
         var chartModal_chart_right = echarts.init(document.getElementById('chartModal_chart_right'));
         barOption.title.text = 'Failure';
         chartModal_chart_right.setOption(barOption);
+
+        // ip table
+        var TableData_ip = [];
+        TableData_ip.push(['127.0.0.1', 'localhost', 100, 3, 0.3, new Date().getTime(), 0.2]);
+        console.log(TableData_ip);
+        $('#event-table-ip').dataTable( {
+            "data": TableData_ip,
+            "paging": false,
+            "searching": false,
+            "order": [[ 1, 'desc' ]],
+            "info": false,
+            "destroy": true
+        } );
 
         $('#chartModal').modal('show');
 

@@ -104,9 +104,7 @@
                 </div>
                 <div class="modal-body">
 
-
                     <div class="row">
-
                         <div class="col-md-6">
                             <!-- AREA CHART -->
                             <div class="box box-success">
@@ -130,15 +128,33 @@
                             <!-- /.box -->
                         </div>
                         <!-- /.col (RIGHT) -->
-
                     </div>
                     <!-- /.row -->
 
-                    <#--<div class="form-group">
-                        <div class="text-center">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <div class="row">
+                        <br>
+                        <div class="col-md-12 col-xs-12">
+                            <div class="box ">
+                                <div class="box-body no-padding">
+                                    <table class="table table-striped" id="event-table-ip" style="width: 100%;">
+                                        <thead>
+                                        <tr>
+                                            <th>IP</th>
+                                            <th>HostName</th>
+                                            <th>Total</th>
+                                            <th>Failure</th>
+                                            <th>Failure%</th>
+                                            <th>QPS</th>
+                                            <th>Percent%</th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
                         </div>
-                    </div>-->
+                    </div>
+
                 </div>
             </div>
         </div>
