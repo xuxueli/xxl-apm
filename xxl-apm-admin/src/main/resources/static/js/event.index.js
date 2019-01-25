@@ -98,6 +98,38 @@ $(function() {
     }
 
     // parse data
+    /**
+     * event item, for each name
+     *
+     *  xData = [a, b, c]
+     *  nameMapList:
+     *  {
+     *
+     *      'name-x':{
+     *          Name: 'xxx',
+     *          Total: xxx,
+     *          Failure: xxx,
+     *          Failure_percent: xxx,
+     *          QPS: xxx,
+     *          Percent: xxx,
+     *          Total_ARRAY: [a1, b1, c1],
+     *          Failure_ARRAY: [a1, b1, c1],
+     *          'name-x-ip-x'{
+     *              'ip-x':{
+     *                  Name: 'xxx',
+     *                  Total: xxx,
+     *                  Failure: xxx,
+     *                  Failure_percent: xxx,
+     *                  QPS: xxx,
+     *                  Percent: xxx,
+     *                  Total_ARRAY: [a1, b1, c1],
+     *                  Failure_ARRAY: [a1, b1, c1],
+     *              }
+     *          }
+     *      }
+     *  }
+     *
+     */
     var nameMapList = {};           // event item, for each name: { name: {...} }
     function getNameMap(name) {
         var nameMap = nameMapList[name+''];
@@ -136,7 +168,6 @@ $(function() {
         nameMap.Failure_percent = nameMap.Failure/nameMap.Total;
         nameMap.QPS = nameMap.Total/periodSecond;
         nameMap.Percent = nameMap.Total/all_Total;
-        nameMap.LogView = '--';
     }
 
     var nameMap_All = {};      // event all
@@ -146,7 +177,6 @@ $(function() {
     nameMap_All.Failure_percent = all_Failure/all_Total;
     nameMap_All.QPS = all_Total/periodSecond;
     nameMap_All.Percent = all_Total/all_Total;
-    nameMap_All.LogView = '--';
 
 
     // write table
@@ -158,9 +188,9 @@ $(function() {
         nameMapArr[2] = '<span style="color: '+ (nameMap.Failure>0?'red':'black') +';">'+ nameMap.Failure +'</span>';
         nameMapArr[3] = '<span style="color: '+ (nameMap.Failure_percent>0?'red':'black') +';">'+ toDecimal( nameMap.Failure_percent*100 ) +'%</span>';
         nameMapArr[4] = toDecimal( nameMap.QPS );
-        nameMapArr[5] = nameMap.LogView;
+        nameMapArr[5] = toDecimal( nameMap.Percent*100 ) + '%';
         nameMapArr[6] = '<a href="javascript:;" class="Chart" data-name="'+ nameMap.Name +'" >Show</a>';
-        nameMapArr[7] = toDecimal( nameMap.Percent*100 ) + '%';
+        nameMapArr[7] = '--';
 
         TableData.push(nameMapArr);
     }

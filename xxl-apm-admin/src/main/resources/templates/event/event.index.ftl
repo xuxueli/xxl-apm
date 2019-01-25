@@ -75,9 +75,9 @@
                                         <th>Failure</th>
                                         <th>Failure%</th>
                                         <th>QPS</th>
-                                        <th>LogView</th>
+                                        <th>Percent%</th>
                                         <th>Chart</th>
-                                        <th class2="pull-right" >Percent%</th>
+                                        <th>LogView</th>
                                     </tr>
                                 </thead>
                             </table>
