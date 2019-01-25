@@ -103,9 +103,9 @@ $(function() {
         var xData2 = [];
         var yData2 = [];
         if (xData.length < 30) {
-            for (var i = 0; i < 60; i++) {
-                xData2[i] = i;
-                yData2[i] = yData[i]?yData[i]:0;
+            for (var min = 0; min < 60; min++) {
+                xData2[min] = min;
+                yData2[min] = xData.indexOf(min)>-1?yData[xData.indexOf(min)]:0;
             }
         } else {
             xData2 = xData;
@@ -161,8 +161,8 @@ $(function() {
     }
 
     // heartbeat chat
-    var xData = [];
-    var yData = {};
+    var xData = [];     // [0]=3, [1]=6, [2]=9
+    var yData = {};     // {0:y3, 1:y6, 2:y9}
 
     var kb_mb = 1024;
     function setYData(level_1_obj, level_2_arr, index, indexData){
