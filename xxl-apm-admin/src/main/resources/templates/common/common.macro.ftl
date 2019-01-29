@@ -99,12 +99,21 @@
 		<!-- sidebar: style can be found in sidebar.less -->
 		<section class="sidebar">
 			<!-- sidebar menu: : style can be found in sidebar.less -->
-			<ul class="sidebar-menu">
+			<ul class="sidebar-menu" data-widget="tree" >
 				<li class="header">导航</li>
                 <li class="nav-click <#if pageName == "index">active</#if>" ><a href="${request.contextPath}/"><i class="fa fa-circle-o text-aqua"></i><span>运行报表</span></a></li>
                 <li class="nav-click <#if pageName == "Transaction">active</#if>" ><a href="${request.contextPath}/transaction"><i class="fa fa-circle-o text-green"></i><span>事务监控</span></a></li>
                 <li class="nav-click <#if pageName == "event">active</#if>" ><a href="${request.contextPath}/event"><i class="fa fa-circle-o text-yellow"></i><span>事件监控</span></a></li>
-                <li class="nav-click <#if pageName == "heartbeat">active</#if>" ><a href="${request.contextPath}/heartbeat"><i class="fa fa-circle-o text-red"></i><span>指标监控</span></a></li>
+                <li class="treeview <#if pageName == "heartbeat" || pageName == "threadinfo" >active</#if>" >
+                    <a href="javascript:void();">
+                        <i class="fa fa-circle-o text-red"></i><span>指标监控</span>
+                        <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                    </a>
+                    <ul class="treeview-menu" >
+                        <li class="nav-click <#if pageName == "heartbeat">active</#if>" ><a href="${request.contextPath}/heartbeat"><i class="fa fa-circle-o text-red"></i><span>指标监控</span></a></li>
+                        <li class="nav-click <#if pageName == "threadinfo">active</#if>"><a href="${request.contextPath}/heartbeat/threadinfo"><i class="fa fa-circle-o text-red"></i><span>线程堆栈</span></a></li>
+                    </ul>
+                </li>
                 <li class="nav-click <#if pageName == "help">active</#if>" ><a href="${request.contextPath}/help"><i class="fa fa-circle-o text-gray"></i><span>使用教程</span></a></li>
 			</ul>
 		</section>

@@ -125,4 +125,90 @@ public class HeartbeatController {
         return new ReturnT<>(appnameList);
     }
 
+
+
+    @RequestMapping("/threadinfo")
+    public String threadinfo(Model model, HttpServletRequest request, HttpServletResponse response,
+                        String querytime, String appname, String ip){
+
+        // get cookie
+        if (querytime == null) {
+            String xxlapm_querytime = CookieUtil.getValue(request, "xxlapm_querytime");
+            if (xxlapm_querytime != null) {
+                querytime = xxlapm_querytime;
+            }
+        }
+        if (appname == null) {
+            String xxlapm_appname = CookieUtil.getValue(request, "xxlapm_appname");
+            if (xxlapm_appname != null) {
+                appname = xxlapm_appname;
+            }
+        }
+
+        // parse querytime
+        Date querytime_date = null;
+        if (querytime!=null && querytime.trim().length()>0) {
+            querytime_date = DateUtil.parse(querytime, "yyyyMMddHH");
+        }
+        if (querytime_date == null) {
+            querytime_date = DateUtil.parse(DateUtil.format(new Date(), "yyyyMMddHH"), "yyyyMMddHH");
+        }
+        long addtime_from = querytime_date.getTime();
+        long addtime_to = addtime_from + 59*60*1000;    // an hour
+
+        // ipInfo
+        Map<String, String> ipInfo = new TreeMap<>();
+        if (appname!=null && appname.trim().length()>0) {
+            List<XxlApmHeartbeatReport> ipList = xxlApmHeartbeatReportDao.findIpList(appname, addtime_from, addtime_to);
+            if (ipList!=null && ipList.size()>0) {
+                for (XxlApmHeartbeatReport item: ipList) {
+                    ipInfo.put(item.getIp(), item.getIp().concat("(").concat(item.getHostname()).concat(")") );
+                }
+            }
+        }
+        model.addAttribute("ipInfo", ipInfo);
+
+        // ip
+        ip = (ip!=null&&ipInfo.containsKey(ip))
+                ? ip
+                : !ipInfo.isEmpty()
+                ?((TreeMap<String, String>) ipInfo).firstKey()
+                :null;
+
+        // filter data
+        model.addAttribute("querytime", querytime_date);
+        model.addAttribute("appname", appname);
+        model.addAttribute("ip", ip);
+
+        // set cookie
+        CookieUtil.set(response, "xxlapm_querytime", querytime, false);
+        CookieUtil.set(response, "xxlapm_appname", appname, false);
+
+
+        // load data
+        List<XxlApmHeartbeat> heartbeatList = new ArrayList<>();
+
+        if (ip != null) {
+            List<XxlApmHeartbeatReport> heartbeatReportList = xxlApmHeartbeatReportDao.find(appname, addtime_from, addtime_to, ip);
+            if (heartbeatReportList!=null && heartbeatReportList.size()>0) {
+                for (XxlApmHeartbeatReport heartbeatReport: heartbeatReportList) {
+                    XxlApmHeartbeat heartbeat = (XxlApmHeartbeat) XxlApmMsgServiceImpl.getSerializer().deserialize(heartbeatReport.getHeartbeat_data(), XxlApmHeartbeat.class);
+
+                    // hide thread stack
+                    for (XxlApmHeartbeat.ThreadInfo threadInfo:heartbeat.getThread_list()) {
+                        threadInfo.setStack_info(null);
+                    };
+
+                    heartbeatList.add(heartbeat);
+                }
+            }
+        }
+
+        if (heartbeatList.size() > 0) {
+            model.addAttribute("heartbeatList", JacksonUtil.writeValueAsString(heartbeatList));
+        }
+
+        return "heartbeat/threadinfo.index";
+    }
+
 }
