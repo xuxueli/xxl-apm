@@ -3,7 +3,6 @@ package com.xxl.apm.sample.controller;
 
 import com.xxl.apm.client.XxlApm;
 import com.xxl.apm.client.message.impl.XxlApmEvent;
-import com.xxl.apm.client.message.impl.XxlApmTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author xuxueli 2019-01-17
@@ -28,30 +26,36 @@ public class IndexController {
         int randomVal = new Random().nextInt(10);
         int error_result = 10/randomVal;
 
-
         /**
          *  1、Transaction 消息
          *
          *      说明："事务" 性质的消息，记录事务（一段逻辑）的运行情况；比如 "TPS、QPS、成功率、响应时间（最大、平均、99.9线、99线line、95line、90线）、运行次数、错误次数……" 等等。
-         *      示例：可参考如下示例；也可以参考为Web应用监控原生提供的 "XxlApmWebFilter"；
+         *      示例：可参考如下示例；也可以参考 "XxlApm为Web应用监控原生提供的监控组件：com.xxl.apm.client.support.XxlApmWebFilter "；
+         *
+         *      <code>
+         *          XxlApmTransaction transaction = new XxlApmTransaction("transaction_type", "transaction_name");
+         *          try {
+         *              // do something
+         *          } catch (Exception e) {
+         *              transaction.setError(e);
+         *              throw e;
+         *          } finally {
+         *              XxlApm.report(transaction);
+         *          }
+         *      </code>
          */
-        XxlApmTransaction transaction = new XxlApmTransaction("demo_random_transaction", String.valueOf(randomVal));
-        try {
-            TimeUnit.MILLISECONDS.sleep(randomVal);
-        } catch (InterruptedException e) {
-            transaction.setError(e);
-            throw e;
-        } finally {
-            XxlApm.report(transaction);
-        }
 
         /**
          *  2、Event 消息
          *
          *      说明："事件" 性质的消息，记录一个事件的发生次数；消息结构基本与 "Transaction" 消息一致，仅缺少 "耗时" 属性；如 "失败次数、黑名单拦截此处、非法请求次数" 等；
          *      示例：可参考如下示例；
+         *
+         *      <code>
+         *          XxlApm.report(new XxlApmEvent("event_type", "event_name"));
+         *      </code>
          */
-        XxlApm.report(new XxlApmEvent("demo_random_event", String.valueOf(randomVal)));
+        XxlApm.report(new XxlApmEvent("demo_random_event", "value="+randomVal ));
 
 
         /**

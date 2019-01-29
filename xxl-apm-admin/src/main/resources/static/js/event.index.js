@@ -243,7 +243,7 @@ $(function() {
         if (name == nameMap_all_name) {
             $('#timeLineModal ._name').html('All');
         } else {
-            $('#timeLineModal ._name').html('Name=' + name);
+            $('#timeLineModal ._name').html('Name：' + name);
         }
 
         // data fail
@@ -345,7 +345,7 @@ $(function() {
         if (name == nameMap_all_name) {
             $('#distributionModal ._name').html('All');
         } else {
-            $('#distributionModal ._name').html('Name=' + name);
+            $('#distributionModal ._name').html('Name：' + name);
         }
 
         // pie data
