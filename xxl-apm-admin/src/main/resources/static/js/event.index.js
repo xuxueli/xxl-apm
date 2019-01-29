@@ -17,7 +17,7 @@ $(function() {
     $( "#appname" ).autocomplete({
         source: function( request, response ) {
             $.ajax({
-                url: base_url + "/event/findAppNameList",
+                url: base_url + "/heartbeat/findAppNameList",
                 dataType: "json",
                 data: {
                     "appname": request.term

@@ -1,7 +1,6 @@
 package com.xxl.apm.admin.controller;
 
 import com.xxl.apm.admin.core.model.XxlApmEventReport;
-import com.xxl.apm.admin.core.result.ReturnT;
 import com.xxl.apm.admin.core.util.CookieUtil;
 import com.xxl.apm.admin.core.util.DateUtil;
 import com.xxl.apm.admin.core.util.JacksonUtil;
@@ -9,12 +8,13 @@ import com.xxl.apm.admin.dao.IXxlApmEventReportDao;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author xuxueli 2019-01-28
@@ -57,14 +57,17 @@ public class EventController {
         long addtime_from = querytime_date.getTime();
         long addtime_to = addtime_from + 59*60*1000;    // an hour
 
-        // ipInfo
+        // ipList
+
+
+        // typeList
         List<String> typeList = null;
         if (appname!=null && appname.trim().length()>0) {
             typeList = xxlApmEventReportDao.findTypeList(appname, addtime_from, addtime_to);
         }
         model.addAttribute("typeList", typeList);
 
-        // ip
+        // type
         type = (type!=null&&typeList!=null&&typeList.contains(type))
                 ? type
                 : (typeList!=null && typeList.size()>0)
@@ -103,16 +106,6 @@ public class EventController {
         }
 
         return "event/event.index";
-    }
-
-    @RequestMapping("/findAppNameList")
-    @ResponseBody
-    public ReturnT<List<String>> findAppNameList(String appname){
-        List<String> appnameList = xxlApmEventReportDao.findAppNameList(appname);
-        if (appnameList==null || appnameList.isEmpty()) {
-            return new ReturnT<>(ReturnT.FAIL_CODE, null);
-        }
-        return new ReturnT<>(appnameList);
     }
 
 }
