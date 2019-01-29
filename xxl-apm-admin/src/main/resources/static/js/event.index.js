@@ -378,6 +378,7 @@ $(function() {
             },
             series : [
                 {
+                    name: 'Distribution',
                     type: 'pie',
                     radius : '65%',
                     center: ['50%', '50%'],
@@ -392,30 +393,32 @@ $(function() {
                     }
                 }
             ],
-            color:['#749f83', '#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']
+            //color : ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
+            color:['#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']
         });
 
         var distributionModal_chart_right = echarts.init(document.getElementById('distributionModal_chart_right'));
         distributionModal_chart_right.setOption({
             title: {
-                text: 'Failure',
-                x:'center'
+                text: 'Failure'
             },
             tooltip : {
                 trigger: 'item',
                 formatter: "{a} <br/>{b} : {c} ({d}%)"
             },
             legend: {
-                orient: 'vertical',
-                left: 'left',
+                bottom: 10,
+                left: 'center',
+                type: 'scroll',
                 data: pieNameList_Failure
             },
             series : [
                 {
-                    name: '访问来源',
+                    name: 'Distribution',
                     type: 'pie',
-                    radius : '55%',
-                    center: ['50%', '60%'],
+                    radius : '65%',
+                    center: ['50%', '50%'],
+                    selectedMode: 'single',
                     data:pieNameValue_Failure,
                     itemStyle: {
                         emphasis: {
