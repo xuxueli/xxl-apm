@@ -196,7 +196,10 @@ $(function() {
 
     }
 
-    xData.sort();
+    xData.sort(function(a,b){
+        return a - b;
+    });
+
     for(var key in nameMapList) {
         var nameMap = nameMapList[key];
         nameMap.Failure_percent = nameMap.Failure/nameMap.Total;
@@ -255,9 +258,13 @@ $(function() {
                 _yData_Fail[min] = xData.indexOf(min)>-1?nameMapList[name].Failure_TimeLine[min]:0;
             }
         } else {
-            _xData = xData;
-            _yData_All = nameMapList[name].Total_TimeLine;
-            _yData_Fail = nameMapList[name].Failure_TimeLine;
+            for (var index in xData) {
+                var min = xData[index];
+
+                _xData.push(min);
+                _yData_All.push( xData.indexOf(min)>-1?nameMapList[name].Total_TimeLine[min]:0 );
+                _yData_Fail.push( xData.indexOf(min)>-1?nameMapList[name].Failure_TimeLine[min]:0 );
+            }
         }
 
         // bar
@@ -313,7 +320,7 @@ $(function() {
             xAxis: {
                 name: 'Min',
                 type: 'category',
-                data: xData
+                data: _xData
             },
             yAxis: {
                 name: 'count',
