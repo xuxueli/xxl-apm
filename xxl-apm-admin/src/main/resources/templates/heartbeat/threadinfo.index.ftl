@@ -113,9 +113,9 @@
 <script src="${request.contextPath}/static/plugins/jquery-ui/jquery-ui.min.js"></script>
 
 <script>
-    var heartbeatList;
-    <#if heartbeatList?exists>
-        heartbeatList = JSON.parse('${heartbeatList}');
+    var threadinfo;
+    <#if threadinfo?exists>
+        threadinfo = JSON.parse('${threadinfo}');
     </#if>
 
 </script>

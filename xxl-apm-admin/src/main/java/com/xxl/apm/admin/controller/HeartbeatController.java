@@ -186,27 +186,7 @@ public class HeartbeatController {
 
 
         // load data
-        List<XxlApmHeartbeat> heartbeatList = new ArrayList<>();
 
-        if (ip != null) {
-            List<XxlApmHeartbeatReport> heartbeatReportList = xxlApmHeartbeatReportDao.find(appname, addtime_from, addtime_to, ip);
-            if (heartbeatReportList!=null && heartbeatReportList.size()>0) {
-                for (XxlApmHeartbeatReport heartbeatReport: heartbeatReportList) {
-                    XxlApmHeartbeat heartbeat = (XxlApmHeartbeat) XxlApmMsgServiceImpl.getSerializer().deserialize(heartbeatReport.getHeartbeat_data(), XxlApmHeartbeat.class);
-
-                    // hide thread stack
-                    for (XxlApmHeartbeat.ThreadInfo threadInfo:heartbeat.getThread_list()) {
-                        threadInfo.setStack_info(null);
-                    };
-
-                    heartbeatList.add(heartbeat);
-                }
-            }
-        }
-
-        if (heartbeatList.size() > 0) {
-            model.addAttribute("heartbeatList", JacksonUtil.writeValueAsString(heartbeatList));
-        }
 
         return "heartbeat/threadinfo.index";
     }
