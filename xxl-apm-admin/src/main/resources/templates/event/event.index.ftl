@@ -160,7 +160,7 @@
                         <div class="col-md-12 col-xs-12">
                             <div class="box ">
                                 <div class="box-body no-padding">
-                                    <table class="table table-striped" id="event-table-ip" style="width: 100%;">
+                                    <table class="table table-striped" id="distributionModal-distribution" style="width: 100%;">
                                         <thead>
                                         <tr>
                                             <th>IP</th>

@@ -112,28 +112,17 @@ $(function() {
      *          Failure_percent: xxx,
      *          QPS: xxx,
      *          Percent: xxx,
-     *          Total_ARRAY: {
+     *          Total_TimeLine: {
      *              index, xx       // {0:y3, 1:y6, 2:y9}
      *          },
-     *          Failure_ARRAY: {
+     *          Failure_TimeLine: {
      *              index, xx
      *          },
-     *          'SubIpData'{
-     *              'ip-x':{
-     *                  Ip: 'xxx',
-     *                  HostName: 'xxx',
-     *                  Total: xxx,
-     *                  Failure: xxx,
-     *                  Failure_percent: xxx,
-     *                  QPS: xxx,
-     *                  Percent: xxx,
-     *                  Total_ARRAY: {
-     *                      index, xx
-     *                  },
-     *                  Failure_ARRAY: {
-     *                      index, xx
-     *                  },
-     *              }
+     *          'Total_Ip_Distribution'{
+     *              'ip-x': xx
+     *          },
+     *          'Failure_Ip_Distribution'{
+     *              'ip-x': xx
      *          }
      *      }
      *  }
@@ -152,8 +141,8 @@ $(function() {
         nameMap.QPS = 0;
         nameMap.Percent = 0;
 
-        nameMap.Total_ARRAY = {};
-        nameMap.Failure_ARRAY = {};
+        nameMap.Total_TimeLine = {};
+        nameMap.Failure_TimeLine = {};
 
         nameMap.SubIpData = {};
 
@@ -178,8 +167,8 @@ $(function() {
         nameMap_item.Total += eventReport.total_count;
         nameMap_item.Failure += eventReport.fail_count;
 
-        nameMap_item.Total_ARRAY[min] = eventReport.total_count;
-        nameMap_item.Failure_ARRAY[min] = eventReport.fail_count;
+        nameMap_item.Total_TimeLine[min] = eventReport.total_count;
+        nameMap_item.Failure_TimeLine[min] = eventReport.fail_count;
 
         // all
         var nameMap_all = nameMapList[nameMap_all_name];
@@ -190,8 +179,8 @@ $(function() {
         nameMap_all.Total += eventReport.total_count;
         nameMap_all.Failure += eventReport.fail_count;
 
-        nameMap_all.Total_ARRAY[min] = (nameMap_all.Total_ARRAY[min]?nameMap_all.Total_ARRAY[min]:0) + eventReport.total_count;
-        nameMap_all.Failure_ARRAY[min] = (nameMap_all.Failure_ARRAY[min]?nameMap_all.Failure_ARRAY[min]:0) + eventReport.fail_count;
+        nameMap_all.Total_TimeLine[min] = (nameMap_all.Total_TimeLine[min]?nameMap_all.Total_TimeLine[min]:0) + eventReport.total_count;
+        nameMap_all.Failure_TimeLine[min] = (nameMap_all.Failure_TimeLine[min]?nameMap_all.Failure_TimeLine[min]:0) + eventReport.fail_count;
 
     }
 
@@ -250,13 +239,13 @@ $(function() {
         if (xData.length < 30) {
             for (var min = 0; min < 60; min++) {
                 _xData[min] = min;
-                _yData_All[min] = xData.indexOf(min)>-1?nameMapList[name].Total_ARRAY[min]:0;
-                _yData_Fail[min] = xData.indexOf(min)>-1?nameMapList[name].Failure_ARRAY[min]:0;
+                _yData_All[min] = xData.indexOf(min)>-1?nameMapList[name].Total_TimeLine[min]:0;
+                _yData_Fail[min] = xData.indexOf(min)>-1?nameMapList[name].Failure_TimeLine[min]:0;
             }
         } else {
             _xData = xData;
-            _yData_All = nameMapList[name].Total_ARRAY;
-            _yData_Fail = nameMapList[name].Failure_ARRAY;
+            _yData_All = nameMapList[name].Total_TimeLine;
+            _yData_Fail = nameMapList[name].Failure_TimeLine;
         }
 
         // bar
@@ -324,21 +313,28 @@ $(function() {
             }]
         });
 
-        // ip table
-        /*var TableData_ip = [];
+        $('#timeLineModal').modal('show');
+
+    });
+
+
+    // Distribution
+    $('#event-table').on('click', '.Distribution', function () {
+
+        // ip distribution
+        var TableData_ip = [];
         TableData_ip.push(['127.0.0.1', 'localhost', 100, 3, 0.3, new Date().getTime(), 0.2]);
         console.log(TableData_ip);
-        $('#event-table-ip').dataTable( {
+        $('#distributionModal-distribution').dataTable( {
             "data": TableData_ip,
             "paging": false,
             "searching": false,
             "order": [[ 1, 'desc' ]],
             "info": false,
             "destroy": true
-        } );*/
+        } );
 
-        $('#timeLineModal').modal('show');
-
+        $('#distributionModal').modal('show');
     });
 
 });
