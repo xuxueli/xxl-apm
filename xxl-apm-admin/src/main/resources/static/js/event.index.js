@@ -120,7 +120,8 @@ $(function() {
      *          },
      *          'SubIpData'{
      *              'ip-x':{
-     *                  Name: 'xxx',
+     *                  Ip: 'xxx',
+     *                  HostName: 'xxx',
      *                  Total: xxx,
      *                  Failure: xxx,
      *                  Failure_percent: xxx,
@@ -163,7 +164,10 @@ $(function() {
         var eventReport = eventReportList[index];
 
         // x-data, ms -> min
-        xData[index] = (eventReport.addtime/(1000*60))%60;
+        var min = (eventReport.addtime/(1000*60))%60;
+        if (xData.indexOf(min) == -1) {
+            xData.push(min);
+        }
 
         // item
         var nameMap_item = nameMapList[eventReport.name+''];
@@ -174,8 +178,8 @@ $(function() {
         nameMap_item.Total += eventReport.total_count;
         nameMap_item.Failure += eventReport.fail_count;
 
-        nameMap_item.Total_ARRAY[index] = eventReport.total_count;
-        nameMap_item.Failure_ARRAY[index] = eventReport.fail_count;
+        nameMap_item.Total_ARRAY[min] = eventReport.total_count;
+        nameMap_item.Failure_ARRAY[min] = eventReport.fail_count;
 
         // all
         var nameMap_all = nameMapList[nameMap_all_name];
@@ -186,11 +190,12 @@ $(function() {
         nameMap_all.Total += eventReport.total_count;
         nameMap_all.Failure += eventReport.fail_count;
 
-        nameMap_all.Total_ARRAY[index] = nameMap_all.Total_ARRAY[index]?nameMap_all.Total_ARRAY[index]:0 + eventReport.total_count;
-        nameMap_all.Failure_ARRAY[index] = nameMap_all.Failure_ARRAY[index]?nameMap_all.Failure_ARRAY[index]:0 + eventReport.fail_count;
-    }
-    //console.log(nameMapList);
+        nameMap_all.Total_ARRAY[min] = (nameMap_all.Total_ARRAY[min]?nameMap_all.Total_ARRAY[min]:0) + eventReport.total_count;
+        nameMap_all.Failure_ARRAY[min] = (nameMap_all.Failure_ARRAY[min]?nameMap_all.Failure_ARRAY[min]:0) + eventReport.fail_count;
 
+    }
+
+    xData.sort();
     for(var key in nameMapList) {
         var nameMap = nameMapList[key];
         nameMap.Failure_percent = nameMap.Failure/nameMap.Total;
@@ -198,7 +203,7 @@ $(function() {
         nameMap.Percent = nameMap.Total/nameMapList[nameMap_all_name].Total;
     }
 
-    // write table
+    // event table
     var TableData = [];
     function addTableData(nameMap){
         var nameMapArr = [];
@@ -208,7 +213,8 @@ $(function() {
         nameMapArr[3] = '<span style="color: '+ (nameMap.Failure_percent>0?'red':'black') +';">'+ toDecimal( nameMap.Failure_percent*100 ) +'%</span>';
         nameMapArr[4] = toDecimal( nameMap.QPS );
         nameMapArr[5] = toDecimal( nameMap.Percent*100 ) + '%';
-        nameMapArr[6] = '<a href="javascript:;" class="Chart" data-name="'+ nameMap.Name +'" >Show</a>';
+        nameMapArr[6] = '<a href="javascript:;" class="TimeLine" data-name="'+ nameMap.Name +'" >TimeLine</a> | ' +
+            '<a href="javascript:;" class="Distribution" data-name="'+ nameMap.Name +'" >Distribution</a>';
         nameMapArr[7] = '--';
 
         TableData.push(nameMapArr);
@@ -225,29 +231,71 @@ $(function() {
         "info": false
     } );
 
-    // chart
-    $('#event-table').on('click', '.Chart', function () {
+    // TimeLine
+    $('#event-table').on('click', '.TimeLine', function () {
 
         // name
         var name = $(this).data('name');
         if (name == nameMap_all_name) {
-            $('#chartModal ._name').html('All');
+            $('#timeLineModal ._name').html('All');
         } else {
-            $('#chartModal ._name').html('Name=' + name);
+            $('#timeLineModal ._name').html('Name=' + name);
         }
 
         // data fail
-        var xData = [];
-        var yData = [];
-        for (var i = 0; i < 60; i++) {
-            xData[i] = i;
-            yData[i] = Math.random() * 100;
+        var _xData = [];
+        var _yData_All = [];
+        var _yData_Fail = [];
+
+        if (xData.length < 30) {
+            for (var min = 0; min < 60; min++) {
+                _xData[min] = min;
+                _yData_All[min] = xData.indexOf(min)>-1?nameMapList[name].Total_ARRAY[min]:0;
+                _yData_Fail[min] = xData.indexOf(min)>-1?nameMapList[name].Failure_ARRAY[min]:0;
+            }
+        } else {
+            _xData = xData;
+            _yData_All = nameMapList[name].Total_ARRAY;
+            _yData_Fail = nameMapList[name].Failure_ARRAY;
         }
 
-        // data
-        var barOption = {
+        // bar
+        var timeLineModal_chart_left = echarts.init(document.getElementById('timeLineModal_chart_left'));
+        timeLineModal_chart_left.setOption({
             title: {
-                text: ''
+                text: 'Total'
+            },
+            toolbox: {
+                show : true,
+                feature : {
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            tooltip : {
+                trigger: 'axis'
+            },
+            xAxis: {
+                name: 'Min',
+                type: 'category',
+                data: _xData
+            },
+            yAxis: {
+                name: 'count',
+                type: 'value'
+            },
+            series: [{
+                data: _yData_All,
+                type: 'bar'
+            }]
+        });
+
+        var timeLineModal_chart_right = echarts.init(document.getElementById('timeLineModal_chart_right'));
+        timeLineModal_chart_right.setOption({
+            title: {
+                text: 'Failure'
             },
             toolbox: {
                 show : true,
@@ -271,22 +319,13 @@ $(function() {
                 type: 'value'
             },
             series: [{
-                data: yData,
+                data: _yData_Fail,
                 type: 'bar'
             }]
-        };
-
-        // bar
-        var chartModal_chart_left = echarts.init(document.getElementById('chartModal_chart_left'));
-        barOption.title.text = 'Total';
-        chartModal_chart_left.setOption(barOption);
-
-        var chartModal_chart_right = echarts.init(document.getElementById('chartModal_chart_right'));
-        barOption.title.text = 'Failure';
-        chartModal_chart_right.setOption(barOption);
+        });
 
         // ip table
-        var TableData_ip = [];
+        /*var TableData_ip = [];
         TableData_ip.push(['127.0.0.1', 'localhost', 100, 3, 0.3, new Date().getTime(), 0.2]);
         console.log(TableData_ip);
         $('#event-table-ip').dataTable( {
@@ -296,9 +335,9 @@ $(function() {
             "order": [[ 1, 'desc' ]],
             "info": false,
             "destroy": true
-        } );
+        } );*/
 
-        $('#chartModal').modal('show');
+        $('#timeLineModal').modal('show');
 
     });
 

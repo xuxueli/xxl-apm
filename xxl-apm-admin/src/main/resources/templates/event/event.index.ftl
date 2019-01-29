@@ -60,6 +60,16 @@
 	            <div class="col-xs-1">
 	            	<button class="btn btn-block btn-info" id="searchBtn">GO</button>
 	            </div>
+
+                <div class="col-xs-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">机器</span>
+                        <select class="form-control select2" style="width: 100%;" id="ip" >
+                            <option value="" >全部</option>
+                        </select>
+                    </div>
+                </div>
+
           	</div>
 
 			<div class="row">
@@ -95,12 +105,12 @@
 	<!-- footer -->
 	<@netCommon.commonFooter />
 
-    <!-- 报表.模态框 -->
-    <div class="modal fade" id="chartModal" tabindex="-1" role="dialog"  aria-hidden="true">
+    <!-- 报表-TimeLine.模态框 -->
+    <div class="modal fade" id="timeLineModal" tabindex="-1" role="dialog"  aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" >报表 | <span class="_name"></span></h4>
+                    <h4 class="modal-title" >TimeLine | <span class="_name"></span></h4>
                 </div>
                 <div class="modal-body">
 
@@ -109,7 +119,7 @@
                             <!-- AREA CHART -->
                             <div class="box box-success">
                                 <div class="box-body chart-responsive">
-                                    <div class="chart" id="chartModal_chart_left" style="height: 300px;width: 400px;"></div>
+                                    <div class="chart" id="timeLineModal_chart_left" style="height: 300px;width: 400px;"></div>
                                 </div>
                                 <!-- /.box-body -->
                             </div>
@@ -121,7 +131,7 @@
                             <!-- LINE CHART -->
                             <div class="box box-danger">
                                 <div class="box-body chart-responsive">
-                                    <div class="chart" id="chartModal_chart_right" style="height: 300px;width: 400px;"></div>
+                                    <div class="chart" id="timeLineModal_chart_right" style="height: 300px;width: 400px;"></div>
                                 </div>
                                 <!-- /.box-body -->
                             </div>
@@ -130,6 +140,20 @@
                         <!-- /.col (RIGHT) -->
                     </div>
                     <!-- /.row -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 报表-Distribution.模态框 -->
+    <div class="modal fade" id="distributionModal" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" >报表 | <span class="_name"></span></h4>
+                </div>
+                <div class="modal-body">
 
                     <div class="row">
                         <br>
