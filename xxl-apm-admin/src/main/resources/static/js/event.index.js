@@ -118,10 +118,10 @@ $(function() {
      *          Failure_TimeLine: {
      *              index, xx
      *          },
-     *          'Total_Ip_Distribution'{
+     *          'Total_Distribution'{
      *              'ip-x': xx
      *          },
-     *          'Failure_Ip_Distribution'{
+     *          'Failure_Distribution'{
      *              'ip-x': xx
      *          }
      *      }
@@ -143,6 +143,10 @@ $(function() {
 
         nameMap.Total_TimeLine = {};
         nameMap.Failure_TimeLine = {};
+
+        nameMap.Total_Distribution = {};
+        nameMap.Failure_Distribution = {};
+
 
         nameMap.SubIpData = {};
 
@@ -170,6 +174,9 @@ $(function() {
         nameMap_item.Total_TimeLine[min] = eventReport.total_count;
         nameMap_item.Failure_TimeLine[min] = eventReport.fail_count;
 
+        nameMap_item.Total_Distribution[eventReport.ip] = (nameMap_item.Total_Distribution[eventReport.ip]?nameMap_item.Total_Distribution[eventReport.ip]:0) + eventReport.total_count;
+        nameMap_item.Failure_Distribution[eventReport.ip] = (nameMap_item.Failure_Distribution[eventReport.ip]?nameMap_item.Failure_Distribution[eventReport.ip]:0) + eventReport.fail_count;
+
         // all
         var nameMap_all = nameMapList[nameMap_all_name];
         if (!nameMap_all) {
@@ -181,6 +188,9 @@ $(function() {
 
         nameMap_all.Total_TimeLine[min] = (nameMap_all.Total_TimeLine[min]?nameMap_all.Total_TimeLine[min]:0) + eventReport.total_count;
         nameMap_all.Failure_TimeLine[min] = (nameMap_all.Failure_TimeLine[min]?nameMap_all.Failure_TimeLine[min]:0) + eventReport.fail_count;
+
+        nameMap_all.Total_Distribution[eventReport.ip] = (nameMap_all.Total_Distribution[eventReport.ip]?nameMap_all.Total_Distribution[eventReport.ip]:0) + eventReport.total_count;
+        nameMap_all.Failure_Distribution[eventReport.ip] = (nameMap_all.Failure_Distribution[eventReport.ip]?nameMap_all.Failure_Distribution[eventReport.ip]:0) + eventReport.fail_count;
 
     }
 
@@ -321,18 +331,102 @@ $(function() {
     // Distribution
     $('#event-table').on('click', '.Distribution', function () {
 
-        // ip distribution
-        var TableData_ip = [];
-        TableData_ip.push(['127.0.0.1', 'localhost', 100, 3, 0.3, new Date().getTime(), 0.2]);
-        console.log(TableData_ip);
-        $('#distributionModal-distribution').dataTable( {
-            "data": TableData_ip,
-            "paging": false,
-            "searching": false,
-            "order": [[ 1, 'desc' ]],
-            "info": false,
-            "destroy": true
-        } );
+        // name
+        var name = $(this).data('name');
+        if (name == nameMap_all_name) {
+            $('#distributionModal ._name').html('All');
+        } else {
+            $('#distributionModal ._name').html('Name=' + name);
+        }
+
+        // pie data
+        var pieNameList_Total = [];
+        var pieNameValue_Total = [];
+        for (var pieNameItem in nameMapList[name].Total_Distribution) {
+            pieNameList_Total.push(pieNameItem);
+            pieNameValue_Total.push({
+                name    :   pieNameItem,
+                value   :   nameMapList[name].Total_Distribution[pieNameItem]
+            });
+        }
+
+        var pieNameList_Failure = [];
+        var pieNameValue_Failure = [];
+        for (var pieNameItem in nameMapList[name].Failure_Distribution) {
+            pieNameList_Failure.push(pieNameItem);
+            pieNameValue_Failure.push({
+                name    :   pieNameItem,
+                value   :   nameMapList[name].Failure_Distribution[pieNameItem]
+            });
+        }
+
+        // pie
+        var distributionModal_chart_left = echarts.init(document.getElementById('distributionModal_chart_left'));
+        distributionModal_chart_left.setOption({
+            title: {
+                text: 'Total'
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                bottom: 10,
+                left: 'center',
+                type: 'scroll',
+                data: pieNameList_Total
+            },
+            series : [
+                {
+                    type: 'pie',
+                    radius : '65%',
+                    center: ['50%', '50%'],
+                    selectedMode: 'single',
+                    data:pieNameValue_Total,
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ],
+            color:['#749f83', '#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3']
+        });
+
+        var distributionModal_chart_right = echarts.init(document.getElementById('distributionModal_chart_right'));
+        distributionModal_chart_right.setOption({
+            title: {
+                text: 'Failure',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: pieNameList_Failure
+            },
+            series : [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius : '55%',
+                    center: ['50%', '60%'],
+                    data:pieNameValue_Failure,
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        });
 
         $('#distributionModal').modal('show');
     });

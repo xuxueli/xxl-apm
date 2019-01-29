@@ -151,33 +151,36 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" >报表 | <span class="_name"></span></h4>
+                    <h4 class="modal-title" >Distribution | <span class="_name"></span></h4>
                 </div>
                 <div class="modal-body">
 
                     <div class="row">
-                        <br>
-                        <div class="col-md-12 col-xs-12">
-                            <div class="box ">
-                                <div class="box-body no-padding">
-                                    <table class="table table-striped" id="distributionModal-distribution" style="width: 100%;">
-                                        <thead>
-                                        <tr>
-                                            <th>IP</th>
-                                            <th>HostName</th>
-                                            <th>Total</th>
-                                            <th>Failure</th>
-                                            <th>Failure%</th>
-                                            <th>QPS</th>
-                                            <th>Percent%</th>
-                                        </tr>
-                                        </thead>
-                                    </table>
+                        <div class="col-md-6">
+                            <!-- AREA CHART -->
+                            <div class="box box-success">
+                                <div class="box-body chart-responsive">
+                                    <div class="chart" id="distributionModal_chart_left" style="height: 300px;width: 400px;"></div>
                                 </div>
                                 <!-- /.box-body -->
                             </div>
+                            <!-- /.box -->
                         </div>
+
+                        <!-- /.col (LEFT) -->
+                        <div class="col-md-6">
+                            <!-- LINE CHART -->
+                            <div class="box box-danger">
+                                <div class="box-body chart-responsive">
+                                    <div class="chart" id="distributionModal_chart_right" style="height: 300px;width: 400px;"></div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <!-- /.col (RIGHT) -->
                     </div>
+                    <!-- /.row -->
 
                 </div>
             </div>
