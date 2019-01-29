@@ -85,7 +85,7 @@ $(function() {
 
     // valid heartbeat data
     if (!heartbeatList) {
-        appendTips("暂无数据");
+        appendTips("暂无指标数据");
         return;
     }
 
