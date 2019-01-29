@@ -46,11 +46,12 @@
 
                 <div class="col-xs-4">
                     <div class="input-group">
-                        <span class="input-group-addon">Type</span>
-                        <select class="form-control select2" style="width: 100%;" id="type" >
-                            <#if typeList?exists >
-                                <#list typeList as item>
-                                    <option value="${item}" <#if type?exists && type==item>selected="selected"</#if> >${item}</option>
+                        <span class="input-group-addon">机器</span>
+                        <select class="form-control select2" style="width: 100%;" id="ip" >
+                            <option value="" >全部</option>
+                            <#if ipInfo?exists >
+                                <#list ipInfo?keys as key>
+                                    <option value="${key}" <#if ip?exists && ip==key>selected="selected"</#if> >${ipInfo[key]}</option>
                                 </#list>
                             </#if>
                         </select>
@@ -63,9 +64,13 @@
 
                 <div class="col-xs-4">
                     <div class="input-group">
-                        <span class="input-group-addon">机器</span>
-                        <select class="form-control select2" style="width: 100%;" id="ip" >
-                            <option value="" >全部</option>
+                        <span class="input-group-addon">Type</span>
+                        <select class="form-control select2" style="width: 100%;" id="type" >
+                            <#if typeList?exists >
+                                <#list typeList as item>
+                                    <option value="${item}" <#if type?exists && type==item>selected="selected"</#if> >${item}</option>
+                                </#list>
+                            </#if>
                         </select>
                     </div>
                 </div>

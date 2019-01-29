@@ -1,10 +1,12 @@
 package com.xxl.apm.admin.controller;
 
 import com.xxl.apm.admin.core.model.XxlApmEventReport;
+import com.xxl.apm.admin.core.model.XxlApmHeartbeatReport;
 import com.xxl.apm.admin.core.util.CookieUtil;
 import com.xxl.apm.admin.core.util.DateUtil;
 import com.xxl.apm.admin.core.util.JacksonUtil;
 import com.xxl.apm.admin.dao.IXxlApmEventReportDao;
+import com.xxl.apm.admin.dao.IXxlApmHeartbeatReportDao;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author xuxueli 2019-01-28
@@ -26,11 +26,14 @@ public class EventController {
 
     @Resource
     private IXxlApmEventReportDao xxlApmEventReportDao;
+    @Resource
+    private IXxlApmHeartbeatReportDao xxlApmHeartbeatReportDao;
 
 
     @RequestMapping("")
     public String index(Model model, HttpServletRequest request, HttpServletResponse response,
-                        String querytime, String appname, String type){
+                        String querytime, String appname, String ip,
+                        String type){
 
         // get cookie
         if (querytime == null) {
@@ -57,8 +60,31 @@ public class EventController {
         long addtime_from = querytime_date.getTime();
         long addtime_to = addtime_from + 59*60*1000;    // an hour
 
-        // ipList
+        // ipInfo
+        Map<String, String> ipInfo = new TreeMap<>();
+        if (appname!=null && appname.trim().length()>0) {
+            List<XxlApmHeartbeatReport> ipList = xxlApmHeartbeatReportDao.findIpList(appname, addtime_from, addtime_to);
+            if (ipList!=null && ipList.size()>0) {
+                for (XxlApmHeartbeatReport item: ipList) {
+                    ipInfo.put(item.getIp(), item.getIp().concat("(").concat(item.getHostname()).concat(")") );
+                }
+            }
+        }
+        model.addAttribute("ipInfo", ipInfo);
 
+        // ip
+        ip = (ip!=null&&ipInfo.containsKey(ip))
+                ? ip
+                : null;
+
+        // filter data
+        model.addAttribute("querytime", querytime_date);
+        model.addAttribute("appname", appname);
+        model.addAttribute("ip", ip);
+
+        // set cookie
+        CookieUtil.set(response, "xxlapm_querytime", querytime, false);
+        CookieUtil.set(response, "xxlapm_appname", appname, false);
 
         // typeList
         List<String> typeList = null;
@@ -73,15 +99,7 @@ public class EventController {
                 : (typeList!=null && typeList.size()>0)
                 ?typeList.get(0)
                 :null;
-
-        // filter data
-        model.addAttribute("querytime", querytime_date);
-        model.addAttribute("appname", appname);
         model.addAttribute("type", type);
-
-        // set cookie
-        CookieUtil.set(response, "xxlapm_querytime", querytime, false);
-        CookieUtil.set(response, "xxlapm_appname", appname, false);
 
 
         // periodSecond
@@ -94,7 +112,7 @@ public class EventController {
         // load data
         List<XxlApmEventReport> eventReportList = new ArrayList<>();
         if (type != null) {
-            List<XxlApmEventReport> heartbeatReportList = xxlApmEventReportDao.find(appname, addtime_from, addtime_to, type);
+            List<XxlApmEventReport> heartbeatReportList = xxlApmEventReportDao.find(appname, addtime_from, addtime_to, ip, type);
             if (heartbeatReportList!=null && heartbeatReportList.size()>0) {
                 for (XxlApmEventReport eventReport: heartbeatReportList) {
                     eventReportList.add(eventReport);

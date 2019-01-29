@@ -57,7 +57,7 @@ public class HeartbeatController {
             querytime_date = DateUtil.parse(DateUtil.format(new Date(), "yyyyMMddHH"), "yyyyMMddHH");
         }
         long addtime_from = querytime_date.getTime();
-        long addtime_to = addtime_from + 59*60*1000;
+        long addtime_to = addtime_from + 59*60*1000;    // an hour
 
         // ipInfo
         Map<String, String> ipInfo = new TreeMap<>();

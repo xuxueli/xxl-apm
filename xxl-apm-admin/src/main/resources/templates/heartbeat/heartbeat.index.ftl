@@ -64,7 +64,7 @@
 
                 <div id="bar-sample" style="display: none;" >
                     <div class="col-md-6 col-xs-12-" >
-                        <div class="box box-success">
+                        <div class="box box-default">
                             <div class="box-body chart-responsive">
                                 <div class="chart bar-item" id="{id}" style="height: 300px;" ></div>
                             </div>

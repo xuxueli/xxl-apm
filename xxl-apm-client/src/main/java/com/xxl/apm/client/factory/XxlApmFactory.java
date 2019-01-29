@@ -239,13 +239,13 @@ public class XxlApmFactory {
 
                 while (!innerThreadPoolStoped) {
 
-                    int waitTim = 5;
+                    int waitTim = 3;
                     try {
                         boolean beatResult = xxlApmMsgService.beat();
 
                         File msglogpathDir = new File(msglogpath);
                         if (beatResult && msglogpathDir.list()!=null && msglogpathDir.list().length>0) {
-                            waitTim = 5;
+                            waitTim = 3;
 
                             // {msglogpath}/{timestamp}
                             for (File msgFileDir : msglogpathDir.listFiles()) {
