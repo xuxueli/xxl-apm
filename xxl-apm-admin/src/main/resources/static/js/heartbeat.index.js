@@ -92,7 +92,7 @@ $(function() {
     // heartbeat chart tool
     var baaSample = $('#bar-sample').html();
     var barNo = 1;
-    function makeBar(name, xData, yData, yDataUnit){
+    function makeBar(name, xData, yDataItem, yDataUnit){
 
         var barItemId = 'bar-item-'+(barNo++);
         var fullgcBar = baaSample.replace('{id}', barItemId)
@@ -105,11 +105,15 @@ $(function() {
         if (xData.length < 30) {
             for (var min = 0; min < 60; min++) {
                 xData2[min] = min;
-                yData2[min] = xData.indexOf(min)>-1?yData[xData.indexOf(min)]:0;
+                yData2[min] = xData.indexOf(min)>-1?yDataItem[min]:0;
             }
         } else {
-            xData2 = xData;
-            yData2 = yData;
+            for (var index in xData) {
+                var min = xData[index];
+
+                xData2.push(min);
+                yData2.push( xData.indexOf(min)>-1?yDataItem[min]:0 );
+            }
         }
 
         var barOption = {
@@ -162,53 +166,56 @@ $(function() {
     }
 
     // heartbeat chat
-    var xData = [];     // [0]=3, [1]=6, [2]=9
-    var yData = {};     // {0:y3, 1:y6, 2:y9}
+    var xData = [];     // [1,3,9]
+    var yData = {};     // {1:y1, 3:y3, 9:y9}
 
     var kb_mb = 1024;
-    function setYData(level_1_obj, level_2_arr, index, indexData){
+    function setYData(level_1_obj, level_2_arr, min, minData){
         if (!yData[level_1_obj]){
             yData[level_1_obj] = {};
         }
         if (!yData[level_1_obj+''][level_2_arr+'']) {
-            yData[level_1_obj+''][level_2_arr+''] = [];
+            yData[level_1_obj+''][level_2_arr+''] = {};
         }
 
-        yData[level_1_obj+''][level_2_arr+''][index] = indexData;
+        yData[level_1_obj+''][level_2_arr+''][min] = minData;
     }
 
     for (var index in heartbeatList) {
         var heartbeat = heartbeatList[index];
 
         // x-data, ms -> min
-        xData[index] = (heartbeat.addtime/(1000*60))%60;
+        var min = (heartbeat.addtime/(1000*60))%60;
+        if (xData.indexOf(min) == -1) {
+            xData.push(min);
+        }
 
         // gc, km -> mb
-        setYData('young_gc', 'count', index, heartbeat.young_gc.count );
-        setYData('young_gc', 'time', index, heartbeat.young_gc.time );
-        setYData('full_gc', 'count', index, heartbeat.full_gc.count );
-        setYData('full_gc', 'time', index, heartbeat.full_gc.time );
-        setYData('unknown_gc', 'count', index, heartbeat.unknown_gc.count );
-        setYData('unknown_gc', 'time', index, heartbeat.unknown_gc.time );
+        setYData('young_gc', 'count', min, heartbeat.young_gc.count );
+        setYData('young_gc', 'time', min, heartbeat.young_gc.time );
+        setYData('full_gc', 'count', min, heartbeat.full_gc.count );
+        setYData('full_gc', 'time', min, heartbeat.full_gc.time );
+        setYData('unknown_gc', 'count', min, heartbeat.unknown_gc.count );
+        setYData('unknown_gc', 'time', min, heartbeat.unknown_gc.time );
 
         // memory, km -> mb
-        setYData('heap_all', 'used_space', index, toDecimal( heartbeat.heap_all.used_space/kb_mb ) );
-        setYData('heap_all', 'used_percent', index, toDecimal( heartbeat.heap_all.used_space*100/heartbeat.heap_all.max_space ) );
-        setYData('heap_eden_space', 'used_space', index, toDecimal( heartbeat.heap_eden_space.used_space/kb_mb ) );
-        setYData('heap_eden_space', 'used_percent', index, toDecimal( heartbeat.heap_eden_space.used_space*100/heartbeat.heap_eden_space.max_space ) );
-        setYData('heap_survivor_space', 'used_space', index, toDecimal( heartbeat.heap_survivor_space.used_space/kb_mb ) );
-        setYData('heap_survivor_space', 'used_percent', index, toDecimal( heartbeat.heap_survivor_space.used_space*100/heartbeat.heap_survivor_space.max_space ) );
-        setYData('heap_old_gen', 'used_space', index, toDecimal( heartbeat.heap_old_gen.used_space/kb_mb ) );
-        setYData('heap_old_gen', 'used_percent', index, toDecimal( heartbeat.heap_old_gen.used_space*100/heartbeat.heap_old_gen.max_space ) );
+        setYData('heap_all', 'used_space', min, toDecimal( heartbeat.heap_all.used_space/kb_mb ) );
+        setYData('heap_all', 'used_percent', min, toDecimal( heartbeat.heap_all.used_space*100/heartbeat.heap_all.max_space ) );
+        setYData('heap_eden_space', 'used_space', min, toDecimal( heartbeat.heap_eden_space.used_space/kb_mb ) );
+        setYData('heap_eden_space', 'used_percent', min, toDecimal( heartbeat.heap_eden_space.used_space*100/heartbeat.heap_eden_space.max_space ) );
+        setYData('heap_survivor_space', 'used_space', min, toDecimal( heartbeat.heap_survivor_space.used_space/kb_mb ) );
+        setYData('heap_survivor_space', 'used_percent', min, toDecimal( heartbeat.heap_survivor_space.used_space*100/heartbeat.heap_survivor_space.max_space ) );
+        setYData('heap_old_gen', 'used_space', min, toDecimal( heartbeat.heap_old_gen.used_space/kb_mb ) );
+        setYData('heap_old_gen', 'used_percent', min, toDecimal( heartbeat.heap_old_gen.used_space*100/heartbeat.heap_old_gen.max_space ) );
 
-        setYData('non_heap_all', 'used_space', index, toDecimal( heartbeat.non_heap_all.used_space/kb_mb ) );
-        setYData('non_heap_all', 'used_percent', index, toDecimal( heartbeat.non_heap_all.used_space*100/heartbeat.non_heap_all.max_space ) );
-        setYData('non_heap_code_cache', 'used_space', index, toDecimal( heartbeat.non_heap_code_cache.used_space/kb_mb ) );
-        setYData('non_heap_code_cache', 'used_percent', index, toDecimal( heartbeat.non_heap_code_cache.used_space*100/heartbeat.non_heap_code_cache.max_space ) );
-        setYData('non_heap_perm_gen', 'used_space', index, toDecimal( heartbeat.non_heap_perm_gen.used_space/kb_mb ) );
-        setYData('non_heap_perm_gen', 'used_percent', index, toDecimal( heartbeat.non_heap_perm_gen.used_space*100/heartbeat.non_heap_perm_gen.max_space ) );
-        setYData('non_heap_metaspace', 'used_space', index, toDecimal( heartbeat.non_heap_metaspace.used_space/kb_mb ) );
-        setYData('non_heap_metaspace', 'used_percent', index, toDecimal( heartbeat.non_heap_metaspace.used_space*100/heartbeat.non_heap_metaspace.max_space ) );
+        setYData('non_heap_all', 'used_space', min, toDecimal( heartbeat.non_heap_all.used_space/kb_mb ) );
+        setYData('non_heap_all', 'used_percent', min, toDecimal( heartbeat.non_heap_all.used_space*100/heartbeat.non_heap_all.max_space ) );
+        setYData('non_heap_code_cache', 'used_space', min, toDecimal( heartbeat.non_heap_code_cache.used_space/kb_mb ) );
+        setYData('non_heap_code_cache', 'used_percent', min, toDecimal( heartbeat.non_heap_code_cache.used_space*100/heartbeat.non_heap_code_cache.max_space ) );
+        setYData('non_heap_perm_gen', 'used_space', min, toDecimal( heartbeat.non_heap_perm_gen.used_space/kb_mb ) );
+        setYData('non_heap_perm_gen', 'used_percent', min, toDecimal( heartbeat.non_heap_perm_gen.used_space*100/heartbeat.non_heap_perm_gen.max_space ) );
+        setYData('non_heap_metaspace', 'used_space', min, toDecimal( heartbeat.non_heap_metaspace.used_space/kb_mb ) );
+        setYData('non_heap_metaspace', 'used_percent', min, toDecimal( heartbeat.non_heap_metaspace.used_space*100/heartbeat.non_heap_metaspace.max_space ) );
 
         // thread
         var t_count_ALL = 0;
@@ -242,35 +249,39 @@ $(function() {
             }
         }
 
-        setYData('thread_all', 'count', index, t_count_ALL );
-        setYData('thread_new', 'count', index, t_count_NEW );
-        setYData('thread_runnable', 'count', index, t_count_RUNNABLE );
-        setYData('thread_blocked', 'count', index, t_count_BLOCKED );
-        setYData('thread_waiting', 'count', index, t_count_WAITING );
-        setYData('thread_timed_waiting', 'count', index, t_count_TIMED_WAITING );
-        setYData('thread_terminated', 'count', index, t_count_TERMINATED );
+        setYData('thread_all', 'count', min, t_count_ALL );
+        setYData('thread_new', 'count', min, t_count_NEW );
+        setYData('thread_runnable', 'count', min, t_count_RUNNABLE );
+        setYData('thread_blocked', 'count', min, t_count_BLOCKED );
+        setYData('thread_waiting', 'count', min, t_count_WAITING );
+        setYData('thread_timed_waiting', 'count', min, t_count_TIMED_WAITING );
+        setYData('thread_terminated', 'count', min, t_count_TERMINATED );
 
         // class
-        setYData('class_info', 'loaded_count', index, heartbeat.class_info.loaded_count );
-        setYData('class_info', 'unload_count', index, heartbeat.class_info.unload_count );
+        setYData('class_info', 'loaded_count', min, heartbeat.class_info.loaded_count );
+        setYData('class_info', 'unload_count', min, heartbeat.class_info.unload_count );
 
         // system
-        setYData('system_info', 'committed_virtual_memory', index, toDecimal( heartbeat.system_info.committed_virtual_memory/kb_mb ) );
-        setYData('system_info', 'total_swap_space', index, toDecimal( heartbeat.system_info.total_swap_space/kb_mb ) );
-        setYData('system_info', 'free_swap_space', index, toDecimal( heartbeat.system_info.free_swap_space/kb_mb ) );
-        setYData('system_info', 'total_physical_memory', index, toDecimal( heartbeat.system_info.total_physical_memory/kb_mb ) );
-        setYData('system_info', 'free_physical_memory', index, toDecimal( heartbeat.system_info.free_physical_memory/kb_mb ) );
+        setYData('system_info', 'committed_virtual_memory', min, toDecimal( heartbeat.system_info.committed_virtual_memory/kb_mb ) );
+        setYData('system_info', 'total_swap_space', min, toDecimal( heartbeat.system_info.total_swap_space/kb_mb ) );
+        setYData('system_info', 'free_swap_space', min, toDecimal( heartbeat.system_info.free_swap_space/kb_mb ) );
+        setYData('system_info', 'total_physical_memory', min, toDecimal( heartbeat.system_info.total_physical_memory/kb_mb ) );
+        setYData('system_info', 'free_physical_memory', min, toDecimal( heartbeat.system_info.free_physical_memory/kb_mb ) );
 
-        setYData('system_info', 'process_cpu_time', index, heartbeat.system_info.process_cpu_time );
-        setYData('system_info', 'system_cpu_load', index, heartbeat.system_info.system_cpu_load );
-        setYData('system_info', 'process_cpu_load', index, heartbeat.system_info.process_cpu_load );
+        setYData('system_info', 'process_cpu_time', min, heartbeat.system_info.process_cpu_time );
+        setYData('system_info', 'system_cpu_load', min, heartbeat.system_info.system_cpu_load );
+        setYData('system_info', 'process_cpu_load', min, heartbeat.system_info.process_cpu_load );
 
-        setYData('system_info', 'cpu_count', index, heartbeat.system_info.cpu_count );
-        setYData('system_info', 'cpu_load_average_1min', index, heartbeat.system_info.cpu_load_average_1min );
-        setYData('system_info', 'cpu_system_load_percent', index, heartbeat.system_info.cpu_system_load_percent );
-        setYData('system_info', 'cpu_jvm_load_percent', index, heartbeat.system_info.cpu_jvm_load_percent );
+        setYData('system_info', 'cpu_count', min, heartbeat.system_info.cpu_count );
+        setYData('system_info', 'cpu_load_average_1min', min, heartbeat.system_info.cpu_load_average_1min );
+        setYData('system_info', 'cpu_system_load_percent', min, heartbeat.system_info.cpu_system_load_percent );
+        setYData('system_info', 'cpu_jvm_load_percent', min, heartbeat.system_info.cpu_jvm_load_percent );
 
     }
+
+    xData.sort(function(a,b){
+        return a - b;
+    });
 
     // gc bar
     appendTips("Gc Info");
