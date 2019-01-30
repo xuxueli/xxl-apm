@@ -241,6 +241,7 @@ public class XxlApmHeartbeat extends XxlApmMsg {
 
         for (java.lang.management.ThreadInfo threadItem : threadInfos) {
             ThreadInfo threadInfo = new ThreadInfo();
+            threadInfo.setId(threadItem.getThreadId());
             threadInfo.setName(threadItem.getThreadName());
             threadInfo.setStatus(threadItem.getThreadState().name());
             if (threadItem.getStackTrace()!=null && threadItem.getStackTrace().length>0) {
@@ -363,9 +364,18 @@ public class XxlApmHeartbeat extends XxlApmMsg {
     public static class ThreadInfo implements Serializable {
         private static final long serialVersionUID = 42L;
 
+        private long id;
         private String name;
         private String status;      // java.lang.Thread.State
         private String stack_info;
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
 
         public String getName() {
             return name;

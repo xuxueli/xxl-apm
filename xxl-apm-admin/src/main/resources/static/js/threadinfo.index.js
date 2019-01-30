@@ -31,6 +31,12 @@ $(function() {
         }
     });
 
+    // min
+    $('.min').click(function () {
+        min = $(this).data('min');
+        $('#searchBtn').click();
+    });
+
     // search
     $('#searchBtn').click(function () {
 
@@ -75,25 +81,16 @@ $(function() {
         }
 
         // redirct
-        var redirct_url = base_url + "/heartbeat?querytime={querytime}&appname={appname}&ip={ip}";
+        var redirct_url = base_url + "/heartbeat/threadinfo?querytime={querytime}&appname={appname}&ip={ip}&min={min}";
         redirct_url = redirct_url.replace('{querytime}', querytime);
         redirct_url = redirct_url.replace('{appname}', appname);
         redirct_url = redirct_url.replace('{ip}', ip);
+        redirct_url = redirct_url.replace('{min}', min);
 
         window.location.href = redirct_url;
     });
 
-    // valid heartbeat data
-    if (!threadinfo) {
-        appendTips("暂无指标数据");
-        return;
-    }
-    // tips
-    function appendTips(title) {
-        var tipsTmp = '<section class="content-header col-md-12"><h1>{title}<small></small></h1></section>'.replace('{title}', title)
-        $('#bar-parent').append(tipsTmp);
-    }
-
+    // show thread stack info
 
 
 });

@@ -60,36 +60,84 @@
 	            </div>
           	</div>
 
-
+            <#-- min -->
             <div class="row" >
                 <br>
                 <div class="col-md-12 col-xs-12" >
                     <div class="btn-group">
-                        <#list 1..60 as min>
-                            <#if min = 5>
-                                <button type="button" class="btn btn-success" style="cursor: default;">${min}</button>
-                            <#else>
-                                <button type="button" class="btn btn-default">${min}</button>
-                            </#if>
+                        <#list 0..59 as minItem>
+                            <button type="button" class="btn <#if minItem = min>btn-success<#else>btn-default</#if> min" data-min="${minItem}" >${minItem}</button>
                         </#list>
                     </div>
                 </div>
             </div>
 
-			<div class="row">
-
-                <div id="bar-sample" style="display: none;" >
-                    <div class="col-md-6 col-xs-12-" >
-                        <div class="box box-default">
-                            <div class="box-body chart-responsive">
-                                <div class="chart bar-item" id="{id}" style="height: 300px;" ></div>
-                            </div>
+            <#-- filter -->
+            <#if threadInfoList?exists>
+                <br>
+                <div class="row" >
+                    <div class="col-xs-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">ThreadName</span>
+                            <input type="text" class="form-control" id="ThreadName" autocomplete="on" placeholder="请输入ThreadName" maxlength="100" >
                         </div>
                     </div>
+                    <div class="col-xs-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">ThreadStatus</span>
+                            <select class="form-control select2" multiple="multiple" style="width: 100%;" id="ThreadStatus" data-searchplaceholder="请选择 ThreadStatus" >
+                                <option value="NEW" >NEW</option>
+                                <option value="RUNNABLE" >RUNNABLE</option>
+                                <option value="BLOCKED" >BLOCKED</option>
+                                <option value="WAITING" >WAITING</option>
+                                <option value="TIMED_WAITING" >TIMED_WAITING</option>
+                                <option value="TERMINATED" >TERMINATED</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <span>${threadInfoList?size} 个线程</span>
+                    </div>
                 </div>
+            </#if>
 
-				<div id="bar-parent" >
-				</div>
+
+            <#-- thread -->
+			<div class="row">
+
+                <br>
+                <#if threadInfoList?exists>
+                    <div class="col-md-12 col-xs-12">
+                        <div class="box ">
+                            <div class="box-body no-padding">
+                                <table class="table table-striped" id="event-table" style="width: 100%;">
+                                    <thead>
+                                    <tr>
+                                        <th>ThreadName</th>
+                                        <th>ThreadStatus</th>
+                                        <th>stack_info</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <#list threadInfoList as threadInfo>
+                                            <tr class="threadInfo_item" data-name="${threadInfo.name}" data-status="${threadInfo.status}" >
+                                                <td>${threadInfo.name}</td>
+                                                <td>${threadInfo.status}</td>
+                                                <td>${threadInfo.stack_info!''}</td>
+                                            </tr>
+                                        </#list>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                    </div>
+                <#else>
+                    <section class="content-header col-md-12">
+                        <h1>暂无指标数据<small></small></h1>
+                    </section>
+                </#if>
 
 			</div>
 			
@@ -113,11 +161,7 @@
 <script src="${request.contextPath}/static/plugins/jquery-ui/jquery-ui.min.js"></script>
 
 <script>
-    var threadinfo;
-    <#if threadinfo?exists>
-        threadinfo = JSON.parse('${threadinfo}');
-    </#if>
-
+    var min = '${min}';
 </script>
 <script src="${request.contextPath}/static/js/threadinfo.index.js"></script>
 

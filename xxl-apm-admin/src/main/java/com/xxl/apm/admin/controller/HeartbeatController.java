@@ -11,6 +11,7 @@ import com.xxl.apm.client.message.impl.XxlApmHeartbeat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -129,7 +130,7 @@ public class HeartbeatController {
 
     @RequestMapping("/threadinfo")
     public String threadinfo(Model model, HttpServletRequest request, HttpServletResponse response,
-                        String querytime, String appname, String ip){
+                        String querytime, String appname, String ip, @RequestParam(required = false, defaultValue = "-1") int min){
 
         // get cookie
         if (querytime == null) {
@@ -184,9 +185,18 @@ public class HeartbeatController {
         CookieUtil.set(response, "xxlapm_querytime", querytime, false);
         CookieUtil.set(response, "xxlapm_appname", appname, false);
 
+        // min
+        min = (min>=0 && min<=59)?min:Calendar.getInstance().get(Calendar.MINUTE);
+        model.addAttribute("min", min);
 
         // load data
-
+        long descTime = addtime_from + min*60*1000;
+        List<XxlApmHeartbeatReport> heartbeatReportList = xxlApmHeartbeatReportDao.find(appname, descTime, descTime, ip);
+        if (heartbeatReportList!=null && heartbeatReportList.size()>0) {
+            XxlApmHeartbeat heartbeat = (XxlApmHeartbeat) XxlApmMsgServiceImpl.getSerializer().deserialize(heartbeatReportList.get(0).getHeartbeat_data(), XxlApmHeartbeat.class);
+            List<XxlApmHeartbeat.ThreadInfo> threadInfoList = heartbeat.getThread_list();
+            model.addAttribute("threadInfoList", threadInfoList);
+        }
 
         return "heartbeat/threadinfo.index";
     }
