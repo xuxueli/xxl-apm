@@ -248,7 +248,6 @@ public class XxlApmHeartbeat extends XxlApmMsg {
                 StringBuilder stackTrace = new StringBuilder();
                 String separator = System.getProperty("line.separator");
                 for (final StackTraceElement stackTraceElement : threadItem.getStackTrace()) {
-                    stackTrace.append("        at ");
                     stackTrace.append(stackTraceElement);
                     stackTrace.append(separator);
                 }

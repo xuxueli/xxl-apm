@@ -66,7 +66,7 @@
                 <div class="col-md-12 col-xs-12" >
                     <div class="btn-group">
                         <#list 0..59 as minItem>
-                            <button type="button" class="btn <#if minItem = min>btn-success<#else>btn-default</#if> min" data-min="${minItem}" >${minItem}</button>
+                            <button type="button" class="btn <#if minItem = min>btn-success<#else>btn-default</#if> min" data-min="${minItem}" >${minItem?string["00"]}</button>
                         </#list>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     <div class="col-xs-2">
-                        <span>${threadInfoList?size} 个线程</span>
+                        <strong>当前线程数量：${threadInfoList?size}</strong>
                     </div>
                 </div>
             </#if>
@@ -110,7 +110,7 @@
                     <div class="col-md-12 col-xs-12">
                         <div class="box ">
                             <div class="box-body no-padding">
-                                <table class="table table-striped" id="threadInfo-table" style="width: 100%;">
+                                <table class="table table-stripe" id="threadInfo-table" style="width: 100%;">
                                     <thead>
                                     <tr>
                                         <th>ThreadId</th>
@@ -121,21 +121,28 @@
                                     </thead>
                                     <tbody>
                                         <#list threadInfoList as threadInfo>
-                                            <tr class="threadInfo_item  <#if threadInfo.status=="NEW" >bg-teal disabled color-palette
-                                                    <#elseif threadInfo.status=="RUNNABLE">bg-green disabled color-palette
-                                                    <#elseif threadInfo.status=="BLOCKED" || threadInfo.status=="WAITING" || threadInfo.status=="TIMED_WAITING" >bg-yellow disabled color-palette
-                                                    <#elseif threadInfo.status=="TERMINATED" >bg-gray disabled color-palette
-                                                    </#if>"
-                                                data-name="${threadInfo.name}" data-status="${threadInfo.status}" >
+                                            <div>
+                                                <tr class="threadInfo_item <#if threadInfo.status=="NEW" >bg-teal disabled color-palette
+                                                        <#elseif threadInfo.status=="RUNNABLE">bg-green disabled color-palette
+                                                        <#elseif threadInfo.status=="BLOCKED" || threadInfo.status=="WAITING" || threadInfo.status=="TIMED_WAITING" >bg-yellow disabled color-palette
+                                                        <#elseif threadInfo.status=="TERMINATED" >bg-gray disabled color-palette
+                                                        </#if>"
+                                                    data-name="${threadInfo.name}" data-status="${threadInfo.status}" >
 
-                                                <td>${threadInfo.id}</td>
-                                                <td>${threadInfo.name}</td>
-                                                <td>${threadInfo.status}</td>
-                                                <td>
-                                                    <a href="javascript:void();">Show</a>
-                                                    <textarea>${threadInfo.stack_info!''}</textarea>
-                                                </td>
-                                            </tr>
+                                                    <td>${threadInfo.id}</td>
+                                                    <td>${threadInfo.name}</td>
+                                                    <td>${threadInfo.status}</td>
+                                                    <td>
+                                                        <a class="btn btn-primary btn-xs" onclick="javascript:$('#stack_info_${threadInfo.id}').toggle();" >Detail</a>
+                                                    </td>
+                                                </tr>
+                                                <tr id="stack_info_${threadInfo.id}" style="display: none;" >
+                                                    <td colspan="4" >
+                                                        <pre style="width:100%; white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap;white-space: -o-pre-wrap; word-wrap: break-word;"
+                                                            >${threadInfo.stack_info!''}</pre>
+                                                    </td>
+                                                </tr>
+                                            </div>
                                         </#list>
                                     </tbody>
 
