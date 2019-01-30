@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     <div class="col-xs-2">
-                        <strong>当前线程数量：${threadInfoList?size}</strong>
+                        <strong id="threadInfo-table-tips" >当前线程数量：${threadInfoList?size}</strong>
                     </div>
                 </div>
             </#if>
@@ -121,28 +121,26 @@
                                     </thead>
                                     <tbody>
                                         <#list threadInfoList as threadInfo>
-                                            <div>
-                                                <tr class="threadInfo_item <#if threadInfo.status=="NEW" >bg-teal disabled color-palette
-                                                        <#elseif threadInfo.status=="RUNNABLE">bg-green disabled color-palette
-                                                        <#elseif threadInfo.status=="BLOCKED" || threadInfo.status=="WAITING" || threadInfo.status=="TIMED_WAITING" >bg-yellow disabled color-palette
-                                                        <#elseif threadInfo.status=="TERMINATED" >bg-gray disabled color-palette
-                                                        </#if>"
-                                                    data-name="${threadInfo.name}" data-status="${threadInfo.status}" >
+                                            <tr class="threadInfo_item <#if threadInfo.status=="NEW" >bg-teal disabled color-palette
+                                                    <#elseif threadInfo.status=="RUNNABLE">bg-green disabled color-palette
+                                                    <#elseif threadInfo.status=="BLOCKED" || threadInfo.status=="WAITING" || threadInfo.status=="TIMED_WAITING" >bg-yellow disabled color-palette
+                                                    <#elseif threadInfo.status=="TERMINATED" >bg-gray disabled color-palette
+                                                    </#if>"
+                                                data-name="${threadInfo.name}" data-status="${threadInfo.status}"   >
 
-                                                    <td>${threadInfo.id}</td>
-                                                    <td>${threadInfo.name}</td>
-                                                    <td>${threadInfo.status}</td>
-                                                    <td>
-                                                        <a class="btn btn-primary btn-xs" onclick="javascript:$('#stack_info_${threadInfo.id}').toggle();" >Detail</a>
-                                                    </td>
-                                                </tr>
-                                                <tr id="stack_info_${threadInfo.id}" style="display: none;" >
-                                                    <td colspan="4" >
-                                                        <pre style="width:100%; white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap;white-space: -o-pre-wrap; word-wrap: break-word;"
-                                                            >${threadInfo.stack_info!''}</pre>
-                                                    </td>
-                                                </tr>
-                                            </div>
+                                                <td>${threadInfo.id}</td>
+                                                <td>${threadInfo.name}</td>
+                                                <td>${threadInfo.status}</td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs" onclick="javascript:$('#stack_info_${threadInfo.id}').toggle();" >Detail</a>
+                                                </td>
+                                            </tr>
+                                            <tr class="threadInfo_item_stack_info" id="stack_info_${threadInfo.id}" style="display: none;" >
+                                                <td colspan="4" >
+                                                    <pre style="width:100%; white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap;white-space: -o-pre-wrap; word-wrap: break-word;"
+                                                        >${threadInfo.stack_info!''}</pre>
+                                                </td>
+                                            </tr>
                                         </#list>
                                     </tbody>
 

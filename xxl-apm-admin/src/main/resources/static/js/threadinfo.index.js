@@ -90,6 +90,43 @@ $(function() {
         window.location.href = redirct_url;
     });
 
-    // show thread stack info
+    // ThreadName change
+    $("#ThreadName").bind('input porpertychange',function(){
+        threadFilter();
+    });
+    // ThreadStatus change
+    $('#ThreadStatus').on("change", function () {
+        threadFilter();
+    });
+    function threadFilter() {
+        var ThreadName = $('#ThreadName').val();
+        var ThreadStatus = $('#ThreadStatus').val();
+        var showCount = 0;
+        $('.threadInfo_item_stack_info').hide();
 
+        $('.threadInfo_item').each(function(){
+            var name = $(this).data('name');
+            var status = $(this).data('status');
+
+            var isShow = true;
+            if (ThreadName && name.indexOf(ThreadName) == -1) {
+                isShow = false;
+            }
+            if (ThreadStatus.length>0 && ThreadStatus.indexOf(status) == -1) {
+                isShow = false;
+            }
+
+            if (isShow) {
+                $(this).show();
+                showCount++;
+            } else {
+                $(this).hide();
+            }
+
+        });
+
+        $('#threadInfo-table-tips').html('当前线程数量：' + showCount);
+    }
+
+    
 });
