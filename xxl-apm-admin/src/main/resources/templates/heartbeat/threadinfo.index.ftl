@@ -129,7 +129,7 @@
                                                 data-name="${threadInfo.name}" data-status="${threadInfo.status}"   >
 
                                                 <td>${threadInfo.id}</td>
-                                                <td>${threadInfo.name}</td>
+                                                <td style="word-break: break-all">${threadInfo.name}</td>
                                                 <td>${threadInfo.status}</td>
                                                 <td>
                                                     <a class="btn btn-primary btn-xs" onclick="javascript:$('#stack_info_${threadInfo.id}').toggle();" >Detail</a>

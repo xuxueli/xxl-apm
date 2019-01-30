@@ -62,7 +62,7 @@
 	            	<button class="btn btn-block btn-info" id="searchBtn">GO</button>
 	            </div>
 
-                <div class="col-xs-4">
+                <div class="col-xs-7">
                     <div class="input-group">
                         <span class="input-group-addon">Type</span>
                         <select class="form-control select2" style="width: 100%;" id="type" >
