@@ -44,7 +44,7 @@ $(function(){
         } else {
             xxlapm_adminlte_settings = 'off';
         }
-        $.cookie('xxlapm_adminlte_settings', xxlapm_adminlte_settings, { expires: 7 });	//$.cookie('the_cookie', '', { expires: -1 });
+        $.cookie('xxlapm_adminlte_settings', xxlapm_adminlte_settings, { expires: 7, path: '/' });	//$.cookie('the_cookie', '', { expires: -1 });
     });
 
 });

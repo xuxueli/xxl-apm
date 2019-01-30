@@ -110,9 +110,10 @@
                     <div class="col-md-12 col-xs-12">
                         <div class="box ">
                             <div class="box-body no-padding">
-                                <table class="table table-striped" id="event-table" style="width: 100%;">
+                                <table class="table table-striped" id="threadInfo-table" style="width: 100%;">
                                     <thead>
                                     <tr>
+                                        <th>ThreadId</th>
                                         <th>ThreadName</th>
                                         <th>ThreadStatus</th>
                                         <th>stack_info</th>
@@ -120,10 +121,20 @@
                                     </thead>
                                     <tbody>
                                         <#list threadInfoList as threadInfo>
-                                            <tr class="threadInfo_item" data-name="${threadInfo.name}" data-status="${threadInfo.status}" >
+                                            <tr class="threadInfo_item  <#if threadInfo.status=="NEW" >bg-teal disabled color-palette
+                                                    <#elseif threadInfo.status=="RUNNABLE">bg-green disabled color-palette
+                                                    <#elseif threadInfo.status=="BLOCKED" || threadInfo.status=="WAITING" || threadInfo.status=="TIMED_WAITING" >bg-yellow disabled color-palette
+                                                    <#elseif threadInfo.status=="TERMINATED" >bg-gray disabled color-palette
+                                                    </#if>"
+                                                data-name="${threadInfo.name}" data-status="${threadInfo.status}" >
+
+                                                <td>${threadInfo.id}</td>
                                                 <td>${threadInfo.name}</td>
                                                 <td>${threadInfo.status}</td>
-                                                <td>${threadInfo.stack_info!''}</td>
+                                                <td>
+                                                    <a href="javascript:void();">Show</a>
+                                                    <textarea>${threadInfo.stack_info!''}</textarea>
+                                                </td>
                                             </tr>
                                         </#list>
                                     </tbody>
