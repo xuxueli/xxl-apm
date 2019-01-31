@@ -99,6 +99,7 @@ A distributed APM(application-performance-management) platform.
     单机器集群：appname + ip (+instance) 
     
 >>> ip >> address;
+>>> transaction time: map >> db | es
     
 ---                
 大盘：分钟维度；

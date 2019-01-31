@@ -113,7 +113,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <#if faultList?exists>
+                                    <#if faultList?exists && faultList?size gt 0>
                                         <#list faultList as item>
                                             <tr class="bg-red color-palette" >
                                                 <td>${item.Category}</td>
@@ -123,7 +123,7 @@
                                             </tr>
                                         </#list>
                                     <#else>
-                                        <tr class="bg-gray disabled color-palette" >
+                                        <tr class="bg-gray color-palette" >
                                             <td>--</td>
                                             <td>--</td>
                                             <td>--</td>
