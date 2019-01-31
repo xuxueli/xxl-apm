@@ -76,7 +76,7 @@ $(function() {
         }
 
         // redirct
-        var redirct_url = base_url + "/event?querytime={querytime}&appname={appname}&ip={ip}&type={type}";
+        var redirct_url = base_url + "/transaction?querytime={querytime}&appname={appname}&ip={ip}&type={type}";
         redirct_url = redirct_url.replace('{querytime}', querytime);
         redirct_url = redirct_url.replace('{appname}', appname);
         redirct_url = redirct_url.replace('{ip}', ip);
