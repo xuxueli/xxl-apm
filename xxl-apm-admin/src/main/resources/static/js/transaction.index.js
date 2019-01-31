@@ -193,8 +193,8 @@ $(function() {
         nameMap_item.Failure_Distribution[eventReport.ip] = (nameMap_item.Failure_Distribution[eventReport.ip]?nameMap_item.Failure_Distribution[eventReport.ip]:0) + eventReport.fail_count;
 
         // for transaction
-        nameMap_item.time_max += eventReport.time_max * eventReport.total_count;
-        nameMap_item.time_avg += eventReport.time_avg * eventReport.total_count;
+        nameMap_item.time_max = eventReport.time_max>=eventReport.total_count?eventReport.time_max:eventReport.total_count;
+        nameMap_item.time_avg += eventReport.time_avg * eventReport.total_count;        // weighted calculate for ip start
         nameMap_item.time_tp90 += eventReport.time_tp90 * eventReport.total_count;
         nameMap_item.time_tp95 += eventReport.time_tp95 * eventReport.total_count;
         nameMap_item.time_tp99 += eventReport.time_tp99 * eventReport.total_count;
@@ -228,13 +228,32 @@ $(function() {
         nameMap.Percent = nameMap.Total/nameMapList[nameMap_all_name].Total;
 
         // for transaction
-        nameMap.time_max = toDecimal( nameMap.time_max/nameMap.Total , 2 );
-        nameMap.time_avg = toDecimal( nameMap.time_avg/nameMap.Total , 2 );
-        nameMap.time_tp90 = toDecimal( nameMap.time_tp90/nameMap.Total , 2 );
-        nameMap.time_tp95 = toDecimal( nameMap.time_tp95/nameMap.Total , 2 );
-        nameMap.time_tp99 = toDecimal( nameMap.time_tp99/nameMap.Total , 2 );
-        nameMap.time_tp999 = toDecimal( nameMap.time_tp999/nameMap.Total , 2 );
+        if (nameMap.Name != nameMap_all_name) {
+            // item
+            nameMap.time_avg = toDecimal( nameMap.time_avg/nameMap.Total , 2 );     // weighted calculate for ip end
+            nameMap.time_tp90 = toDecimal( nameMap.time_tp90/nameMap.Total , 2 );
+            nameMap.time_tp95 = toDecimal( nameMap.time_tp95/nameMap.Total , 2 );
+            nameMap.time_tp99 = toDecimal( nameMap.time_tp99/nameMap.Total , 2 );
+            nameMap.time_tp999 = toDecimal( nameMap.time_tp999/nameMap.Total , 2 );
+
+            // all
+            nameMapList[nameMap_all_name].time_max = nameMapList[nameMap_all_name].time_max>=nameMap.time_max?nameMapList[nameMap_all_name].time_max:nameMap.time_max;
+            nameMapList[nameMap_all_name].time_avg += nameMap.time_avg * nameMap.Total;     // weighted calculate for name start
+            nameMapList[nameMap_all_name].time_tp90 += nameMap.time_tp90 * nameMap.Total;
+            nameMapList[nameMap_all_name].time_tp95 += nameMap.time_tp95 * nameMap.Total;
+            nameMapList[nameMap_all_name].time_tp99 += nameMap.time_tp99 * nameMap.Total;
+            nameMapList[nameMap_all_name].time_tp999 += nameMap.time_tp999 * nameMap.Total;
+        }
+
     }
+
+    // for transaction
+    nameMapList[nameMap_all_name].time_avg = toDecimal( nameMapList[nameMap_all_name].time_avg/nameMapList[nameMap_all_name].Total , 2 );       // weighted calculate for name end
+    nameMapList[nameMap_all_name].time_tp90 = toDecimal( nameMapList[nameMap_all_name].time_tp90/nameMapList[nameMap_all_name].Total , 2 );
+    nameMapList[nameMap_all_name].time_tp95 = toDecimal( nameMapList[nameMap_all_name].time_tp95/nameMapList[nameMap_all_name].Total , 2 );
+    nameMapList[nameMap_all_name].time_tp99 = toDecimal( nameMapList[nameMap_all_name].time_tp99/nameMapList[nameMap_all_name].Total , 2 );
+    nameMapList[nameMap_all_name].time_tp999 = toDecimal( nameMapList[nameMap_all_name].time_tp999/nameMapList[nameMap_all_name].Total , 2 );
+
 
     // event table
     var TableData = [];

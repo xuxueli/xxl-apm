@@ -27,7 +27,7 @@ public class IndexController {
         int randomVal = new Random().nextInt(10);
         int mock_error = 10/randomVal;
 
-        TimeUnit.MILLISECONDS.sleep(randomVal);
+        TimeUnit.MILLISECONDS.sleep(randomVal*2);
 
         /**
          *  1、Transaction 消息
