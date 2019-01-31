@@ -15,8 +15,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 /**
  * index controller
@@ -61,7 +60,16 @@ public class IndexController {
 		long addtime_from = querytime_date.getTime() + min*1000*60;
 		long addtime_to = addtime_from + 1*1000*60;    // an min
 
-
+		// fault list
+		List<Map<String, Object>> faultList = new ArrayList<>();
+		faultList.add(new HashMap<String, Object>(){{
+			put("Category", "事务");
+			put("Title", "URL:");
+			put("TitleDetail", "URL:");
+			put("Count", "56");
+			put("Link", "xxx");
+		}});
+		model.addAttribute("faultList", faultList);
 
 		return "index";
 	}

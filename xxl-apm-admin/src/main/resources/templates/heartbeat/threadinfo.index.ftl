@@ -132,7 +132,7 @@
                                                 <td style="word-break: break-all">${threadInfo.name}</td>
                                                 <td>${threadInfo.status}</td>
                                                 <td>
-                                                    <a class="btn btn-primary btn-xs" onclick="javascript:$('#stack_info_${threadInfo.id}').toggle();" >Detail</a>
+                                                    <a class="btn btn-default btn-xs" onclick="javascript:$('#stack_info_${threadInfo.id}').toggle();" >Detail</a>
                                                 </td>
                                             </tr>
                                             <tr class="threadInfo_item_stack_info" id="stack_info_${threadInfo.id}" style="display: none;" >

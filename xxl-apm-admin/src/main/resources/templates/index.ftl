@@ -80,7 +80,6 @@
 
             </div>
 
-            <#-- min -->
             <div class="row" >
 
                 <div class="col-xs-3">
@@ -101,6 +100,47 @@
                         </#list>
                     </div>
                 </div>
+            </div>
+
+            <div class="row">
+                <br>
+                <div class="col-md-12 col-xs-12">
+                    <div class="box ">
+                        <div class="box-body no-padding">
+                            <table class="table table-striped2" id="event-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>分类</th>
+                                        <th>名称</th>
+                                        <th>故障次数</th>
+                                        <th>Link</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <#if faultList?exists>
+                                        <#list faultList as item>
+                                            <tr class="bg-red disabled color-palette" >
+                                                <td>${item.Category}</td>
+                                                <td title="${item.TitleDetail}" >${item.Title}</td>
+                                                <td>${item.Count}</td>
+                                                <td><a href="${request.contextPath}${item.Link}" class="btn btn-default btn-xs" >Link</a></td>
+                                            </tr>
+                                        </#list>
+                                    <#else>
+                                        <tr class="bg-gray disabled color-palette" >
+                                            <td>--</td>
+                                            <td>--</td>
+                                            <td>--</td>
+                                            <td>--</td>
+                                        </tr>
+                                    </#if>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+
             </div>
 
         </section>
