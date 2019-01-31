@@ -80,4 +80,9 @@ public class XxlApmEvent extends XxlApmMsg {
         }
     }
 
+    public void setStatus(Throwable cause) {
+        String causeName = (cause.getCause()!=null?cause.getCause():cause).getClass().getName();
+        this.status = causeName;
+    }
+
 }

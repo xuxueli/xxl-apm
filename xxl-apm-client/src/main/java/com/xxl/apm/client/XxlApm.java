@@ -130,7 +130,7 @@ public class XxlApm {
      */
     public static boolean report(final Throwable cause){
         String type = (cause instanceof Error)?"Error":(cause instanceof RuntimeException)?"RuntimeException":"Exception";
-        String name = cause.getClass().getName();
+        String name = (cause.getCause()!=null?cause.getCause():cause).getClass().getName();
 
         XxlApmEvent xxlApmEvent = new XxlApmEvent(type, name);
         xxlApmEvent.setStatus(XxlApmEvent.ERROR_STATUS);

@@ -165,7 +165,7 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
                     transactionReportMap.put(transactionKey, transactionReport);
                 }
 
-                // todo, real-time computing, just mock
+                // mock start, todo, real-time computing
                 List<Long> timeList = getTpMap().get(transactionKey);
                 if (timeList == null) {
                     timeList = new ArrayList<>();
@@ -189,6 +189,7 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
                 transactionReport.setTime_tp95( tp(timeList, 95f) );
                 transactionReport.setTime_tp99( tp(timeList, 99f) );
                 transactionReport.setTime_tp999( tp(timeList, 99.9f) );
+                // mock end
 
                 transactionReport.setTotal_count(transactionReport.getTotal_count() + 1);       // just new count
                 if (!success) {
