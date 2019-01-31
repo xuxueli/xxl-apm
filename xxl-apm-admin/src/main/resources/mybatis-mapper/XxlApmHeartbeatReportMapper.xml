@@ -72,4 +72,16 @@
         ORDER BY t.ip ASC
     </select>
 
+	<select id="findAppNameCount" resultType="java.lang.Integer" >
+		SELECT COUNT(DISTINCT appname)
+		FROM xxl_apm_heartbeat_report
+	</select>
+
+	<select id="findTotalMsgCount" resultType="java.lang.Integer" >
+		SELECT max(t1.id) + max(t2.id) + max(t3.id)
+		FROM xxl_apm_heartbeat_report as t1,
+			xxl_apm_event_report as t2,
+			xxl_apm_transaction_report as t3
+	</select>
+
 </mapper>

@@ -3,6 +3,7 @@ package com.xxl.apm.admin.controller;
 import com.xxl.apm.admin.controller.annotation.PermessionLimit;
 import com.xxl.apm.admin.controller.interceptor.PermissionInterceptor;
 import com.xxl.apm.admin.core.result.ReturnT;
+import com.xxl.apm.admin.dao.IXxlApmHeartbeatReportDao;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
@@ -25,11 +27,18 @@ import java.util.Date;
 public class IndexController {
 
 
+	@Resource
+	private IXxlApmHeartbeatReportDao xxlApmHeartbeatReportDao;
+
+
 	@RequestMapping("/")
 	public String index(Model model, HttpServletRequest request) {
 
-		// todo-apm，大盘
+		int appNameCount = xxlApmHeartbeatReportDao.findAppNameCount();
+		model.addAttribute("appNameCount", appNameCount);
 
+		int totalMsgCount = xxlApmHeartbeatReportDao.findTotalMsgCount();
+		model.addAttribute("totalMsgCount", totalMsgCount);
 
 		return "index";
 	}

@@ -27,4 +27,8 @@ public interface IXxlApmHeartbeatReportDao {
                                                   @Param("addtime_from") long addtime_from,
                                                   @Param("addtime_to") long addtime_to);
 
+    public int findAppNameCount();
+
+    public int findTotalMsgCount();
+
 }

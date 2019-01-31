@@ -27,14 +27,14 @@
             <!-- 报表导航 -->
             <div class="row">
 
-                <#-- 业务线 -->
+                <#-- 应用数量 -->
                 <div class="col-md-4 col-sm-6 col-xs-12">
                     <div class="info-box bg-aqua">
                         <span class="info-box-icon"><i class="fa fa-flag-o"></i></span>
 
                         <div class="info-box-content">
                             <span class="info-box-text">应用数量</span>
-                            <span class="info-box-number">5</span>
+                            <span class="info-box-number">${appNameCount}</span>
 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%"></div>
@@ -44,14 +44,14 @@
                     </div>
                 </div>
 
-                <#-- 消息主题 -->
+                <#-- 消息数量 -->
                 <div class="col-md-4 col-sm-6 col-xs-12" >
                     <div class="info-box bg-yellow">
                         <span class="info-box-icon"><i class="fa fa-calendar"></i></span>
 
                         <div class="info-box-content">
                             <span class="info-box-text">消息数量</span>
-                            <span class="info-box-number">5.0000.0000.0000</span>
+                            <span class="info-box-number">${totalMsgCount?string("###,###")}</span>
 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%" ></div>

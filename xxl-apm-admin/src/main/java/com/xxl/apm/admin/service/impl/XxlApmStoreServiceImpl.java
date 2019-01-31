@@ -233,17 +233,21 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
 
 
     /**
-     *  todo-apm:
-     *
-     *      - fresh report, in min (report simple data)
-     *      - store logView (store file or es)
-     *      - Report bind LogView, LogView write file
-     *      - Error LogView, Alerm;
+     * bindLogView
      *
      * @param xxlApmMsg
      */
     private void bindLogView(XxlApmMsg xxlApmMsg){
-
+        /**
+         *  todo-apm:
+         *
+         *      - fresh report, in min (report simple data)
+         *      - store logView (store file or es)
+         *      - Report bind LogView, LogView write file
+         *      - Error LogView, Alerm;
+         *
+         * @param xxlApmMsg
+         */
     }
 
     @Override
@@ -257,12 +261,9 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
         // clean timeout report
         xxlApmHeartbeatReportDao.clean(timeoutTime);
         xxlApmEventReportDao.clean(timeoutTime);
+        xxlApmTransactionReportDao.clean(timeoutTime);
 
-        /**
-         * todo-apm:
-         *
-         * clean old report + logView
-         */
+        // clean logView, todo-apm:
 
         return false;
     }

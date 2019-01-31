@@ -30,7 +30,7 @@ CREATE TABLE `xxl_apm_common_registry_message` (
 
 
 CREATE TABLE `xxl_apm_heartbeat_report` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `appname` varchar(100) NOT NULL,
   `addtime` bigint(11) NOT NULL,
   `ip` varchar(100) NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE `xxl_apm_heartbeat_report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `xxl_apm_event_report` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `appname` varchar(100) NOT NULL,
   `addtime` bigint(11) NOT NULL,
   `ip` varchar(100) NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE `xxl_apm_event_report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `xxl_apm_transaction_report` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `appname` varchar(100) NOT NULL,
   `addtime` bigint(11) NOT NULL,
   `ip` varchar(100) NOT NULL,
