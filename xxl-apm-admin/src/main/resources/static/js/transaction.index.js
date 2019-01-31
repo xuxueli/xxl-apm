@@ -269,7 +269,8 @@ $(function() {
         "paging": false,
         "searching": false,
         "order": [[ 1, 'desc' ]],
-        "info": false
+        "info": false,
+        "scrollX": true
     } );
 
     // TimeLine
