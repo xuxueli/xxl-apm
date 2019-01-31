@@ -149,9 +149,6 @@ $(function() {
         nameMap.Total_Distribution = {};
         nameMap.Failure_Distribution = {};
 
-
-        nameMap.SubIpData = {};
-
         return nameMap;
     }
 

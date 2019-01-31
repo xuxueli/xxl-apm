@@ -93,6 +93,12 @@
                                         <th>Percent%</th>
                                         <th>Chart</th>
                                         <th>LogView</th>
+                                        <th>Max</th>
+                                        <th>Avg</th>
+                                        <th>TP90</th>
+                                        <th>TP95</th>
+                                        <th>TP99</th>
+                                        <th>TP999</th>
                                     </tr>
                                 </thead>
                             </table>

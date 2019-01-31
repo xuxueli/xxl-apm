@@ -92,10 +92,11 @@ $(function() {
     }
 
     // 四舍五入，4位小数
-    function toDecimal(x) {
+    function toDecimal(x, fixNum) {
+        fixNum = fixNum?fixNum:4;
         var f = parseFloat(x);
         f = Math.round(x*10000)/10000;
-        f = f.toFixed(4);
+        f = f.toFixed(fixNum);
         return f;
     }
 
@@ -126,6 +127,13 @@ $(function() {
      *          'Failure_Distribution'{
      *              'ip-x': xx
      *          }
+     *          ,   // for transaction
+     *          time_max: xx,
+     *          time_avg: xx,
+     *          time_tp90: xx,
+     *          time_tp95: xx,
+     *          time_tp99: xx,
+     *          time_tp999: xx,
      *      }
      *  }
      *
@@ -149,8 +157,13 @@ $(function() {
         nameMap.Total_Distribution = {};
         nameMap.Failure_Distribution = {};
 
-
-        nameMap.SubIpData = {};
+        // for transaction
+        nameMap.time_max = 0;
+        nameMap.time_avg = 0;
+        nameMap.time_tp90 = 0;
+        nameMap.time_tp95 = 0;
+        nameMap.time_tp99 = 0;
+        nameMap.time_tp999 = 0;
 
         return nameMap;
     }
@@ -179,6 +192,14 @@ $(function() {
         nameMap_item.Total_Distribution[eventReport.ip] = (nameMap_item.Total_Distribution[eventReport.ip]?nameMap_item.Total_Distribution[eventReport.ip]:0) + eventReport.total_count;
         nameMap_item.Failure_Distribution[eventReport.ip] = (nameMap_item.Failure_Distribution[eventReport.ip]?nameMap_item.Failure_Distribution[eventReport.ip]:0) + eventReport.fail_count;
 
+        // for transaction
+        nameMap_item.time_max += eventReport.time_max * eventReport.total_count;
+        nameMap_item.time_avg += eventReport.time_avg * eventReport.total_count;
+        nameMap_item.time_tp90 += eventReport.time_tp90 * eventReport.total_count;
+        nameMap_item.time_tp95 += eventReport.time_tp95 * eventReport.total_count;
+        nameMap_item.time_tp99 += eventReport.time_tp99 * eventReport.total_count;
+        nameMap_item.time_tp999 += eventReport.time_tp999 * eventReport.total_count;
+
         // all
         var nameMap_all = nameMapList[nameMap_all_name];
         if (!nameMap_all) {
@@ -205,6 +226,14 @@ $(function() {
         nameMap.Failure_percent = nameMap.Failure/nameMap.Total;
         nameMap.QPS = nameMap.Total/periodSecond;
         nameMap.Percent = nameMap.Total/nameMapList[nameMap_all_name].Total;
+
+        // for transaction
+        nameMap.time_max = toDecimal( nameMap.time_max/nameMap.Total , 2 );
+        nameMap.time_avg = toDecimal( nameMap.time_avg/nameMap.Total , 2 );
+        nameMap.time_tp90 = toDecimal( nameMap.time_tp90/nameMap.Total , 2 );
+        nameMap.time_tp95 = toDecimal( nameMap.time_tp95/nameMap.Total , 2 );
+        nameMap.time_tp99 = toDecimal( nameMap.time_tp99/nameMap.Total , 2 );
+        nameMap.time_tp999 = toDecimal( nameMap.time_tp999/nameMap.Total , 2 );
     }
 
     // event table
@@ -220,6 +249,14 @@ $(function() {
         nameMapArr[6] = '<a href="javascript:;" class="TimeLine" data-name="'+ nameMap.Name +'" >TimeLine</a> | ' +
             '<a href="javascript:;" class="Distribution" data-name="'+ nameMap.Name +'" >Distribution</a>';
         nameMapArr[7] = '--';
+
+        // for transaction
+        nameMapArr[8] = nameMap.time_max;
+        nameMapArr[9] = nameMap.time_avg;
+        nameMapArr[10] = nameMap.time_tp90;
+        nameMapArr[11] = nameMap.time_tp95;
+        nameMapArr[12] = nameMap.time_tp99;
+        nameMapArr[13] = nameMap.time_tp999;
 
         TableData.push(nameMapArr);
     }
