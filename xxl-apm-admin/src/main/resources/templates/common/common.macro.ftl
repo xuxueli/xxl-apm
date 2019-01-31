@@ -102,7 +102,7 @@
 			<ul class="sidebar-menu" data-widget="tree" >
 				<li class="header">导航</li>
                 <li class="nav-click <#if pageName == "index">active</#if>" ><a href="${request.contextPath}/"><i class="fa fa-circle-o text-aqua"></i><span>运行报表</span></a></li>
-                <li class="nav-click <#if pageName == "Transaction">active</#if>" ><a href="${request.contextPath}/transaction"><i class="fa fa-circle-o text-green"></i><span>事务监控</span></a></li>
+                <li class="nav-click <#if pageName == "transaction">active</#if>" ><a href="${request.contextPath}/transaction"><i class="fa fa-circle-o text-green"></i><span>事务监控</span></a></li>
                 <li class="nav-click <#if pageName == "event">active</#if>" ><a href="${request.contextPath}/event"><i class="fa fa-circle-o text-yellow"></i><span>事件监控</span></a></li>
                 <li class="treeview <#if pageName == "heartbeat" || pageName == "threadinfo" >active</#if>" >
                     <a href="javascript:void();">
