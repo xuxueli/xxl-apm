@@ -25,4 +25,7 @@ public interface IXxlApmTransactionReportDao {
                                      @Param("addtime_from") long addtime_from,
                                      @Param("addtime_to") long addtime_to);
 
+    public List<XxlApmTransactionReport> findFailReport(@Param("addtime_from") long addtime_from,
+                                                        @Param("addtime_to") long addtime_to);
+
 }

@@ -119,4 +119,12 @@
         ORDER BY t.type ASC
     </select>
 
+	<select id="findFailReport" parameterType="java.util.HashMap" resultType="com.xxl.apm.admin.core.model.XxlApmTransactionReport" >
+        select t.`appname`, t.`type` , count(fail_count) as fail_count
+        from xxl_apm_transaction_report as t
+        where t.addtime between #{addtime_from} and #{addtime_to}
+        	and fail_count <![CDATA[ > ]]> 0
+        group by `appname`, `type`
+    </select>
+
 </mapper>

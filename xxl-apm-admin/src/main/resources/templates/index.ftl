@@ -17,10 +17,6 @@
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
 
-        <section class="content-header">
-            <h1>应用大盘</h1>
-        </section>
-
         <!-- Main content -->
         <section class="content">
 
@@ -110,7 +106,7 @@
                             <table class="table table-striped2" id="event-table" style="width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th>分类</th>
+                                        <th>故障分类</th>
                                         <th>名称</th>
                                         <th>故障次数</th>
                                         <th>Link</th>
@@ -119,9 +115,9 @@
                                 <tbody>
                                     <#if faultList?exists>
                                         <#list faultList as item>
-                                            <tr class="bg-red disabled color-palette" >
+                                            <tr class="bg-red color-palette" >
                                                 <td>${item.Category}</td>
-                                                <td title="${item.TitleDetail}" >${item.Title}</td>
+                                                <td>${item.Title}</td>
                                                 <td>${item.Count}</td>
                                                 <td><a href="${request.contextPath}${item.Link}" class="btn btn-default btn-xs" >Link</a></td>
                                             </tr>

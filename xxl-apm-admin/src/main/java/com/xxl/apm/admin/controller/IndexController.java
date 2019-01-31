@@ -2,9 +2,13 @@ package com.xxl.apm.admin.controller;
 
 import com.xxl.apm.admin.controller.annotation.PermessionLimit;
 import com.xxl.apm.admin.controller.interceptor.PermissionInterceptor;
+import com.xxl.apm.admin.core.model.XxlApmEventReport;
+import com.xxl.apm.admin.core.model.XxlApmTransactionReport;
 import com.xxl.apm.admin.core.result.ReturnT;
 import com.xxl.apm.admin.core.util.DateUtil;
+import com.xxl.apm.admin.dao.IXxlApmEventReportDao;
 import com.xxl.apm.admin.dao.IXxlApmHeartbeatReportDao;
+import com.xxl.apm.admin.dao.IXxlApmTransactionReportDao;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -25,8 +30,12 @@ import java.util.*;
 public class IndexController {
 
 
+    @Resource
+    private IXxlApmHeartbeatReportDao xxlApmHeartbeatReportDao;
 	@Resource
-	private IXxlApmHeartbeatReportDao xxlApmHeartbeatReportDao;
+	private IXxlApmEventReportDao xxlApmEventReportDao;
+    @Resource
+    private IXxlApmTransactionReportDao xxlApmTransactionReportDao;
 
 
 	@RequestMapping("/")
@@ -60,15 +69,38 @@ public class IndexController {
 		long addtime_from = querytime_date.getTime() + min*1000*60;
 		long addtime_to = addtime_from + 1*1000*60;    // an min
 
+        List<XxlApmEventReport> eventReportList = xxlApmEventReportDao.findFailReport(addtime_from, addtime_to);
+        List<XxlApmTransactionReport> transactionReportList = xxlApmTransactionReportDao.findFailReport(addtime_from, addtime_to);
+
 		// fault list
 		List<Map<String, Object>> faultList = new ArrayList<>();
-		faultList.add(new HashMap<String, Object>(){{
-			put("Category", "事务");
-			put("Title", "URL:");
-			put("TitleDetail", "URL:");
-			put("Count", "56");
-			put("Link", "xxx");
-		}});
+		if (eventReportList!=null && eventReportList.size()>0) {
+            for (final XxlApmEventReport eventReport: eventReportList) {
+                final Date querytime_date_tmp = querytime_date;
+                faultList.add(new HashMap<String, Object>(){{
+                    put("Category", "事件");
+                    put("Title", MessageFormat.format("AppName: {0}<br> Type: {1}", eventReport.getAppname(), eventReport.getType()));
+                    put("Count", eventReport.getFail_count());
+                    put("Link", MessageFormat.format("/event?querytime={0}&appname={1}&ip=&type={2}",
+                            DateUtil.format(querytime_date_tmp, "yyyyMMddHH"), eventReport.getAppname(), eventReport.getType())
+                    );
+                }});
+            }
+        }
+        if (transactionReportList!=null && transactionReportList.size()>0) {
+            for (final XxlApmTransactionReport transactionReport: transactionReportList) {
+                final Date querytime_date_tmp = querytime_date;
+                faultList.add(new HashMap<String, Object>(){{
+                    put("Category", "事务");
+                    put("Title", transactionReport.getAppname());
+                    put("TitleDetail", MessageFormat.format("AppName: {0}<br> Type: {1}", transactionReport.getAppname(), transactionReport.getType()));
+                    put("Count", transactionReport.getFail_count());
+                    put("Link", MessageFormat.format("/transaction?querytime={0}&appname={1}&ip=&type={2}",
+                            DateUtil.format(querytime_date_tmp, "yyyyMMddHH"), transactionReport.getAppname(), transactionReport.getType())
+                    );
+                }});
+            }
+        }
 		model.addAttribute("faultList", faultList);
 
 		return "index";

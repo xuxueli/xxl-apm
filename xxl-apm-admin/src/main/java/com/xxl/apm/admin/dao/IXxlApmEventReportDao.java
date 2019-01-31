@@ -25,4 +25,7 @@ public interface IXxlApmEventReportDao {
                                                   @Param("addtime_from") long addtime_from,
                                                   @Param("addtime_to") long addtime_to);
 
+    public List<XxlApmEventReport> findFailReport(@Param("addtime_from") long addtime_from,
+                                                 @Param("addtime_to") long addtime_to);
+
 }
