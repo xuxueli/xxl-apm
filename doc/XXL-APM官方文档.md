@@ -98,6 +98,8 @@ A distributed APM(application-performance-management) platform.
     多机器集群：appname + ip 定位到机器；
     单机器集群：appname + ip (+instance) 
     
+>>> ip >> address;
+    
 ---                
 大盘：分钟维度；
      报错大盘：Transaction、Event 报错，统计 name 汇总次数；

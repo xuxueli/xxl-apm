@@ -29,6 +29,8 @@ public interface IXxlApmHeartbeatReportDao {
 
     public int findAppNameCount();
 
+    public int findAppNameAddressCount();
+
     public int findTotalMsgCount();
 
 }

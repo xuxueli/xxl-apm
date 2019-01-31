@@ -2,8 +2,11 @@ package com.xxl.apm.client;
 
 import com.xxl.apm.client.factory.XxlApmFactory;
 import com.xxl.apm.client.message.XxlApmMsg;
+import com.xxl.apm.client.message.impl.XxlApmEvent;
+import com.xxl.rpc.util.ThrowableUtil;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -79,21 +82,8 @@ public class XxlApm {
         return instance.xxlApmFactory.getAppname();
     }
 
-    /**
-     * report msg
-     *
-     * @param apmMsg
-     * @return
-     */
-    public static boolean report(XxlApmMsg apmMsg){
-        // valid
-        if (apmMsg == null) {
-            return false;
-        }
 
-        // async report
-        return report(Arrays.asList(apmMsg));
-    }
+    // ---------------------- report tool ----------------------
 
     /**
      * report msg
@@ -114,6 +104,41 @@ public class XxlApm {
 
         // async report
         return instance.xxlApmFactory.report(msgList);
+    }
+
+    /**
+     * report msg
+     *
+     * @param apmMsg
+     * @return
+     */
+    public static boolean report(XxlApmMsg apmMsg){
+        // valid
+        if (apmMsg == null) {
+            return false;
+        }
+
+        // async report
+        return report(Arrays.asList(apmMsg));
+    }
+
+    /**
+     * report msg
+     *
+     * @param cause
+     * @return
+     */
+    public static boolean report(final Throwable cause){
+        String type = (cause instanceof Error)?"Error":(cause instanceof RuntimeException)?"RuntimeException":"Exception";
+        String name = cause.getClass().getName();
+
+        XxlApmEvent xxlApmEvent = new XxlApmEvent(type, name);
+        xxlApmEvent.setStatus(XxlApmEvent.ERROR_STATUS);
+        xxlApmEvent.setParam(new HashMap<String, String>(){{
+            put(XxlApmEvent.ERROR_STATUS, ThrowableUtil.toString(cause));
+        }});
+
+        return report(xxlApmEvent);
     }
 
 }

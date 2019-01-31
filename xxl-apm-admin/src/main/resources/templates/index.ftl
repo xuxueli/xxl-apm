@@ -44,6 +44,23 @@
                     </div>
                 </div>
 
+                <#-- 实例数量 -->
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="info-box bg-green">
+                        <span class="info-box-icon"><i class="fa ion-ios-settings-strong"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">实例数量</span>
+                            <span class="info-box-number">${appNameAddressCount}</span>
+
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 100%"></div>
+                            </div>
+                            <span class="progress-description">接入应用对应的部署实例数量</span>
+                        </div>
+                    </div>
+                </div>
+
                 <#-- 消息数量 -->
                 <div class="col-md-4 col-sm-6 col-xs-12" >
                     <div class="info-box bg-yellow">
@@ -57,23 +74,6 @@
                                 <div class="progress-bar" style="width: 100%" ></div>
                             </div>
                             <span class="progress-description">接入应用上报的消息数量</span>
-                        </div>
-                    </div>
-                </div>
-
-                <#-- 消息 -->
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div class="info-box bg-green">
-                        <span class="info-box-icon"><i class="fa ion-ios-settings-strong"></i></span>
-
-                        <div class="info-box-content">
-                            <span class="info-box-text">告警次数</span>
-                            <span class="info-box-number">500</span>
-
-                            <div class="progress">
-                                <div class="progress-bar" style="width: 100%"></div>
-                            </div>
-                            <span class="progress-description">应用故障告警次数</span>
                         </div>
                     </div>
                 </div>

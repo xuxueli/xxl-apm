@@ -1,9 +1,7 @@
 package com.xxl.apm.client.message.impl;
 
 import com.xxl.apm.client.message.XxlApmMsg;
-import com.xxl.rpc.util.ThrowableUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,7 +18,7 @@ public class XxlApmEvent extends XxlApmMsg {
     private String type;                        // like "URL"
     private String name;                        // like "/user/add"
 
-    private String status;                      // "success" means success, other errorcode
+    private String status;                      // "success" means success, other error
     private Map<String, String> param;          // like "ip=xxx"
 
 
@@ -80,14 +78,6 @@ public class XxlApmEvent extends XxlApmMsg {
         if (this.status == null) {
             this.status = SUCCESS_STATUS;
         }
-    }
-
-    public void setError(Throwable e){
-        this.status = ERROR_STATUS;
-        if (this.param == null) {
-            this.param = new HashMap<>();
-        }
-        this.param.put(ERROR_STATUS, ThrowableUtil.toString(e));
     }
 
 }

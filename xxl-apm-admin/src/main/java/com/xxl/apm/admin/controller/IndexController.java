@@ -37,6 +37,9 @@ public class IndexController {
 		int appNameCount = xxlApmHeartbeatReportDao.findAppNameCount();
 		model.addAttribute("appNameCount", appNameCount);
 
+		int appNameAddressCount = xxlApmHeartbeatReportDao.findAppNameAddressCount();
+		model.addAttribute("appNameAddressCount", appNameAddressCount);
+
 		int totalMsgCount = xxlApmHeartbeatReportDao.findTotalMsgCount();
 		model.addAttribute("totalMsgCount", totalMsgCount);
 

@@ -228,7 +228,7 @@ $(function() {
         "data": TableData,
         "paging": false,
         "searching": false,
-        "order": [[ 1, 'desc' ]],
+        "order": [[ 1, 'desc' ],[ 0, 'asc' ]],
         "info": false
     } );
 

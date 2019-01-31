@@ -52,7 +52,8 @@ public class XxlApmWebFilter implements Filter {
         try {
             chain.doFilter(request, response);
         } catch (Throwable e) {
-            transaction.setError(e);
+            transaction.setStatus(e.getClass().getName());
+            XxlApm.report(e);
             throw e;
         } finally {
 
