@@ -3,8 +3,10 @@ package com.xxl.apm.admin.service.impl;
 import com.xxl.apm.admin.conf.XxlApmMsgServiceImpl;
 import com.xxl.apm.admin.core.model.XxlApmEventReport;
 import com.xxl.apm.admin.core.model.XxlApmHeartbeatReport;
+import com.xxl.apm.admin.core.model.XxlApmTransactionReport;
 import com.xxl.apm.admin.dao.IXxlApmEventReportDao;
 import com.xxl.apm.admin.dao.IXxlApmHeartbeatReportDao;
+import com.xxl.apm.admin.dao.IXxlApmTransactionReportDao;
 import com.xxl.apm.admin.service.XxlApmStoreService;
 import com.xxl.apm.client.message.XxlApmMsg;
 import com.xxl.apm.client.message.impl.XxlApmEvent;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author xuxueli 2019-01-17
@@ -26,6 +29,8 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
     private IXxlApmHeartbeatReportDao xxlApmHeartbeatReportDao;
     @Resource
     private IXxlApmEventReportDao xxlApmEventReportDao;
+    @Resource
+    private IXxlApmTransactionReportDao xxlApmTransactionReportDao;
 
 
     @Override
@@ -33,11 +38,11 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
 
         // dispatch msg
         List<XxlApmHeartbeat> heartbeatList = null;
-        List<XxlApmTransaction> transactionList = null;
         List<XxlApmEvent> eventList = null;
+        List<XxlApmTransaction> transactionList = null;
 
         for (XxlApmMsg apmMsg: messageList) {
-            if (apmMsg instanceof XxlApmTransaction) {
+            if (apmMsg instanceof XxlApmTransaction) {      //  child class should before super class
                 if (transactionList == null) {
                     transactionList = new ArrayList<>();
                 }
@@ -81,43 +86,46 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
 
         if (eventList!=null && eventList.size()>0) {
 
-            Map<String, XxlApmEventReport> eventMap = new HashMap<>();
+            Map<String, XxlApmEventReport> eventReportMap = new HashMap<>();
             for (XxlApmEvent event:eventList) {
 
                 // addtime -> min
-                event.setAddtime((event.getAddtime()/60000)*60000);
+                long min = (event.getAddtime()/60000)*60000;
 
-                // match event data
+                // match report key
                 String eventKey = event.getAppname()
-                        .concat(String.valueOf(event.getAddtime()))
+                        .concat(String.valueOf(min))
                         .concat(event.getIp())
                         .concat(event.getType())
                         .concat(event.getName());
                 boolean success = XxlApmEvent.SUCCESS_STATUS.equals(event.getStatus());
 
-                XxlApmEventReport eventReport = eventMap.get(eventKey);
+                // make report
+                XxlApmEventReport eventReport = eventReportMap.get(eventKey);
                 if (eventReport == null) {
                     eventReport = new XxlApmEventReport();
                     eventReport.setAppname(event.getAppname());
-                    eventReport.setAddtime(event.getAddtime());
+                    eventReport.setAddtime(min);
                     eventReport.setIp(event.getIp());
                     eventReport.setHostname(event.getHostname());
 
                     eventReport.setType(event.getType());
                     eventReport.setName(event.getName());
 
-                    eventMap.put(eventKey, eventReport);
+                    eventReportMap.put(eventKey, eventReport);
                 }
 
-                eventReport.setTotal_count(eventReport.getTotal_count() + 1);
+                eventReport.setTotal_count(eventReport.getTotal_count() + 1);   // just new count
                 if (!success) {
                     eventReport.setFail_count(eventReport.getFail_count() + 1);
                 }
 
-                // todo, logview
+                // make logview
+                bindLogView(event);
+
             }
 
-            for (XxlApmEventReport eventReport: eventMap.values()) {
+            for (XxlApmEventReport eventReport: eventReportMap.values()) {
                 int ret = xxlApmEventReportDao.update(eventReport);
                 if (ret < 1) {
                     xxlApmEventReportDao.add(eventReport);
@@ -126,16 +134,116 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
             
         }
 
-        /**
-         * todo-apm:
-         *
-         * - fresh report, in min (report simple data)
-         * - store logView (store file or es)
-         * - Report bind LogView, LogView write file
-         * - Error LogView, Alerm;
-         */
+        if (transactionList!=null && transactionList.size()>0) {
+
+            Map<String, XxlApmTransactionReport> transactionReportMap = new HashMap<>();
+            for (XxlApmTransaction transaction: transactionList) {
+
+                // addtime -> min
+                long min = (transaction.getAddtime()/60000)*60000;
+
+                // match report key
+                String transactionKey = transaction.getAppname()
+                        .concat(String.valueOf(min))
+                        .concat(transaction.getIp())
+                        .concat(transaction.getType())
+                        .concat(transaction.getName());
+                boolean success = XxlApmEvent.SUCCESS_STATUS.equals(transaction.getStatus());
+
+                // make report
+                XxlApmTransactionReport transactionReport = transactionReportMap.get(transactionKey);
+                if (transactionReport == null) {
+                    transactionReport = new XxlApmTransactionReport();
+                    transactionReport.setAppname(transaction.getAppname());
+                    transactionReport.setAddtime(min);
+                    transactionReport.setIp(transaction.getIp());
+                    transactionReport.setHostname(transaction.getHostname());
+
+                    transactionReport.setType(transaction.getType());
+                    transactionReport.setName(transaction.getName());
+
+                    transactionReportMap.put(transactionKey, transactionReport);
+                }
+
+                // todo, real-time computing, just mock
+                List<Long> timeList = getTpMap().get(transactionKey);
+                if (timeList == null) {
+                    timeList = new ArrayList<>();
+                    getTpMap().put(transactionKey, timeList);
+                } {
+
+                }
+                timeList.add(transaction.getTime());
+                long totalTime = 0;
+                long maxTime = 0;
+                for (long item:timeList) {
+                    totalTime += item;
+                    if (item>maxTime) {
+                        maxTime = item;
+                    }
+                }
+
+                transactionReport.setTime_max(maxTime);
+                transactionReport.setTime_avg( totalTime/timeList.size() );
+                transactionReport.setTime_tp90( tp(timeList, 90f) );
+                transactionReport.setTime_tp95( tp(timeList, 95f) );
+                transactionReport.setTime_tp99( tp(timeList, 99f) );
+                transactionReport.setTime_tp999( tp(timeList, 99.9f) );
+
+                transactionReport.setTotal_count(transactionReport.getTotal_count() + 1);       // just new count
+                if (!success) {
+                    transactionReport.setFail_count(transactionReport.getFail_count() + 1);
+                }
+
+                // make logview
+                bindLogView(transaction);
+            }
+
+            for (XxlApmTransactionReport transactionReport: transactionReportMap.values()) {
+                int ret = xxlApmTransactionReportDao.update(transactionReport);
+                if (ret < 1) {
+                    xxlApmTransactionReportDao.add(transactionReport);
+                }
+            }
+
+        }
 
         return false;
+    }
+
+    private static Map<String, List<Long>> tpMap_0 = new ConcurrentHashMap<>();
+    private static Map<String, List<Long>> tpMap_1 = new ConcurrentHashMap<>();
+    private static Map<String, List<Long>> getTpMap(){
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (hour%2 == 0) {
+            tpMap_1.clear();
+            return tpMap_0;
+        } else {
+            tpMap_0.clear();
+            return tpMap_1;
+        }
+    }
+    private static long tp(List<Long> times, float percent) {
+        float percentF = percent/100;
+        Collections.sort(times);
+
+        int index = (int)(percentF * times.size() - 1);
+        return times.get(index);
+    }
+
+
+    /**
+     *  todo-apm:
+     *
+     *      - fresh report, in min (report simple data)
+     *      - store logView (store file or es)
+     *      - Report bind LogView, LogView write file
+     *      - Error LogView, Alerm;
+     *
+     * @param xxlApmMsg
+     */
+    private void bindLogView(XxlApmMsg xxlApmMsg){
+
     }
 
     @Override

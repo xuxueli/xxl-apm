@@ -111,7 +111,8 @@ public class XxlApmFactory {
     public volatile boolean innerThreadPoolStoped = false;
 
     private LinkedBlockingQueue<XxlApmMsg> newMessageQueue = new LinkedBlockingQueue<>();
-    private int newMessageQueueMax = 50000;
+    private int newMessageQueueMax = 10000;
+    private int batchReportNum = 100;
 
     private volatile File msgFileDir = null;
     private Object msgFileDirLock = new Object();
@@ -175,16 +176,16 @@ public class XxlApmFactory {
 
                                 // attempt to report mult msg
                                 List<XxlApmMsg> otherMessageList = new ArrayList<>();
-                                int drainToNum = newMessageQueue.drainTo(otherMessageList, 100);
+                                int drainToNum = newMessageQueue.drainTo(otherMessageList, batchReportNum);
                                 if (drainToNum > 0) {
                                     messageList.addAll(otherMessageList);
                                 }
 
                                 // msg too small, just wait 1s, avoid report too quick
-                                if (otherMessageList.size() < 50) {
+                                if (otherMessageList.size() < batchReportNum) {
                                     TimeUnit.SECONDS.sleep(1);
 
-                                    drainToNum = newMessageQueue.drainTo(otherMessageList, 50);
+                                    drainToNum = newMessageQueue.drainTo(otherMessageList, batchReportNum-otherMessageList.size());
                                     if (drainToNum > 0) {
                                         messageList.addAll(otherMessageList);
                                     }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xuxueli 2019-01-17
@@ -24,7 +25,9 @@ public class IndexController {
     public String index() throws Exception {
 
         int randomVal = new Random().nextInt(10);
-        int error_result = 10/randomVal;
+        int mock_error = 10/randomVal;
+
+        TimeUnit.MILLISECONDS.sleep(randomVal);
 
         /**
          *  1、Transaction 消息

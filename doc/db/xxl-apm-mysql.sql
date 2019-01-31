@@ -51,3 +51,22 @@ CREATE TABLE `xxl_apm_event_report` (
   `fail_count` bigint(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `xxl_apm_transaction_report` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `appname` varchar(100) NOT NULL,
+  `addtime` bigint(11) NOT NULL,
+  `ip` varchar(100) NOT NULL,
+  `hostname` varchar(200) NOT NULL,
+  `type` varchar(200) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `total_count` bigint(11) NOT NULL,
+  `fail_count` bigint(11) NOT NULL,
+  `time_max` int(11) NOT NULL,
+  `time_avg` int(11) NOT NULL,
+  `time_tp90` int(11) NOT NULL,
+  `time_tp95` int(11) NOT NULL,
+  `time_tp99` int(11) NOT NULL,
+  `time_tp999` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
