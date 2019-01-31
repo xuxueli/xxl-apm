@@ -1,12 +1,12 @@
 package com.xxl.apm.admin.controller;
 
-import com.xxl.apm.admin.core.model.XxlApmEventReport;
 import com.xxl.apm.admin.core.model.XxlApmHeartbeatReport;
+import com.xxl.apm.admin.core.model.XxlApmTransactionReport;
 import com.xxl.apm.admin.core.util.CookieUtil;
 import com.xxl.apm.admin.core.util.DateUtil;
 import com.xxl.apm.admin.core.util.JacksonUtil;
-import com.xxl.apm.admin.dao.IXxlApmEventReportDao;
 import com.xxl.apm.admin.dao.IXxlApmHeartbeatReportDao;
+import com.xxl.apm.admin.dao.IXxlApmTransactionReportDao;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,18 +14,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
- * @author xuxueli 2019-01-28
+ * @author xuxueli 2019-01-31
  */
 @Controller
-@RequestMapping("/event")
-public class EventController {
+@RequestMapping("/transaction")
+public class TransactionController {
 
 
     @Resource
-    private IXxlApmEventReportDao xxlApmEventReportDao;
+    private IXxlApmTransactionReportDao xxlApmTransactionReportDao;
     @Resource
     private IXxlApmHeartbeatReportDao xxlApmHeartbeatReportDao;
 
@@ -89,7 +92,7 @@ public class EventController {
         // typeList
         List<String> typeList = null;
         if (appname!=null && appname.trim().length()>0) {
-            typeList = xxlApmEventReportDao.findTypeList(appname, addtime_from, addtime_to);
+            typeList = xxlApmTransactionReportDao.findTypeList(appname, addtime_from, addtime_to);
         }
         model.addAttribute("typeList", typeList);
 
@@ -110,12 +113,12 @@ public class EventController {
 
 
         // load data
-        List<XxlApmEventReport> reportList = xxlApmEventReportDao.find(appname, addtime_from, addtime_to, ip, type);
+        List<XxlApmTransactionReport> reportList = xxlApmTransactionReportDao.find(appname, addtime_from, addtime_to, ip, type);
         if (reportList!=null && reportList.size()>0) {
             model.addAttribute("reportList", JacksonUtil.writeValueAsString(reportList));
         }
 
-        return "event/event.index";
+        return "transaction/transaction.index";
     }
 
 }

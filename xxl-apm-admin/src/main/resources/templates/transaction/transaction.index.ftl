@@ -20,7 +20,7 @@
 	<!-- header -->
 	<@netCommon.commonHeader />
 	<!-- left -->
-	<@netCommon.commonLeft "event" />
+	<@netCommon.commonLeft "transaction" />
 	
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
@@ -216,7 +216,7 @@
     var periodSecond = '${periodSecond}';
 
 </script>
-<script src="${request.contextPath}/static/js/event.index.js"></script>
+<script src="${request.contextPath}/static/js/transaction.index.js"></script>
 
 </body>
 </html>
