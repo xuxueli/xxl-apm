@@ -4,8 +4,8 @@
   	<#import "./common/common.macro.ftl" as netCommon>
     <title>应用性能管理平台</title>
 	<@netCommon.commonStyle />
-    <!-- daterangepicker -->
-    <link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+    <#-- datetimepicker -->
+    <link rel="stylesheet" href="${request.contextPath}/static/plugins/datetimepicker/jquery.datetimepicker.min.css">
 </head>
 <body class="hold-transition skin-blue sidebar-mini <#if cookieMap?exists && cookieMap["xxlapm_adminlte_settings"]?exists && "off" == cookieMap["xxlapm_adminlte_settings"].value >sidebar-collapse</#if> ">
 <div class="wrapper">
@@ -16,13 +16,13 @@
 	
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
-		<!-- Content Header (Page header) -->
-		<section class="content-header">
-			<h1>运行报表</h1>
-		</section>
 
-		<!-- Main content -->
-		<section class="content">
+        <section class="content-header">
+            <h1>应用大盘</h1>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
 
             <!-- 报表导航 -->
             <div class="row">
@@ -80,52 +80,47 @@
 
             </div>
 
-            <#-- 消息报表：时间区间筛选，左侧折线图 + 右侧饼图 -->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="box">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">应用监控大盘</h3>
+            <#-- min -->
+            <div class="row" >
 
-                            <!-- tools box -->
-                            <div class="pull-right box-tools">
-                                <button type="button" class="btn btn-primary btn-sm daterange pull-right" data-toggle="tooltip" id="filterTime" >
-                                    <i class="fa fa-calendar"></i>
-                                </button>
-                            </div>
-                            <!-- /. tools -->
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">时间</span>
+                        <input type="text" class="form-control" id="querytime" value="${querytime?string('yyyy-MM-dd HH:mm')}" readonly >
+                    </div>
+                </div>
+                <div class="col-xs-1">
+                    <button class="btn btn-block btn-info" id="searchBtn">GO</button>
+                </div>
 
-                        </div>
-                        <div class="box-body">
-                            <div class="row">
-                                <#-- 左侧折线图 -->
-                                <div class="col-md-8">
-                                    <div id="lineChart" style="height: 350px;"></div>
-                                </div>
-                                <#-- 右侧饼图 -->
-                                <div class="col-md-4">
-                                    <div id="pieChart" style="height: 350px;"></div>
-                                </div>
-                            </div>
-                        </div>
+                <br>
+                <div class="col-md-12 col-xs-12" >
+                    <div class="btn-group">
+                        <#list 0..59 as minItem>
+                            <button type="button" class="btn <#if min?exists && minItem = min>btn-success<#else>btn-default</#if> min" data-min="${minItem}" >${minItem?string["00"]}</button>
+                        </#list>
                     </div>
                 </div>
             </div>
 
-		</section>
-		<!-- /.content -->
+        </section>
+        <!-- /.content -->
+
+
 	</div>
 	<!-- /.content-wrapper -->
 	
 	<!-- footer -->
 	<@netCommon.commonFooter />
 </div>
+
 <@netCommon.commonScript />
-<!-- daterangepicker -->
-<script src="${request.contextPath}/static/adminlte/bower_components/moment/moment.min.js"></script>
-<script src="${request.contextPath}/static/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-<#-- echarts -->
-<script src="${request.contextPath}/static/plugins/echarts/echarts.common.min.js"></script>
+<#-- datetimepicker -->
+<script src="${request.contextPath}/static/plugins/datetimepicker/jquery.datetimepicker.full.min.js"></script>
+<script>
+    var min = '${min}';
+</script>
 <script src="${request.contextPath}/static/js/index.js"></script>
+
 </body>
 </html>

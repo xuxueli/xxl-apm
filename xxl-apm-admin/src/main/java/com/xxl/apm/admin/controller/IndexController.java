@@ -3,20 +3,19 @@ package com.xxl.apm.admin.controller;
 import com.xxl.apm.admin.controller.annotation.PermessionLimit;
 import com.xxl.apm.admin.controller.interceptor.PermissionInterceptor;
 import com.xxl.apm.admin.core.result.ReturnT;
+import com.xxl.apm.admin.core.util.DateUtil;
 import com.xxl.apm.admin.dao.IXxlApmHeartbeatReportDao;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -32,7 +31,7 @@ public class IndexController {
 
 
 	@RequestMapping("/")
-	public String index(Model model, HttpServletRequest request) {
+	public String index(Model model, String querytime, @RequestParam(required = false, defaultValue = "-1") int min) {
 
 		int appNameCount = xxlApmHeartbeatReportDao.findAppNameCount();
 		model.addAttribute("appNameCount", appNameCount);
@@ -42,6 +41,27 @@ public class IndexController {
 
 		int totalMsgCount = xxlApmHeartbeatReportDao.findTotalMsgCount();
 		model.addAttribute("totalMsgCount", totalMsgCount);
+
+
+		// parse querytime
+		Date querytime_date = null;
+		if (querytime!=null && querytime.trim().length()>0) {
+			querytime_date = DateUtil.parse(querytime, "yyyyMMddHH");
+		}
+		if (querytime_date == null) {
+			querytime_date = DateUtil.parse(DateUtil.format(new Date(), "yyyyMMddHH"), "yyyyMMddHH");
+		}
+		model.addAttribute("querytime", querytime_date);
+
+		// min
+		min = (min>=0 && min<=59)?min:Calendar.getInstance().get(Calendar.MINUTE);
+		model.addAttribute("min", min);
+
+		// time peroid
+		long addtime_from = querytime_date.getTime() + min*1000*60;
+		long addtime_to = addtime_from + 1*1000*60;    // an min
+
+
 
 		return "index";
 	}
