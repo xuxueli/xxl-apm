@@ -52,7 +52,7 @@
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%"></div>
                             </div>
-                            <span class="progress-description">接入应用对应的部署实例数量</span>
+                            <span class="progress-description">接入应用部署的实例数量</span>
                         </div>
                     </div>
                 </div>
