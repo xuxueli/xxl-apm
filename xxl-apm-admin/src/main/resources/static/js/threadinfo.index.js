@@ -68,7 +68,7 @@ $(function() {
         }
         var querytime = y + "" + m + "" + d + "" + h;
         var appname = $('#appname').val()?$('#appname').val().trim():'';
-        var ip = $('#ip').val()?$('#ip').val().trim():'';
+        var address = $('#address').val()?$('#address').val().trim():'';
 
         if (!appname) {
             layer.open({
@@ -81,10 +81,10 @@ $(function() {
         }
 
         // redirct
-        var redirct_url = base_url + "/heartbeat/threadinfo?querytime={querytime}&appname={appname}&ip={ip}&min={min}";
+        var redirct_url = base_url + "/heartbeat/threadinfo?querytime={querytime}&appname={appname}&address={address}&min={min}";
         redirct_url = redirct_url.replace('{querytime}', querytime);
         redirct_url = redirct_url.replace('{appname}', appname);
-        redirct_url = redirct_url.replace('{ip}', ip);
+        redirct_url = redirct_url.replace('{address}', address);
         redirct_url = redirct_url.replace('{min}', min);
 
         window.location.href = redirct_url;

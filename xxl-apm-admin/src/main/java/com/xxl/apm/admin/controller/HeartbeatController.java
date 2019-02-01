@@ -33,7 +33,7 @@ public class HeartbeatController {
 
     @RequestMapping("")
     public String index(Model model, HttpServletRequest request, HttpServletResponse response,
-                        String querytime, String appname, String ip){
+                        String querytime, String appname, String address){
 
         // get cookie
         if (querytime == null) {
@@ -60,29 +60,29 @@ public class HeartbeatController {
         long addtime_from = querytime_date.getTime();
         long addtime_to = addtime_from + 59*60*1000;    // an hour
 
-        // ipInfo
-        Map<String, String> ipInfo = new TreeMap<>();
+        // addressInfo
+        Map<String, String> addressInfo = new TreeMap<>();
         if (appname!=null && appname.trim().length()>0) {
-            List<XxlApmHeartbeatReport> ipList = xxlApmHeartbeatReportDao.findAddressList(appname, addtime_from, addtime_to);
-            if (ipList!=null && ipList.size()>0) {
-                for (XxlApmHeartbeatReport item: ipList) {
-                    ipInfo.put(item.getAddress(), item.getAddress().concat("(").concat(item.getHostname()).concat(")") );
+            List<XxlApmHeartbeatReport> addressList = xxlApmHeartbeatReportDao.findAddressList(appname, addtime_from, addtime_to);
+            if (addressList!=null && addressList.size()>0) {
+                for (XxlApmHeartbeatReport item: addressList) {
+                    addressInfo.put(item.getAddress(), item.getAddress().concat("(").concat(item.getHostname()).concat(")") );
                 }
             }
         }
-        model.addAttribute("ipInfo", ipInfo);
+        model.addAttribute("addressInfo", addressInfo);
 
-        // ip
-        ip = (ip!=null&&ipInfo.containsKey(ip))
-                ? ip
-                : !ipInfo.isEmpty()
-                    ?((TreeMap<String, String>) ipInfo).firstKey()
+        // address
+        address = (address!=null&&addressInfo.containsKey(address))
+                ? address
+                : !addressInfo.isEmpty()
+                    ?((TreeMap<String, String>) addressInfo).firstKey()
                     :null;
 
         // filter data
         model.addAttribute("querytime", querytime_date);
         model.addAttribute("appname", appname);
-        model.addAttribute("ip", ip);
+        model.addAttribute("address", address);
 
         // set cookie
         CookieUtil.set(response, "xxlapm_querytime", querytime, false);
@@ -90,11 +90,10 @@ public class HeartbeatController {
 
 
         // load data
-        List<XxlApmHeartbeat> heartbeatList = new ArrayList<>();
-
-        if (ip != null) {
-            List<XxlApmHeartbeatReport> heartbeatReportList = xxlApmHeartbeatReportDao.find(appname, addtime_from, addtime_to, ip);
+        if (address != null) {
+            List<XxlApmHeartbeatReport> heartbeatReportList = xxlApmHeartbeatReportDao.find(appname, addtime_from, addtime_to, address);
             if (heartbeatReportList!=null && heartbeatReportList.size()>0) {
+                List<XxlApmHeartbeat> heartbeatList = new ArrayList<>();
                 for (XxlApmHeartbeatReport heartbeatReport: heartbeatReportList) {
                     XxlApmHeartbeat heartbeat = (XxlApmHeartbeat) XxlApmMsgServiceImpl.getSerializer().deserialize(heartbeatReport.getHeartbeat_data(), XxlApmHeartbeat.class);
 
@@ -105,11 +104,10 @@ public class HeartbeatController {
 
                     heartbeatList.add(heartbeat);
                 }
+                if (heartbeatList.size() > 0) {
+                    model.addAttribute("heartbeatList", JacksonUtil.writeValueAsString(heartbeatList));
+                }
             }
-        }
-
-        if (heartbeatList.size() > 0) {
-            model.addAttribute("heartbeatList", JacksonUtil.writeValueAsString(heartbeatList));
         }
 
         return "heartbeat/heartbeat.index";
@@ -130,7 +128,7 @@ public class HeartbeatController {
 
     @RequestMapping("/threadinfo")
     public String threadinfo(Model model, HttpServletRequest request, HttpServletResponse response,
-                        String querytime, String appname, String ip, @RequestParam(required = false, defaultValue = "-1") int min){
+                        String querytime, String appname, String address, @RequestParam(required = false, defaultValue = "-1") int min){
 
         // get cookie
         if (querytime == null) {
@@ -157,29 +155,30 @@ public class HeartbeatController {
         long addtime_from = querytime_date.getTime();
         long addtime_to = addtime_from + 59*60*1000;    // an hour
 
-        // ipInfo
-        Map<String, String> ipInfo = new TreeMap<>();
+        // addressInfo
+        Map<String, String> addressInfo = new TreeMap<>();
         if (appname!=null && appname.trim().length()>0) {
-            List<XxlApmHeartbeatReport> ipList = xxlApmHeartbeatReportDao.findAddressList(appname, addtime_from, addtime_to);
-            if (ipList!=null && ipList.size()>0) {
-                for (XxlApmHeartbeatReport item: ipList) {
-                    ipInfo.put(item.getAddress(), item.getAddress().concat("(").concat(item.getHostname()).concat(")") );
+            List<XxlApmHeartbeatReport> addressList = xxlApmHeartbeatReportDao.findAddressList(appname, addtime_from, addtime_to);
+            if (addressList!=null && addressList.size()>0) {
+                for (XxlApmHeartbeatReport item: addressList) {
+                    addressInfo.put(item.getAddress(), item.getAddress().concat("(").concat(item.getHostname()).concat(")") );
                 }
             }
         }
-        model.addAttribute("ipInfo", ipInfo);
+        model.addAttribute("addressInfo", addressInfo);
 
-        // ip
-        ip = (ip!=null&&ipInfo.containsKey(ip))
-                ? ip
-                : !ipInfo.isEmpty()
-                ?((TreeMap<String, String>) ipInfo).firstKey()
+        // address
+        address = (address!=null&&addressInfo.containsKey(address))
+                ? address
+                : !addressInfo.isEmpty()
+                ?((TreeMap<String, String>) addressInfo).firstKey()
                 :null;
+
 
         // filter data
         model.addAttribute("querytime", querytime_date);
         model.addAttribute("appname", appname);
-        model.addAttribute("ip", ip);
+        model.addAttribute("address", address);
 
         // set cookie
         CookieUtil.set(response, "xxlapm_querytime", querytime, false);
@@ -191,13 +190,16 @@ public class HeartbeatController {
         model.addAttribute("min", min);
 
         // load data
-        long descTime = addtime_from + min*60*1000;
-        List<XxlApmHeartbeatReport> heartbeatReportList = xxlApmHeartbeatReportDao.find(appname, descTime, descTime, ip);
-        if (heartbeatReportList!=null && heartbeatReportList.size()>0) {
-            XxlApmHeartbeat heartbeat = (XxlApmHeartbeat) XxlApmMsgServiceImpl.getSerializer().deserialize(heartbeatReportList.get(0).getHeartbeat_data(), XxlApmHeartbeat.class);
-            List<XxlApmHeartbeat.ThreadInfo> threadInfoList = heartbeat.getThread_list();
-            model.addAttribute("threadInfoList", threadInfoList);
+        if (address != null) {
+            long descTime = addtime_from + min*60*1000;
+            List<XxlApmHeartbeatReport> heartbeatReportList = xxlApmHeartbeatReportDao.find(appname, descTime, descTime, address);
+            if (heartbeatReportList!=null && heartbeatReportList.size()>0) {
+                XxlApmHeartbeat heartbeat = (XxlApmHeartbeat) XxlApmMsgServiceImpl.getSerializer().deserialize(heartbeatReportList.get(0).getHeartbeat_data(), XxlApmHeartbeat.class);
+                List<XxlApmHeartbeat.ThreadInfo> threadInfoList = heartbeat.getThread_list();
+                model.addAttribute("threadInfoList", threadInfoList);
+            }
         }
+
 
         return "heartbeat/threadinfo.index";
     }
