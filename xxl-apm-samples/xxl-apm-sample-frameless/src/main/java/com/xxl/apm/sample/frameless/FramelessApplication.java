@@ -31,9 +31,7 @@ public class FramelessApplication {
 
             // transaction
             XxlApmTransaction transaction = new XxlApmTransaction("URL", "/user/query");
-            for (int i = 0; i < 5; i++) {
-                TimeUnit.MILLISECONDS.sleep(1);
-            }
+            TimeUnit.MILLISECONDS.sleep(5);
             transaction.setStatus("fail");
             transaction.setParam(new HashMap<String, String>(){{
                 put("userid", "1001");
