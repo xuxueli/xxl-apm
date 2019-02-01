@@ -80,7 +80,8 @@ public class IndexController {
                 final Date querytime_date_tmp = querytime_date;
                 faultList.add(new HashMap<String, Object>(){{
                     put("Category", "事件");
-                    put("Title", MessageFormat.format("AppName: {0}<br> Type: {1}", eventReport.getAppname(), eventReport.getType()));
+                    put("AppName", eventReport.getAppname());
+					put("Type", eventReport.getType());
                     put("Count", eventReport.getFail_count());
                     put("Link", MessageFormat.format("/event?querytime={0}&appname={1}&address=&type={2}",
                             DateUtil.format(querytime_date_tmp, "yyyyMMddHH"), eventReport.getAppname(), eventReport.getType())
@@ -93,8 +94,8 @@ public class IndexController {
                 final Date querytime_date_tmp = querytime_date;
                 faultList.add(new HashMap<String, Object>(){{
                     put("Category", "事务");
-                    put("Title", transactionReport.getAppname());
-                    put("TitleDetail", MessageFormat.format("AppName: {0}<br> Type: {1}", transactionReport.getAppname(), transactionReport.getType()));
+					put("AppName", transactionReport.getAppname());
+					put("Type", transactionReport.getType());
                     put("Count", transactionReport.getFail_count());
                     put("Link", MessageFormat.format("/transaction?querytime={0}&appname={1}&address=&type={2}",
                             DateUtil.format(querytime_date_tmp, "yyyyMMddHH"), transactionReport.getAppname(), transactionReport.getType())

@@ -107,8 +107,9 @@
                                 <thead>
                                     <tr>
                                         <th>故障分类</th>
-                                        <th>名称</th>
-                                        <th>故障次数</th>
+                                        <th>AppName</th>
+                                        <th>Type</th>
+                                        <th>故障次数(Min)</th>
                                         <th>Link</th>
                                     </tr>
                                 </thead>
@@ -117,7 +118,8 @@
                                         <#list faultList as item>
                                             <tr class="bg-red color-palette" >
                                                 <td>${item.Category}</td>
-                                                <td>${item.Title}</td>
+                                                <td>${item.AppName}</td>
+                                                <td>${item.Type}</td>
                                                 <td>${item.Count}</td>
                                                 <td><a href="${request.contextPath}${item.Link}" class="btn btn-default btn-xs" >Link</a></td>
                                             </tr>
