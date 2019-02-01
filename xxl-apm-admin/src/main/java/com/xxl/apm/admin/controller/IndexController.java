@@ -62,8 +62,8 @@ public class IndexController {
 		model.addAttribute("querytime", querytime_date);
 
 		// min
-		min = (min>=0 && min<=59)?min:Calendar.getInstance().get(Calendar.MINUTE);
-		model.addAttribute("min", min);
+		min = (min>=0 && min<=59)?min:Calendar.getInstance().get(Calendar.MINUTE)-1;
+		min = (min>=0 && min<=59)?min:0;
 
 		// time peroid
 		long addtime_from = querytime_date.getTime() + min*1000*60;

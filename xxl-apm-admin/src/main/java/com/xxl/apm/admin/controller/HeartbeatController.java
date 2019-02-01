@@ -186,7 +186,8 @@ public class HeartbeatController {
         CookieUtil.set(response, "xxlapm_appname", appname, false);
 
         // min
-        min = (min>=0 && min<=59)?min:Calendar.getInstance().get(Calendar.MINUTE);
+        min = (min>=0 && min<=59)?min:Calendar.getInstance().get(Calendar.MINUTE)-1;
+        min = (min>=0 && min<=59)?min:0;
         model.addAttribute("min", min);
 
         // load data
