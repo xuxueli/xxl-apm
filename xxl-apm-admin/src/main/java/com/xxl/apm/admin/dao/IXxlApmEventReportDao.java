@@ -18,7 +18,7 @@ public interface IXxlApmEventReportDao {
     public List<XxlApmEventReport> find(@Param("appname") String appname,
                                             @Param("addtime_from") long addtime_from,
                                             @Param("addtime_to") long addtime_to,
-                                            @Param("ip") String ip,
+                                            @Param("address") String address,
                                             @Param("type") String type);
 
     public List<String> findTypeList(@Param("appname") String appname,

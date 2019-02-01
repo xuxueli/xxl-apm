@@ -73,7 +73,7 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
                 XxlApmHeartbeatReport heartbeatReport = new XxlApmHeartbeatReport();
                 heartbeatReport.setAppname(heartbeat.getAppname());
                 heartbeatReport.setAddtime(heartbeat.getAddtime());
-                heartbeatReport.setIp(heartbeat.getIp());
+                heartbeatReport.setAddress(heartbeat.getAddress());
                 heartbeatReport.setHostname(heartbeat.getHostname());
 
                 heartbeatReport.setHeartbeat_data(heartbeat_data);
@@ -95,7 +95,7 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
                 // match report key
                 String eventKey = event.getAppname()
                         .concat(String.valueOf(min))
-                        .concat(event.getIp())
+                        .concat(event.getAddress())
                         .concat(event.getType())
                         .concat(event.getName());
                 boolean success = XxlApmEvent.SUCCESS_STATUS.equals(event.getStatus());
@@ -106,7 +106,7 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
                     eventReport = new XxlApmEventReport();
                     eventReport.setAppname(event.getAppname());
                     eventReport.setAddtime(min);
-                    eventReport.setIp(event.getIp());
+                    eventReport.setAddress(event.getAddress());
                     eventReport.setHostname(event.getHostname());
 
                     eventReport.setType(event.getType());
@@ -145,7 +145,7 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
                 // match report key
                 String transactionKey = transaction.getAppname()
                         .concat(String.valueOf(min))
-                        .concat(transaction.getIp())
+                        .concat(transaction.getAddress())
                         .concat(transaction.getType())
                         .concat(transaction.getName());
                 boolean success = XxlApmEvent.SUCCESS_STATUS.equals(transaction.getStatus());
@@ -156,7 +156,7 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
                     transactionReport = new XxlApmTransactionReport();
                     transactionReport.setAppname(transaction.getAppname());
                     transactionReport.setAddtime(min);
-                    transactionReport.setIp(transaction.getIp());
+                    transactionReport.setAddress(transaction.getAddress());
                     transactionReport.setHostname(transaction.getHostname());
 
                     transactionReport.setType(transaction.getType());

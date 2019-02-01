@@ -99,7 +99,7 @@ A distributed APM(application-performance-management) platform.
     单机器集群：appname + ip (+instance) 
 
 ---
-- ip >> address;
+- ip >> address, to support mult machine；
 - transaction time: map >> db | es
 - xxlapm，全异步：批量压缩，批量发送。
 - 日报，小时报；预先生成报表数据；

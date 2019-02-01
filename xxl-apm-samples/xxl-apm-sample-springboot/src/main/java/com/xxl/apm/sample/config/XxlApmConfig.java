@@ -2,6 +2,7 @@ package com.xxl.apm.sample.config;
 
 import com.xxl.apm.client.factory.XxlApmFactory;
 import com.xxl.apm.client.support.XxlApmWebFilter;
+import com.xxl.rpc.util.IpUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -29,12 +30,17 @@ public class XxlApmConfig {
     private String msglogpath;
 
 
+    @Value("${server.port}")
+    private int serverPort;
+
+
     @Bean(initMethod="start", destroyMethod = "stop")
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public XxlApmFactory xxlApmFactory() {
 
         XxlApmFactory xxlApmFactory = new XxlApmFactory();
         xxlApmFactory.setAppname(appname);
+        xxlApmFactory.setAddress(IpUtil.getIpPort(serverPort));
         xxlApmFactory.setAdminAddress(adminAddress);
         xxlApmFactory.setAccessToken(accessToken);
         xxlApmFactory.setMsglogpath(msglogpath);

@@ -3,6 +3,7 @@ package com.xxl.apm.client;
 import com.xxl.apm.client.factory.XxlApmFactory;
 import com.xxl.apm.client.message.XxlApmMsg;
 import com.xxl.apm.client.message.impl.XxlApmEvent;
+import com.xxl.rpc.util.IpUtil;
 import com.xxl.rpc.util.ThrowableUtil;
 
 import java.util.Arrays;
@@ -82,6 +83,18 @@ public class XxlApm {
         return instance.xxlApmFactory.getAppname();
     }
 
+    /**
+     * get address
+     *
+     * @return
+     */
+    public static String getAddress(){
+        String address = instance.xxlApmFactory.getAddress();
+        if (address!=null && address.trim().length()>0) {
+            return address;
+        }
+        return IpUtil.getIp();
+    }
 
     // ---------------------- report tool ----------------------
 

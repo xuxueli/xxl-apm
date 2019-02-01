@@ -66,10 +66,10 @@ public class TransactionController {
         // ipInfo
         Map<String, String> ipInfo = new TreeMap<>();
         if (appname!=null && appname.trim().length()>0) {
-            List<XxlApmHeartbeatReport> ipList = xxlApmHeartbeatReportDao.findIpList(appname, addtime_from, addtime_to);
+            List<XxlApmHeartbeatReport> ipList = xxlApmHeartbeatReportDao.findAddressList(appname, addtime_from, addtime_to);
             if (ipList!=null && ipList.size()>0) {
                 for (XxlApmHeartbeatReport item: ipList) {
-                    ipInfo.put(item.getIp(), item.getIp().concat("(").concat(item.getHostname()).concat(")") );
+                    ipInfo.put(item.getAddress(), item.getAddress().concat("(").concat(item.getHostname()).concat(")") );
                 }
             }
         }

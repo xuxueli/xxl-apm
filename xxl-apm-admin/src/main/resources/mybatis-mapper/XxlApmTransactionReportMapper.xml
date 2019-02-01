@@ -7,7 +7,7 @@
 		<result column="id" property="id" />
 		<result column="appname" property="appname" />
 		<result column="addtime" property="addtime" />
-		<result column="ip" property="ip" />
+		<result column="address" property="address" />
 		<result column="hostname" property="hostname" />
 		<result column="type" property="type" />
 		<result column="name" property="name" />
@@ -25,7 +25,7 @@
 		t.`id`,
 		t.`appname`,
 		t.`addtime`,
-		t.`ip`,
+		t.`address`,
 		t.`hostname`,
 		t.`type`,
 		t.`name`,
@@ -43,7 +43,7 @@
 		INSERT INTO xxl_apm_transaction_report (
 			`appname`,
 			`addtime`,
-			`ip`,
+			`address`,
 			`hostname`,
 			`type`,
 			`name`,
@@ -59,7 +59,7 @@
 		(
 			#{xxlApmTransactionReport.appname},
 			#{xxlApmTransactionReport.addtime},
-			#{xxlApmTransactionReport.ip},
+			#{xxlApmTransactionReport.address},
 			#{xxlApmTransactionReport.hostname},
 			#{xxlApmTransactionReport.type},
 			#{xxlApmTransactionReport.name},
@@ -89,7 +89,7 @@
 			`time_tp999` = #{xxlApmTransactionReport.time_tp999}
 		where `appname` = #{xxlApmTransactionReport.appname}
 			AND `addtime` = #{xxlApmTransactionReport.addtime}
-			AND `ip` = #{xxlApmTransactionReport.ip}
+			AND `address` = #{xxlApmTransactionReport.address}
 			AND `type` = #{xxlApmTransactionReport.type}
 			AND `name` = #{xxlApmTransactionReport.name}
 	</update>
@@ -104,8 +104,8 @@
 		FROM xxl_apm_transaction_report AS t
 		WHERE t.appname = #{appname}
 			AND t.addtime between #{addtime_from} and #{addtime_to}
-			<if test="ip != null and ip != ''">
-				AND t.ip = #{ip}
+			<if test="address != null and address != ''">
+				AND t.address = #{address}
 			</if>
 			AND t.type = #{type}
 		ORDER BY t.addtime ASC

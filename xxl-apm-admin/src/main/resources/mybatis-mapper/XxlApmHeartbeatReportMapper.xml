@@ -7,7 +7,7 @@
 		<result column="id" property="id" />
 		<result column="appname" property="appname" />
 		<result column="addtime" property="addtime" />
-		<result column="ip" property="ip" />
+		<result column="address" property="address" />
 		<result column="hostname" property="hostname" />
 		<result column="heartbeat_data" property="heartbeat_data" />
 	</resultMap>
@@ -16,7 +16,7 @@
 		t.`id`,
 		t.`appname`,
 		t.`addtime`,
-		t.`ip`,
+		t.`address`,
 		t.`hostname`,
 		t.`heartbeat_data`
 	</sql>
@@ -25,7 +25,7 @@
 		INSERT INTO xxl_apm_heartbeat_report (
 			`appname`,
 			`addtime`,
-			`ip`,
+			`address`,
 			`hostname`,
 			`heartbeat_data`
 		) VALUES
@@ -33,7 +33,7 @@
 			(
 				#{heartbeatReportItem.appname},
 				#{heartbeatReportItem.addtime},
-				#{heartbeatReportItem.ip},
+				#{heartbeatReportItem.address},
 				#{heartbeatReportItem.hostname},
 				#{heartbeatReportItem.heartbeat_data}
 			)
@@ -53,7 +53,7 @@
 		FROM xxl_apm_heartbeat_report AS t
 		WHERE t.appname = #{appname}
 			AND t.addtime between #{addtime_from} and #{addtime_to}
-            AND t.ip = #{ip}
+            AND t.address = #{address}
 		ORDER BY t.addtime ASC
 	</select>
 
@@ -64,12 +64,12 @@
         ORDER BY t.appname ASC
     </select>
 
-    <select id="findIpList" parameterType="java.util.HashMap" resultType="com.xxl.apm.admin.core.model.XxlApmHeartbeatReport" >
-        SELECT distinct t.ip, t.hostname
+    <select id="findAddressList" parameterType="java.util.HashMap" resultType="com.xxl.apm.admin.core.model.XxlApmHeartbeatReport" >
+        SELECT distinct t.address, t.hostname
         FROM xxl_apm_heartbeat_report AS t
         WHERE t.appname = #{appname}
           AND t.addtime between #{addtime_from} and #{addtime_to}
-        ORDER BY t.ip ASC
+        ORDER BY t.address ASC
     </select>
 
 	<select id="findAppNameCount" resultType="java.lang.Integer" >
@@ -78,7 +78,7 @@
 	</select>
 
 	<select id="findAppNameAddressCount" resultType="java.lang.Integer" >
-		SELECT COUNT(DISTINCT ip)
+		SELECT COUNT(DISTINCT address)
 		FROM xxl_apm_heartbeat_report
 	</select>
 

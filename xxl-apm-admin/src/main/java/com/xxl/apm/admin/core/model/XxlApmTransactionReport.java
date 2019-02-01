@@ -9,7 +9,7 @@ public class XxlApmTransactionReport {
 
     private String appname;
     private long addtime;
-    private String ip;
+    private String address;
     private String hostname;
 
     private String type;
@@ -18,7 +18,7 @@ public class XxlApmTransactionReport {
     private long total_count;
     private long fail_count;
 
-    private long time_max;   // 机器维度精确，ALL维度按照 total_count（ipx_time*ipx_count../all_count） 加权汇总；
+    private long time_max;   // 机器维度精确，ALL维度按照 total_count（min_address_x_time * min_address_x_count.. / all_count） 加权汇总；
     private long time_avg;
     private long time_tp90;
     private long time_tp95;
@@ -50,12 +50,12 @@ public class XxlApmTransactionReport {
         this.addtime = addtime;
     }
 
-    public String getIp() {
-        return ip;
+    public String getAddress() {
+        return address;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getHostname() {

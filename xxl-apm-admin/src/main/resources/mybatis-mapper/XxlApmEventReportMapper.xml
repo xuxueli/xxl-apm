@@ -7,7 +7,7 @@
 		<result column="id" property="id" />
 		<result column="appname" property="appname" />
 		<result column="addtime" property="addtime" />
-		<result column="ip" property="ip" />
+		<result column="address" property="address" />
 		<result column="hostname" property="hostname" />
 		<result column="type" property="type" />
 		<result column="name" property="name" />
@@ -19,7 +19,7 @@
 		t.`id`,
 		t.`appname`,
 		t.`addtime`,
-		t.`ip`,
+		t.`address`,
 		t.`hostname`,
 		t.`type`,
 		t.`name`,
@@ -31,7 +31,7 @@
 		INSERT INTO xxl_apm_event_report (
 			`appname`,
 			`addtime`,
-			`ip`,
+			`address`,
 			`hostname`,
 			`type`,
 			`name`,
@@ -41,7 +41,7 @@
 		(
 			#{xxlApmEventReport.appname},
 			#{xxlApmEventReport.addtime},
-			#{xxlApmEventReport.ip},
+			#{xxlApmEventReport.address},
 			#{xxlApmEventReport.hostname},
 			#{xxlApmEventReport.type},
 			#{xxlApmEventReport.name},
@@ -59,7 +59,7 @@
 			`fail_count` = `fail_count` + #{xxlApmEventReport.fail_count}
 		where `appname` = #{xxlApmEventReport.appname}
 			AND `addtime` = #{xxlApmEventReport.addtime}
-			AND `ip` = #{xxlApmEventReport.ip}
+			AND `address` = #{xxlApmEventReport.address}
 			AND `type` = #{xxlApmEventReport.type}
 			AND `name` = #{xxlApmEventReport.name}
 	</update>
@@ -74,8 +74,8 @@
 		FROM xxl_apm_event_report AS t
 		WHERE t.appname = #{appname}
 			AND t.addtime between #{addtime_from} and #{addtime_to}
-			<if test="ip != null and ip != ''">
-				AND t.ip = #{ip}
+			<if test="address != null and address != ''">
+				AND t.address = #{address}
 			</if>
 			AND t.type = #{type}
 		ORDER BY t.addtime ASC

@@ -33,12 +33,17 @@ public class XxlApmFactory {
     // ---------------------- field ----------------------
 
     private String appname;
+    private String address;
     private String adminAddress;
     private String accessToken;
     private String msglogpath = "/data/applogs/xxl-apm/msglogpath";
 
     public void setAppname(String appname) {
         this.appname = appname;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void setAdminAddress(String adminAddress) {
@@ -55,6 +60,10 @@ public class XxlApmFactory {
 
     public String getAppname() {
         return appname;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     // ---------------------- start、stop ----------------------

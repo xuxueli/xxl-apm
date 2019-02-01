@@ -19,11 +19,11 @@ public interface IXxlApmHeartbeatReportDao {
     public List<XxlApmHeartbeatReport> find(@Param("appname") String appname,
                                             @Param("addtime_from") long addtime_from,
                                             @Param("addtime_to") long addtime_to,
-                                            @Param("ip") String ip);
+                                            @Param("address") String address);
 
     public List<String> findAppNameList(@Param("appname") String appname);
 
-    public List<XxlApmHeartbeatReport> findIpList(@Param("appname") String appname,
+    public List<XxlApmHeartbeatReport> findAddressList(@Param("appname") String appname,
                                                   @Param("addtime_from") long addtime_from,
                                                   @Param("addtime_to") long addtime_to);
 

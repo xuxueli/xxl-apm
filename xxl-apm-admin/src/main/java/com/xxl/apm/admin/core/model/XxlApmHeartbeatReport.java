@@ -9,7 +9,7 @@ public class XxlApmHeartbeatReport {
 
     private String appname;
     private long addtime;
-    private String ip;
+    private String address;
     private String hostname;
 
     private byte[] heartbeat_data;      // XxlApmHeartbeat.class
@@ -39,12 +39,12 @@ public class XxlApmHeartbeatReport {
         this.addtime = addtime;
     }
 
-    public String getIp() {
-        return ip;
+    public String getAddress() {
+        return address;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getHostname() {

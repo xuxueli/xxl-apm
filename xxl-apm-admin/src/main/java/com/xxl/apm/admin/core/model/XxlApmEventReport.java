@@ -9,7 +9,7 @@ public class XxlApmEventReport {
 
     private String appname;
     private long addtime;
-    private String ip;
+    private String address;
     private String hostname;
 
     private String type;
@@ -43,12 +43,12 @@ public class XxlApmEventReport {
         this.addtime = addtime;
     }
 
-    public String getIp() {
-        return ip;
+    public String getAddress() {
+        return address;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getHostname() {
