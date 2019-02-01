@@ -100,18 +100,14 @@ public class XxlApmTransaction extends XxlApmEvent {
     }
 
 
+    // TP tool
     private static transient long period = 0;
     private static transient Map<String, List<Long>> periodTPMap = new ConcurrentHashMap<>();
-    private static long getNowPeriod(){
-        long min = (System.currentTimeMillis()/60000)*60000;;
-        return min;
-    }
-    private static long tp(List<Long> times, float percent) {
+    private static transient Map<String, Long> periodTPTotalMap = new ConcurrentHashMap<>();
+    private static long tp(List<Long> ascSortedTimes, float percent) {
         float percentF = percent/100;
-        Collections.sort(times);
-
-        int index = (int)(percentF * times.size() - 1);
-        return times.get(index);
+        int index = (int)(percentF * ascSortedTimes.size() - 1);
+        return ascSortedTimes.get(index);
     }
     private static void computingTP(XxlApmTransaction transaction){
 
@@ -119,15 +115,17 @@ public class XxlApmTransaction extends XxlApmEvent {
         long min = (transaction.getAddtime()/60000)*60000;
 
         // match report key
-        String transactionKey = transaction.getAppname()
+        /*String transactionKey = transaction.getAppname()
                 .concat(String.valueOf(min))
                 .concat(transaction.getAddress())
                 .concat(transaction.getType())
-                .concat(transaction.getName());
+                .concat(transaction.getName());*/
+        String transactionKey = String.valueOf(min).concat(transaction.getType()).concat(transaction.getName());
 
         // valid period
         if (min != period) {
             periodTPMap.clear();
+            periodTPTotalMap.clear();
             period = min;
         }
 
@@ -137,21 +135,20 @@ public class XxlApmTransaction extends XxlApmEvent {
             timeList = new ArrayList<>();
             periodTPMap.put(transactionKey, timeList);
         }
+        Long timeListAll = periodTPTotalMap.get(transactionKey);
+        if (timeListAll == null) {
+            timeListAll = 0L;
+        }
 
         // computing
         timeList.add(transaction.getTime());
+        timeListAll += transaction.getTime();
+        periodTPTotalMap.put(transactionKey, timeListAll);
 
-        long totalTime = 0;
-        long maxTime = 0;
-        for (long item:timeList) {
-            totalTime += item;
-            if (item>maxTime) {
-                maxTime = item;
-            }
-        }
+        Collections.sort(timeList);
 
-        transaction.setTime_max(maxTime);
-        transaction.setTime_avg( totalTime/timeList.size() );
+        transaction.setTime_max( timeList.get(timeList.size()-1) );
+        transaction.setTime_avg( timeListAll/timeList.size() );
         transaction.setTime_tp90( tp(timeList, 90f) );
         transaction.setTime_tp95( tp(timeList, 95f) );
         transaction.setTime_tp99( tp(timeList, 99f) );
