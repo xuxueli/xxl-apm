@@ -81,7 +81,7 @@ public class IndexController {
                     put("Category", "事件");
                     put("Title", MessageFormat.format("AppName: {0}<br> Type: {1}", eventReport.getAppname(), eventReport.getType()));
                     put("Count", eventReport.getFail_count());
-                    put("Link", MessageFormat.format("/event?querytime={0}&appname={1}&ip=&type={2}",
+                    put("Link", MessageFormat.format("/event?querytime={0}&appname={1}&address=&type={2}",
                             DateUtil.format(querytime_date_tmp, "yyyyMMddHH"), eventReport.getAppname(), eventReport.getType())
                     );
                 }});
@@ -95,7 +95,7 @@ public class IndexController {
                     put("Title", transactionReport.getAppname());
                     put("TitleDetail", MessageFormat.format("AppName: {0}<br> Type: {1}", transactionReport.getAppname(), transactionReport.getType()));
                     put("Count", transactionReport.getFail_count());
-                    put("Link", MessageFormat.format("/transaction?querytime={0}&appname={1}&ip=&type={2}",
+                    put("Link", MessageFormat.format("/transaction?querytime={0}&appname={1}&address=&type={2}",
                             DateUtil.format(querytime_date_tmp, "yyyyMMddHH"), transactionReport.getAppname(), transactionReport.getType())
                     );
                 }});
