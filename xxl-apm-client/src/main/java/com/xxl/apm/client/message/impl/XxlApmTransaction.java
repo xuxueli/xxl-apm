@@ -1,10 +1,6 @@
 package com.xxl.apm.client.message.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.xxl.apm.client.XxlApm;
 
 /**
  * transaction msg, like "web/rpc avgline、95line、99line"
@@ -96,66 +92,7 @@ public class XxlApmTransaction extends XxlApmEvent {
         int ms_nanoseconds = 1000000;
         this.time = (System.nanoTime() - time)/ms_nanoseconds;
 
-        computingTP(this);
-    }
-
-
-    // TP tool
-    private static transient long period = 0;
-    private static transient Map<String, List<Long>> periodTPMap = new ConcurrentHashMap<>();
-    private static transient Map<String, Long> periodTPTotalMap = new ConcurrentHashMap<>();
-    private static long tp(List<Long> ascSortedTimes, float percent) {
-        float percentF = percent/100;
-        int index = (int)(percentF * ascSortedTimes.size() - 1);
-        return ascSortedTimes.get(index);
-    }
-    private static void computingTP(XxlApmTransaction transaction){
-
-        // addtime -> min
-        long min = (transaction.getAddtime()/60000)*60000;
-
-        // match report key
-        /*String transactionKey = transaction.getAppname()
-                .concat(String.valueOf(min))
-                .concat(transaction.getAddress())
-                .concat(transaction.getType())
-                .concat(transaction.getName());*/
-        String transactionKey = String.valueOf(min).concat(transaction.getType()).concat(transaction.getName());
-
-        // valid period
-        if (min != period) {
-            periodTPMap.clear();
-            periodTPTotalMap.clear();
-            period = min;
-        }
-
-        // valid time
-        List<Long> timeList = periodTPMap.get(transactionKey);
-        if (timeList == null) {
-            timeList = new ArrayList<>();
-            periodTPMap.put(transactionKey, timeList);
-        }
-        Long timeListAll = periodTPTotalMap.get(transactionKey);
-        if (timeListAll == null) {
-            timeListAll = 0L;
-        }
-
-        // computing
-        if (timeList.size() > 200000) {     // avoid "large" time data , limit 20w(~3.3k/qps) per item
-            timeList.add(transaction.getTime());
-            timeListAll += transaction.getTime();
-            periodTPTotalMap.put(transactionKey, timeListAll);
-
-            Collections.sort(timeList);
-        }
-
-        transaction.setTime_max( timeList.get(timeList.size()-1) );
-        transaction.setTime_avg( timeListAll/timeList.size() );
-        transaction.setTime_tp90( tp(timeList, 90f) );
-        transaction.setTime_tp95( tp(timeList, 95f) );
-        transaction.setTime_tp99( tp(timeList, 99f) );
-        transaction.setTime_tp999( tp(timeList, 99.9f) );
-
+        XxlApm.computingTP(this);
     }
 
 }

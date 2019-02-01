@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,6 +38,26 @@ public class FramelessApplication {
                 put("userid", "1001");
             }});
             XxlApm.report(transaction);
+
+            // mock start, todo-apm for test
+            for (int j = 0; j < 50; j++) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < 10000; i++) {
+                            XxlApmTransaction transaction2 = new XxlApmTransaction("URL", "/user/query");
+                            try {
+                                TimeUnit.MILLISECONDS.sleep(new Random().nextInt(3));
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            XxlApm.report(transaction2);
+
+                        }
+                    }
+                }).start();
+            }
+            // mock end
 
             // heartbeat
             XxlApm.report(new XxlApmHeartbeat());

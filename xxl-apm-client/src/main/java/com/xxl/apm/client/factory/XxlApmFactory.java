@@ -19,10 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author xuxueli 2019-01-15
@@ -378,6 +375,46 @@ public class XxlApmFactory {
             }
         });
 
+
+        // transaction thread, cycle fresh time data for TP
+        innerThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                // align to minute
+                try {
+                    long sleepSecond = 0;
+                    Calendar nextMin = Calendar.getInstance();
+                    nextMin.add(Calendar.MINUTE, 1);
+                    nextMin.set(Calendar.SECOND, 0);
+                    nextMin.set(Calendar.MILLISECOND, 0);
+                    sleepSecond = (nextMin.getTime().getTime() - System.currentTimeMillis())/1000;
+                    if (sleepSecond>0 && sleepSecond<60) {
+                        TimeUnit.SECONDS.sleep(sleepSecond);
+                    }
+                } catch (Exception e) {
+                    if (!innerThreadPoolStoped) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+
+                while (!innerThreadPoolStoped) {
+                    // fresh time data for TP
+                    periodTPMap.clear();
+                    periodTPTotalMap.clear();
+
+                    // wait
+                    try {
+                        TimeUnit.MINUTES.sleep(1);
+                    } catch (Exception e) {
+                        if (!innerThreadPoolStoped) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
+                }
+
+            }
+        });
+
     }
 
     private void stopApmMsgService(){
@@ -396,6 +433,61 @@ public class XxlApmFactory {
         }
     }
 
+
+    // ---------------------- time data ----------------------
+
+    private Map<String, List<Long>> periodTPMap = new ConcurrentHashMap<>();
+    private Map<String, Long> periodTPTotalMap = new ConcurrentHashMap<>();
+    private static long tp(List<Long> ascSortedTimes, float percent) {
+        float percentF = percent/100;
+        int index = (int)(percentF * ascSortedTimes.size() - 1);
+        return ascSortedTimes.get(index);
+    }
+
+    public void computingTP(XxlApmTransaction transaction){
+
+        // addtime -> min
+        long min = (transaction.getAddtime()/60000)*60000;
+
+        // match report key
+        /*String transactionKey = transaction.getAppname()
+                .concat(String.valueOf(min))
+                .concat(transaction.getAddress())
+                .concat(transaction.getType())
+                .concat(transaction.getName());*/
+        String transactionKey = String.valueOf(min).concat(transaction.getType()).concat(transaction.getName());
+
+        // valid time
+        List<Long> timeList = periodTPMap.get(transactionKey);
+        if (timeList == null) {
+            timeList = Collections.synchronizedList(new ArrayList<Long>());
+        }
+        Long timeListAll = periodTPTotalMap.get(transactionKey);
+        if (timeListAll == null) {
+            timeListAll = 0L;
+        }
+
+        // computing
+        if (timeList.size() <= 200000) {     // avoid "large" time data , limit 20w(~3.3k/qps) per item
+            timeList.add(transaction.getTime());
+            periodTPMap.put(transactionKey, timeList);
+            timeListAll += transaction.getTime();
+            periodTPTotalMap.put(transactionKey, timeListAll);
+
+            Collections.sort(timeList); // todo-apm, concurrent fresh problem
+        }
+
+        transaction.setTime_max( timeList.get(timeList.size()-1) );
+        transaction.setTime_avg( timeListAll/timeList.size() );
+        transaction.setTime_tp90( tp(timeList, 90f) );
+        transaction.setTime_tp95( tp(timeList, 95f) );
+        transaction.setTime_tp99( tp(timeList, 99f) );
+        transaction.setTime_tp999( tp(timeList, 99.9f) );
+
+    }
+
+
+    // ---------------------- msg-file ----------------------
 
     // msg-file
     private boolean writeMsgFile(List<XxlApmMsg> msgList){

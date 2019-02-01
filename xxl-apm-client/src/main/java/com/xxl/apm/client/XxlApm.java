@@ -3,6 +3,7 @@ package com.xxl.apm.client;
 import com.xxl.apm.client.factory.XxlApmFactory;
 import com.xxl.apm.client.message.XxlApmMsg;
 import com.xxl.apm.client.message.impl.XxlApmEvent;
+import com.xxl.apm.client.message.impl.XxlApmTransaction;
 import com.xxl.rpc.util.IpUtil;
 import com.xxl.rpc.util.ThrowableUtil;
 
@@ -94,6 +95,15 @@ public class XxlApm {
             return address;
         }
         return IpUtil.getIp();
+    }
+
+    /**
+     * computing TP
+     *
+     * @param transaction
+     */
+    public static void computingTP(XxlApmTransaction transaction){
+        instance.xxlApmFactory.computingTP(transaction);
     }
 
     // ---------------------- report tool ----------------------
