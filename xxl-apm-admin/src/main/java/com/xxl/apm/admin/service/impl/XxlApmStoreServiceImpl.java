@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author xuxueli 2019-01-17
@@ -165,36 +164,18 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
                     transactionReportMap.put(transactionKey, transactionReport);
                 }
 
-                // mock start, todo, real-time computing
-                List<Long> timeList = getTpMap().get(transactionKey);
-                if (timeList == null) {
-                    timeList = new ArrayList<>();
-                    getTpMap().put(transactionKey, timeList);
-                } {
-
-                }
-                timeList.add(transaction.getTime());
-                long totalTime = 0;
-                long maxTime = 0;
-                for (long item:timeList) {
-                    totalTime += item;
-                    if (item>maxTime) {
-                        maxTime = item;
-                    }
-                }
-
-                transactionReport.setTime_max(maxTime);
-                transactionReport.setTime_avg( totalTime/timeList.size() );
-                transactionReport.setTime_tp90( tp(timeList, 90f) );
-                transactionReport.setTime_tp95( tp(timeList, 95f) );
-                transactionReport.setTime_tp99( tp(timeList, 99f) );
-                transactionReport.setTime_tp999( tp(timeList, 99.9f) );
-                // mock end
-
                 transactionReport.setTotal_count(transactionReport.getTotal_count() + 1);       // just new count
                 if (!success) {
                     transactionReport.setFail_count(transactionReport.getFail_count() + 1);
                 }
+
+                // for transaction
+                transactionReport.setTime_max(transaction.getTime_max());
+                transactionReport.setTime_avg(transaction.getTime_avg());
+                transactionReport.setTime_tp90(transaction.getTime_tp90());
+                transactionReport.setTime_tp95(transaction.getTime_tp95());
+                transactionReport.setTime_tp99(transaction.getTime_tp99());
+                transactionReport.setTime_tp999(transaction.getTime_tp999());
 
                 // make logview
                 bindLogView(transaction);
@@ -212,7 +193,33 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
         return false;
     }
 
-    private static Map<String, List<Long>> tpMap_0 = new ConcurrentHashMap<>();
+
+    /*// mock start
+    List<Long> timeList = getTpMap().get(transactionKey);
+    if (timeList == null) {
+        timeList = new ArrayList<>();
+        getTpMap().put(transactionKey, timeList);
+    } {
+
+    }
+    timeList.add(transaction.getTime());
+    long totalTime = 0;
+    long maxTime = 0;
+    for (long item:timeList) {
+        totalTime += item;
+        if (item>maxTime) {
+            maxTime = item;
+        }
+    }
+    transactionReport.setTime_max(maxTime);
+    transactionReport.setTime_avg( totalTime/timeList.size() );
+    transactionReport.setTime_tp90( tp(timeList, 90f) );
+    transactionReport.setTime_tp95( tp(timeList, 95f) );
+    transactionReport.setTime_tp99( tp(timeList, 99f) );
+    transactionReport.setTime_tp999( tp(timeList, 99.9f) );
+    // mock end*/
+
+    /*private static Map<String, List<Long>> tpMap_0 = new ConcurrentHashMap<>();
     private static Map<String, List<Long>> tpMap_1 = new ConcurrentHashMap<>();
     private static Map<String, List<Long>> getTpMap(){
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
@@ -230,7 +237,7 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
 
         int index = (int)(percentF * times.size() - 1);
         return times.get(index);
-    }
+    }*/
 
 
     /**

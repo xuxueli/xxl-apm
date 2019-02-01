@@ -99,8 +99,7 @@ A distributed APM(application-performance-management) platform.
     单机器集群：appname + ip (+instance) 
 
 ---
-- ip >> address, to support mult machine；
-- transaction time: map >> db | es
+- transaction time: map >> db | es >> client real-time compluting, for min;
 - xxlapm，全异步：批量压缩，批量发送。
 - 日报，小时报；预先生成报表数据；
 - tp数据：min纬度汇总到表，min清理一次。
