@@ -141,11 +141,13 @@ public class XxlApmTransaction extends XxlApmEvent {
         }
 
         // computing
-        timeList.add(transaction.getTime());
-        timeListAll += transaction.getTime();
-        periodTPTotalMap.put(transactionKey, timeListAll);
+        if (timeList.size() > 200000) {     // avoid "large" time data , limit 20w(~3.3k/qps) per item
+            timeList.add(transaction.getTime());
+            timeListAll += transaction.getTime();
+            periodTPTotalMap.put(transactionKey, timeListAll);
 
-        Collections.sort(timeList);
+            Collections.sort(timeList);
+        }
 
         transaction.setTime_max( timeList.get(timeList.size()-1) );
         transaction.setTime_avg( timeListAll/timeList.size() );
