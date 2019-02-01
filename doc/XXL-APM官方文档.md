@@ -97,10 +97,14 @@ A distributed APM(application-performance-management) platform.
 客户端采集：
     多机器集群：appname + ip 定位到机器；
     单机器集群：appname + ip (+instance) 
-    
->>> ip >> address;
->>> transaction time: map >> db | es
-    
+
+---
+- ip >> address;
+- transaction time: map >> db | es
+- xxlapm，全异步：批量压缩，批量发送。
+- 日报，小时报；预先生成报表数据；
+- tp数据：min纬度汇总到表，min清理一次。
+
 ---                
 大盘：分钟维度；
      报错大盘：Transaction、Event 报错，统计 name 汇总次数；
