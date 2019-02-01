@@ -130,6 +130,7 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
 
     private LinkedBlockingQueue<XxlApmMsg> newMessageQueue = new LinkedBlockingQueue<>();
     private int newMessageQueueMax = 100000;
+    private int batchReportNum = 500;
 
     private volatile File msgFileDir = null;
     private Object msgFileDirLock = new Object();
@@ -153,14 +154,25 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
                                 messageList = new ArrayList<>();
                                 messageList.add(message);
 
+                                // attempt to process mult msg
                                 List<XxlApmMsg> otherMessageList = new ArrayList<>();
-                                int drainToNum = newMessageQueue.drainTo(otherMessageList, 200);
+                                int drainToNum = newMessageQueue.drainTo(otherMessageList, batchReportNum);
                                 if (drainToNum > 0) {
                                     messageList.addAll(otherMessageList);
                                 }
 
-                                if (newMessageQueue.size() < newMessageQueueMax) {
+                                // msg too small, just wait 1s, avoid process too quick
+                                if (otherMessageList.size() < batchReportNum) {
+                                    TimeUnit.SECONDS.sleep(1);
 
+                                    drainToNum = newMessageQueue.drainTo(otherMessageList, batchReportNum-otherMessageList.size());
+                                    if (drainToNum > 0) {
+                                        messageList.addAll(otherMessageList);
+                                    }
+                                }
+
+                                // queue small to process；queue large, quick move to msg-file
+                                if (newMessageQueue.size() < newMessageQueueMax) {
                                     // process
                                     boolean ret = processMsg(messageList);
                                     if (ret) {
@@ -175,7 +187,7 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
                             }
                         } finally {
 
-                            // report-fail or queue-max, write msg-file
+                            // process-fail or queue-max, write msg-file
                             if (messageList!=null && messageList.size()>0) {
 
                                 writeMsgFile(messageList);

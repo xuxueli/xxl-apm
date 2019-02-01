@@ -121,7 +121,7 @@ public class XxlApmFactory {
 
     private LinkedBlockingQueue<XxlApmMsg> newMessageQueue = new LinkedBlockingQueue<>();
     private int newMessageQueueMax = 10000;
-    private int batchReportNum = 100;
+    private int batchReportNum = 500;
 
     private volatile File msgFileDir = null;
     private Object msgFileDirLock = new Object();
@@ -183,14 +183,14 @@ public class XxlApmFactory {
                                 messageList = new ArrayList<>();
                                 messageList.add(message);
 
-                                // attempt to report mult msg
+                                // attempt to process mult msg
                                 List<XxlApmMsg> otherMessageList = new ArrayList<>();
                                 int drainToNum = newMessageQueue.drainTo(otherMessageList, batchReportNum);
                                 if (drainToNum > 0) {
                                     messageList.addAll(otherMessageList);
                                 }
 
-                                // msg too small, just wait 1s, avoid report too quick
+                                // msg too small, just wait 1s, avoid process too quick
                                 if (otherMessageList.size() < batchReportNum) {
                                     TimeUnit.SECONDS.sleep(1);
 
@@ -200,7 +200,7 @@ public class XxlApmFactory {
                                     }
                                 }
 
-                                // queue small to remote support；queue large, quick move to msg-file
+                                // queue small to process；queue large, quick move to msg-file
                                 if (newMessageQueue.size() < newMessageQueueMax) {
                                     // report
                                     boolean ret = xxlApmMsgService.report(messageList);
@@ -216,7 +216,7 @@ public class XxlApmFactory {
                             }
                         } finally {
 
-                            // report-fail or queue-max, write msg-file
+                            // process-fail or queue-max, write msg-file
                             if (messageList!=null && messageList.size()>0) {
 
                                 writeMsgFile(messageList);
