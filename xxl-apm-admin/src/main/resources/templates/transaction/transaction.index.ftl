@@ -47,11 +47,11 @@
                 <div class="col-xs-4">
                     <div class="input-group">
                         <span class="input-group-addon">机器</span>
-                        <select class="form-control select2" style="width: 100%;" id="ip" >
+                        <select class="form-control select2" style="width: 100%;" id="address" >
                             <option value="" >全部</option>
-                            <#if ipInfo?exists >
-                                <#list ipInfo?keys as key>
-                                    <option value="${key}" <#if ip?exists && ip==key>selected="selected"</#if> >${ipInfo[key]}</option>
+                            <#if addressInfo?exists >
+                                <#list addressInfo?keys as key>
+                                    <option value="${key}" <#if address?exists && address==key>selected="selected"</#if> >${addressInfo[key]}</option>
                                 </#list>
                             </#if>
                         </select>

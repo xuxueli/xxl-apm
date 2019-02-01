@@ -62,7 +62,7 @@ $(function() {
         }
         var querytime = y + "" + m + "" + d + "" + h;
         var appname = $('#appname').val()?$('#appname').val().trim():'';
-        var ip = $('#ip').val()?$('#ip').val().trim():'';
+        var address = $('#address').val()?$('#address').val().trim():'';
         var type = $('#type').val()?$('#type').val().trim():'';
 
         if (!appname) {
@@ -76,10 +76,10 @@ $(function() {
         }
 
         // redirct
-        var redirct_url = base_url + "/transaction?querytime={querytime}&appname={appname}&ip={ip}&type={type}";
+        var redirct_url = base_url + "/transaction?querytime={querytime}&appname={appname}&address={address}&type={type}";
         redirct_url = redirct_url.replace('{querytime}', querytime);
         redirct_url = redirct_url.replace('{appname}', appname);
-        redirct_url = redirct_url.replace('{ip}', ip);
+        redirct_url = redirct_url.replace('{address}', address);
         redirct_url = redirct_url.replace('{type}', type);
 
         window.location.href = redirct_url;
@@ -122,10 +122,10 @@ $(function() {
      *              index, xx
      *          },
      *          'Total_Distribution'{
-     *              'ip-x': xx
+     *              'address-x': xx
      *          },
      *          'Failure_Distribution'{
-     *              'ip-x': xx
+     *              'address-x': xx
      *          }
      *          ,   // for transaction
      *          time_max: xx,
@@ -189,12 +189,12 @@ $(function() {
         nameMap_item.Total_TimeLine[min] = eventReport.total_count;
         nameMap_item.Failure_TimeLine[min] = eventReport.fail_count;
 
-        nameMap_item.Total_Distribution[eventReport.ip] = (nameMap_item.Total_Distribution[eventReport.ip]?nameMap_item.Total_Distribution[eventReport.ip]:0) + eventReport.total_count;
-        nameMap_item.Failure_Distribution[eventReport.ip] = (nameMap_item.Failure_Distribution[eventReport.ip]?nameMap_item.Failure_Distribution[eventReport.ip]:0) + eventReport.fail_count;
+        nameMap_item.Total_Distribution[eventReport.address] = (nameMap_item.Total_Distribution[eventReport.address]?nameMap_item.Total_Distribution[eventReport.address]:0) + eventReport.total_count;
+        nameMap_item.Failure_Distribution[eventReport.address] = (nameMap_item.Failure_Distribution[eventReport.address]?nameMap_item.Failure_Distribution[eventReport.address]:0) + eventReport.fail_count;
 
         // for transaction
         nameMap_item.time_max = eventReport.time_max>=eventReport.total_count?eventReport.time_max:eventReport.total_count;
-        nameMap_item.time_avg += eventReport.time_avg * eventReport.total_count;        // weighted calculate "ip+min>>name" start
+        nameMap_item.time_avg += eventReport.time_avg * eventReport.total_count;        // weighted calculate "address+min>>name" start
         nameMap_item.time_tp90 += eventReport.time_tp90 * eventReport.total_count;
         nameMap_item.time_tp95 += eventReport.time_tp95 * eventReport.total_count;
         nameMap_item.time_tp99 += eventReport.time_tp99 * eventReport.total_count;
@@ -212,8 +212,8 @@ $(function() {
         nameMap_all.Total_TimeLine[min] = (nameMap_all.Total_TimeLine[min]?nameMap_all.Total_TimeLine[min]:0) + eventReport.total_count;
         nameMap_all.Failure_TimeLine[min] = (nameMap_all.Failure_TimeLine[min]?nameMap_all.Failure_TimeLine[min]:0) + eventReport.fail_count;
 
-        nameMap_all.Total_Distribution[eventReport.ip] = (nameMap_all.Total_Distribution[eventReport.ip]?nameMap_all.Total_Distribution[eventReport.ip]:0) + eventReport.total_count;
-        nameMap_all.Failure_Distribution[eventReport.ip] = (nameMap_all.Failure_Distribution[eventReport.ip]?nameMap_all.Failure_Distribution[eventReport.ip]:0) + eventReport.fail_count;
+        nameMap_all.Total_Distribution[eventReport.address] = (nameMap_all.Total_Distribution[eventReport.address]?nameMap_all.Total_Distribution[eventReport.address]:0) + eventReport.total_count;
+        nameMap_all.Failure_Distribution[eventReport.address] = (nameMap_all.Failure_Distribution[eventReport.address]?nameMap_all.Failure_Distribution[eventReport.address]:0) + eventReport.fail_count;
 
     }
 
@@ -230,7 +230,7 @@ $(function() {
         // for transaction
         if (nameMap.Name != nameMap_all_name) {
             // item
-            nameMap.time_avg = toDecimal( nameMap.time_avg/nameMap.Total , 2 );     // weighted calculate "ip+min>>name" end
+            nameMap.time_avg = toDecimal( nameMap.time_avg/nameMap.Total , 2 );     // weighted calculate "address+min>>name" end
             nameMap.time_tp90 = toDecimal( nameMap.time_tp90/nameMap.Total , 2 );
             nameMap.time_tp95 = toDecimal( nameMap.time_tp95/nameMap.Total , 2 );
             nameMap.time_tp99 = toDecimal( nameMap.time_tp99/nameMap.Total , 2 );

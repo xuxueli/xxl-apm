@@ -32,7 +32,7 @@ public class EventController {
 
     @RequestMapping("")
     public String index(Model model, HttpServletRequest request, HttpServletResponse response,
-                        String querytime, String appname, String ip,
+                        String querytime, String appname, String address,
                         String type){
 
         // get cookie
@@ -60,27 +60,27 @@ public class EventController {
         long addtime_from = querytime_date.getTime();
         long addtime_to = addtime_from + 59*60*1000;    // an hour
 
-        // ipInfo
-        Map<String, String> ipInfo = new TreeMap<>();
+        // addressInfo
+        Map<String, String> addressInfo = new TreeMap<>();
         if (appname!=null && appname.trim().length()>0) {
-            List<XxlApmHeartbeatReport> ipList = xxlApmHeartbeatReportDao.findAddressList(appname, addtime_from, addtime_to);
-            if (ipList!=null && ipList.size()>0) {
-                for (XxlApmHeartbeatReport item: ipList) {
-                    ipInfo.put(item.getAddress(), item.getAddress().concat("(").concat(item.getHostname()).concat(")") );
+            List<XxlApmHeartbeatReport> addressList = xxlApmHeartbeatReportDao.findAddressList(appname, addtime_from, addtime_to);
+            if (addressList!=null && addressList.size()>0) {
+                for (XxlApmHeartbeatReport item: addressList) {
+                    addressInfo.put(item.getAddress(), item.getAddress().concat("(").concat(item.getHostname()).concat(")") );
                 }
             }
         }
-        model.addAttribute("ipInfo", ipInfo);
+        model.addAttribute("addressInfo", addressInfo);
 
-        // ip
-        ip = (ip!=null&&ipInfo.containsKey(ip))
-                ? ip
+        // address
+        address = (address!=null&&addressInfo.containsKey(address))
+                ? address
                 : null;
 
         // filter data
         model.addAttribute("querytime", querytime_date);
         model.addAttribute("appname", appname);
-        model.addAttribute("ip", ip);
+        model.addAttribute("address", address);
 
         // set cookie
         CookieUtil.set(response, "xxlapm_querytime", querytime, false);
@@ -110,7 +110,7 @@ public class EventController {
 
 
         // load data
-        List<XxlApmEventReport> reportList = xxlApmEventReportDao.find(appname, addtime_from, addtime_to, ip, type);
+        List<XxlApmEventReport> reportList = xxlApmEventReportDao.find(appname, addtime_from, addtime_to, address, type);
         if (reportList!=null && reportList.size()>0) {
             model.addAttribute("reportList", JacksonUtil.writeValueAsString(reportList));
         }

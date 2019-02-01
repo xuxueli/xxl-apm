@@ -62,7 +62,7 @@ $(function() {
         }
         var querytime = y + "" + m + "" + d + "" + h;
         var appname = $('#appname').val()?$('#appname').val().trim():'';
-        var ip = $('#ip').val()?$('#ip').val().trim():'';
+        var address = $('#address').val()?$('#address').val().trim():'';
         var type = $('#type').val()?$('#type').val().trim():'';
 
         if (!appname) {
@@ -76,10 +76,10 @@ $(function() {
         }
 
         // redirct
-        var redirct_url = base_url + "/event?querytime={querytime}&appname={appname}&ip={ip}&type={type}";
+        var redirct_url = base_url + "/event?querytime={querytime}&appname={appname}&address={address}&type={type}";
         redirct_url = redirct_url.replace('{querytime}', querytime);
         redirct_url = redirct_url.replace('{appname}', appname);
-        redirct_url = redirct_url.replace('{ip}', ip);
+        redirct_url = redirct_url.replace('{address}', address);
         redirct_url = redirct_url.replace('{type}', type);
 
         window.location.href = redirct_url;
@@ -121,10 +121,10 @@ $(function() {
      *              index, xx
      *          },
      *          'Total_Distribution'{
-     *              'ip-x': xx
+     *              'address-x': xx
      *          },
      *          'Failure_Distribution'{
-     *              'ip-x': xx
+     *              'address-x': xx
      *          }
      *      }
      *  }
@@ -173,8 +173,8 @@ $(function() {
         nameMap_item.Total_TimeLine[min] = eventReport.total_count;
         nameMap_item.Failure_TimeLine[min] = eventReport.fail_count;
 
-        nameMap_item.Total_Distribution[eventReport.ip] = (nameMap_item.Total_Distribution[eventReport.ip]?nameMap_item.Total_Distribution[eventReport.ip]:0) + eventReport.total_count;
-        nameMap_item.Failure_Distribution[eventReport.ip] = (nameMap_item.Failure_Distribution[eventReport.ip]?nameMap_item.Failure_Distribution[eventReport.ip]:0) + eventReport.fail_count;
+        nameMap_item.Total_Distribution[eventReport.address] = (nameMap_item.Total_Distribution[eventReport.address]?nameMap_item.Total_Distribution[eventReport.address]:0) + eventReport.total_count;
+        nameMap_item.Failure_Distribution[eventReport.address] = (nameMap_item.Failure_Distribution[eventReport.address]?nameMap_item.Failure_Distribution[eventReport.address]:0) + eventReport.fail_count;
 
         // all
         var nameMap_all = nameMapList[nameMap_all_name];
@@ -188,8 +188,8 @@ $(function() {
         nameMap_all.Total_TimeLine[min] = (nameMap_all.Total_TimeLine[min]?nameMap_all.Total_TimeLine[min]:0) + eventReport.total_count;
         nameMap_all.Failure_TimeLine[min] = (nameMap_all.Failure_TimeLine[min]?nameMap_all.Failure_TimeLine[min]:0) + eventReport.fail_count;
 
-        nameMap_all.Total_Distribution[eventReport.ip] = (nameMap_all.Total_Distribution[eventReport.ip]?nameMap_all.Total_Distribution[eventReport.ip]:0) + eventReport.total_count;
-        nameMap_all.Failure_Distribution[eventReport.ip] = (nameMap_all.Failure_Distribution[eventReport.ip]?nameMap_all.Failure_Distribution[eventReport.ip]:0) + eventReport.fail_count;
+        nameMap_all.Total_Distribution[eventReport.address] = (nameMap_all.Total_Distribution[eventReport.address]?nameMap_all.Total_Distribution[eventReport.address]:0) + eventReport.total_count;
+        nameMap_all.Failure_Distribution[eventReport.address] = (nameMap_all.Failure_Distribution[eventReport.address]?nameMap_all.Failure_Distribution[eventReport.address]:0) + eventReport.fail_count;
 
     }
 
