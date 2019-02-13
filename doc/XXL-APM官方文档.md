@@ -94,15 +94,13 @@ A distributed APM(application-performance-management) platform.
     报表（ Mysql 存储）：汇聚到 min 维度上，数据量可控；
     LogView（ES）：全量 LogView，数据量不可用，依赖ES;
 全量采集；
-客户端采集：
-    多机器集群：appname + ip 定位到机器；
-    单机器集群：appname + ip (+instance) 
+单机器集群：appname + address, heartbeat 重复数据抛弃； 
 
 ---
 - transaction time: map >> db | es >> client real-time compluting, for min;
 - xxlapm，全异步：批量压缩，批量发送。
 - 日报，小时报；预先生成报表数据；
-- tp数据：min纬度汇总到表，min清理一次。
+- 控制日志量，原则：核心日志仅输出变更，常规日志改为 debug 级别；
 
 ---                
 大盘：分钟维度；

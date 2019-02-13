@@ -436,6 +436,21 @@ public class XxlApmFactory {
 
     // ---------------------- time data ----------------------
 
+    /**
+     * 1、collection：timeMap
+     *
+     *      {
+     *          "time" : "count",
+     *          ……
+     *      }
+     *
+     *  2、data analyze：
+     *      ["time01", "time01_count", "time02", "time02_count"……]
+     *  3、logic analyze
+     *      ["time01_count", ……, "time01_count"（No：count）……]
+     *
+     */
+
     private Map<String, List<Long>> periodTPMap = new ConcurrentHashMap<>();
     private Map<String, Long> periodTPTotalMap = new ConcurrentHashMap<>();
     private static long tp(List<Long> ascSortedTimes, float percent) {
