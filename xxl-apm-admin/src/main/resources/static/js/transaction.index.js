@@ -193,7 +193,7 @@ $(function() {
         nameMap_item.Failure_Distribution[eventReport.address] = (nameMap_item.Failure_Distribution[eventReport.address]?nameMap_item.Failure_Distribution[eventReport.address]:0) + eventReport.fail_count;
 
         // for transaction
-        nameMap_item.time_max = eventReport.time_max>=eventReport.total_count?eventReport.time_max:eventReport.total_count;
+        nameMap_item.time_max = eventReport.time_max>=nameMap_item.time_max?eventReport.time_max:nameMap_item.time_max;
         nameMap_item.time_avg += eventReport.time_avg * eventReport.total_count;        // weighted calculate "address+min>>name" start
         nameMap_item.time_tp90 += eventReport.time_tp90 * eventReport.total_count;
         nameMap_item.time_tp95 += eventReport.time_tp95 * eventReport.total_count;
