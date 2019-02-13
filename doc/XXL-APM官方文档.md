@@ -101,6 +101,13 @@ A distributed APM(application-performance-management) platform.
 - xxlapm，全异步：批量压缩，批量发送。
 - 日报，小时报；预先生成报表数据；
 - 控制日志量，原则：核心日志仅输出变更，常规日志改为 debug 级别；
+- qps计算规则调整，total除时间，60或低于60分母不同；
+- fullgc 问题排查套路：
+    - 确定出发原因，典型四种。
+    - dump 内存分析：dump，jmap，分析工具
+- 死锁线程检测：ing
+- apm，内存简要分析
+
 
 ---                
 大盘：分钟维度；
