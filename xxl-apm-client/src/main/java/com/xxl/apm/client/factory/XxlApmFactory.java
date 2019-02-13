@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author xuxueli 2019-01-15
@@ -380,31 +381,87 @@ public class XxlApmFactory {
         innerThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                // align to minute
-                try {
-                    long sleepSecond = 0;
-                    Calendar nextMin = Calendar.getInstance();
-                    nextMin.add(Calendar.MINUTE, 1);
-                    nextMin.set(Calendar.SECOND, 0);
-                    nextMin.set(Calendar.MILLISECOND, 0);
-                    sleepSecond = (nextMin.getTime().getTime() - System.currentTimeMillis())/1000;
-                    if (sleepSecond>0 && sleepSecond<60) {
-                        TimeUnit.SECONDS.sleep(sleepSecond);
-                    }
-                } catch (Exception e) {
-                    if (!innerThreadPoolStoped) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-
                 while (!innerThreadPoolStoped) {
-                    // fresh time data for TP
-                    periodTPMap.clear();
-                    periodTPTotalMap.clear();
-
                     // wait
+                    long lastMinTim = System.currentTimeMillis()/60000;     // ms > min
                     try {
-                        TimeUnit.MINUTES.sleep(1);
+                        // computing TP snapshot data
+                        if (timeOriginData.size() > 0) {
+                            for (String transactionKey : timeOriginData.keySet()) {
+
+                                // time data, parse to arr-2
+                                ConcurrentHashMap<Long, AtomicInteger> timeMap = timeOriginData.get(transactionKey);
+                                long[] timeArr = new long[timeMap.size() * 2];
+                                int index = 0;
+
+                                long totalCost = 0;
+                                long totalCount = 0;
+                                long maxCost = 0;
+                                for (Long costKey : new TreeMap<Long, AtomicInteger>(timeMap).keySet()) {
+                                    long cost = costKey;
+                                    long count = timeMap.get(costKey).get();
+
+                                    timeArr[index++] = cost;
+                                    timeArr[index++] = count;
+
+                                    totalCost += cost*count;
+                                    totalCount += count;
+                                    if (cost > maxCost) {
+                                        maxCost = cost;
+                                    }
+                                }
+
+                                // computing TP data
+                                long[] tp_index_arr = {
+                                        (int) Math.ceil(totalCount * 0.90),
+                                        (int) Math.ceil(totalCount * 0.95),
+                                        (int) Math.ceil(totalCount * 0.99)
+                                        ,(int) Math.ceil(totalCount * 0.999)
+                                };
+                                long[] tp_val_arr = new long[tp_index_arr.length];
+                                int stepCount = 0;
+                                int tpIndex = 0;
+
+                                for (int costIndex = 0; costIndex < timeArr.length/2; costIndex++) {
+                                    long cost = timeArr[costIndex*2];
+                                    long count = timeArr[costIndex*2 + 1];
+
+                                    stepCount += count;
+                                    while (stepCount >= tp_index_arr[tpIndex]) {
+                                        tp_val_arr[tpIndex] = cost;
+                                        tpIndex++;
+                                        if (tpIndex >= tp_index_arr.length) {
+                                            break;
+                                        }
+                                    }
+                                    if (tpIndex >= tp_index_arr.length) {
+                                        break;
+                                    }
+                                }
+
+                                // report
+                                XxlApmTransaction transaction = new XxlApmTransaction();
+
+                                transaction.setTime_max( maxCost );
+                                transaction.setTime_avg( totalCost/totalCount );
+                                transaction.setTime_tp90( tp_val_arr[0] );
+                                transaction.setTime_tp95( tp_val_arr[1] );
+                                transaction.setTime_tp99( tp_val_arr[2] );
+                                transaction.setTime_tp999( tp_val_arr[3] );
+
+                                timeOriginSnapshot.put(transactionKey, transaction);
+                            }
+                        }
+                        
+                        // refresh TP origin data, for each minute
+                        long lastMinTim_new = System.currentTimeMillis()/60000;     // ms > min
+                        if (lastMinTim_new != lastMinTim) {
+                            timeOriginData.clear();
+                            timeOriginSnapshot.clear();
+                            lastMinTim = lastMinTim_new;
+                        }
+
+                        TimeUnit.SECONDS.sleep(1);
                     } catch (Exception e) {
                         if (!innerThreadPoolStoped) {
                             logger.error(e.getMessage(), e);
@@ -437,6 +494,73 @@ public class XxlApmFactory {
     // ---------------------- time data ----------------------
 
     /**
+     *  1、real-time data, for : avg、max、tp99
+     *  {
+     *      "transaction-key(min)" : {
+     *          "time-1" : 10,
+     *          "time-2" : 20
+     *          ……
+     *      }
+     *  }
+     *
+     *  2、async thread computing, delay one second, generate tp snapshot
+     *      - async clear map
+     *      - tp snapshot, fresh each second, delay one second, may lost last second data
+     *      {
+     *          "transaction-key(min)": tp data
+     *      }
+     *
+     *  3、get snapshot
+     */
+    private ConcurrentHashMap<String, ConcurrentHashMap<Long, AtomicInteger>> timeOriginData = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, XxlApmTransaction> timeOriginSnapshot = new ConcurrentHashMap<>();
+
+    public void computingTP(XxlApmTransaction transaction){
+
+        // addtime -> min
+        long min = (transaction.getAddtime()/60000)*60000;
+
+        // match report key
+        String transactionKey = String.valueOf(min).concat(transaction.getType()).concat(transaction.getName());
+
+        // push real-time data
+        ConcurrentHashMap<Long, AtomicInteger> timeOriginDataItem = timeOriginData.get(transactionKey);
+        if (timeOriginDataItem == null) {
+            timeOriginData.putIfAbsent(transactionKey, new ConcurrentHashMap<Long, AtomicInteger>());
+            timeOriginDataItem = timeOriginData.get(transactionKey);
+        }
+        AtomicInteger timeCount = timeOriginDataItem.putIfAbsent(transaction.getTime(), new AtomicInteger(1));
+        if (timeCount != null) {    // null means set new, no-none means exist old node
+            timeCount.incrementAndGet();
+        }
+
+        // load snapshot data
+        long time_max = transaction.getTime();
+        long time_avg = time_max;
+        long time_tp90 = time_max;
+        long time_tp95 = time_max;
+        long time_tp99 = time_max;
+        long time_tp999 = time_max;
+
+        XxlApmTransaction snapshot = timeOriginSnapshot.get(transactionKey);
+        if (snapshot != null) {
+            time_max = snapshot.getTime_max();
+            time_avg = snapshot.getTime_avg();
+            time_tp90 = snapshot.getTime_tp90();
+            time_tp95 = snapshot.getTime_tp95();
+            time_tp99 = snapshot.getTime_tp99();
+            time_tp999 = snapshot.getTime_tp999();
+        }
+
+        transaction.setTime_max( time_max );
+        transaction.setTime_avg( time_avg );
+        transaction.setTime_tp90( time_tp90 );
+        transaction.setTime_tp95( time_tp95 );
+        transaction.setTime_tp99( time_tp99 );
+        transaction.setTime_tp999( time_tp999 );
+    }
+
+    /**
      * 1、collection：timeMap
      *
      *      {
@@ -449,9 +573,29 @@ public class XxlApmFactory {
      *  3、logic analyze
      *      ["time01_count", ……, "time01_count"（No：count）……]
      *
+     *  ---------
+     *  1、real-time data, for : avg、max、tp99
+     *  {
+     *      "transaction-key-yyyyMMddHHmm" : {
+     *          "time-1" : 10,
+     *          "time-2" : 20
+     *          ……
+     *      }
+     *  }
+     *  2、async thread computing, delay one second, generate tp snapshot
+     *      - async clear map
+     *      - tp snapshot, fresh each second, delay one second, may lost last second data
+     *      {
+     *          transaction-key-yyyyMMddHHmm: tp data
+     *      }
+     *
+     *
+     *  3、get snapshot
+     *
+     *
      */
 
-    private Map<String, List<Long>> periodTPMap = new ConcurrentHashMap<>();
+    /*private Map<String, List<Long>> periodTPMap = new ConcurrentHashMap<>();
     private Map<String, Long> periodTPTotalMap = new ConcurrentHashMap<>();
     private static long tp(List<Long> ascSortedTimes, float percent) {
         float percentF = percent/100;
@@ -465,11 +609,11 @@ public class XxlApmFactory {
         long min = (transaction.getAddtime()/60000)*60000;
 
         // match report key
-        /*String transactionKey = transaction.getAppname()
+        *//*String transactionKey = transaction.getAppname()
                 .concat(String.valueOf(min))
                 .concat(transaction.getAddress())
                 .concat(transaction.getType())
-                .concat(transaction.getName());*/
+                .concat(transaction.getName());*//*
         String transactionKey = String.valueOf(min).concat(transaction.getType()).concat(transaction.getName());
 
         // valid time
@@ -489,7 +633,7 @@ public class XxlApmFactory {
             timeListAll += transaction.getTime();
             periodTPTotalMap.put(transactionKey, timeListAll);
 
-            Collections.sort(timeList); // todo-apm, concurrent fresh problem
+            Collections.sort(timeList); // tod-apm, concurrent fresh problem
         }
 
         transaction.setTime_max( timeList.get(timeList.size()-1) );
@@ -499,7 +643,7 @@ public class XxlApmFactory {
         transaction.setTime_tp99( tp(timeList, 99f) );
         transaction.setTime_tp999( tp(timeList, 99.9f) );
 
-    }
+    }*/
 
 
     // ---------------------- msg-file ----------------------

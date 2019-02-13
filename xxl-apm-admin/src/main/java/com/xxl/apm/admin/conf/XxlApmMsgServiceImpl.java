@@ -379,7 +379,7 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
         }
 
         // make msg-file dir
-        if (msgFileDir==null || msgFileDir.list().length>10000) {
+        if (msgFileDir==null || msgFileDir.list()==null || msgFileDir.list().length>10000) {
             synchronized (msgFileDirLock) {
                 // {msglogpath}/{timestamp}/xxxxxx
                 msgFileDir = new File(msglogpath, String.valueOf(System.currentTimeMillis()));
