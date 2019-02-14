@@ -240,6 +240,9 @@ public class XxlApmHeartbeat extends XxlApmMsg {
                 ManagementFactory.getThreadMXBean().getAllThreadIds(), 100);
 
         for (java.lang.management.ThreadInfo threadItem : threadInfos) {
+            if (threadItem == null) {
+                continue;
+            }
             ThreadInfo threadInfo = new ThreadInfo();
             threadInfo.setId(threadItem.getThreadId());
             threadInfo.setName(threadItem.getThreadName());

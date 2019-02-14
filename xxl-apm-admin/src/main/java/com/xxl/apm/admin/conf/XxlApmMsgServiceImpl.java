@@ -139,35 +139,37 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
     // apm msg process thread, report-fail or queue-max, write msg-file
     private void startApmThread(){
 
-        for (int i = 0; i < 10; i++) {
+        // todo-apm, avoid repeat transaction report log
+        for (int i = 0; i < 1; i++) {
             innerThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
 
                     while (!innerThreadPoolStoped) {
-                        List<XxlApmMsg> messageList = null;
+                        List<XxlApmMsg> messageList = new ArrayList<>();
                         try {
                             XxlApmMsg message = newMessageQueue.take();
                             if (message != null) {
 
                                 // load
-                                messageList = new ArrayList<>();
+                                messageList.clear();
                                 messageList.add(message);
 
                                 // attempt to process mult msg
-                                List<XxlApmMsg> otherMessageList = new ArrayList<>();
-                                int drainToNum = newMessageQueue.drainTo(otherMessageList, batchReportNum);
+                                List<XxlApmMsg> messageList_tmp = new ArrayList<>();
+                                int drainToNum = newMessageQueue.drainTo(messageList_tmp, batchReportNum);
                                 if (drainToNum > 0) {
-                                    messageList.addAll(otherMessageList);
+                                    messageList.addAll(messageList_tmp);
                                 }
 
                                 // msg too small, just wait 1s, avoid process too quick
-                                if (otherMessageList.size() < batchReportNum) {
+                                if (messageList.size() < batchReportNum) {
                                     TimeUnit.SECONDS.sleep(1);
 
-                                    drainToNum = newMessageQueue.drainTo(otherMessageList, batchReportNum-otherMessageList.size());
+                                    messageList_tmp.clear();
+                                    drainToNum = newMessageQueue.drainTo(messageList_tmp, batchReportNum-messageList.size());
                                     if (drainToNum > 0) {
-                                        messageList.addAll(otherMessageList);
+                                        messageList.addAll(messageList_tmp);
                                     }
                                 }
 
@@ -198,13 +200,13 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
 
                     // finally total write msg-file
                     List<XxlApmMsg> messageList = new ArrayList<>();
-                    newMessageQueue.drainTo(messageList, 200);
+                    newMessageQueue.drainTo(messageList, batchReportNum);
                     while (messageList.size() > 0) {
                         // app stop, write msg-file
                         writeMsgFile(messageList);
-                        messageList.clear();
 
-                        newMessageQueue.drainTo(messageList, 200);
+                        messageList.clear();
+                        newMessageQueue.drainTo(messageList, batchReportNum);
                     }
 
                 }
