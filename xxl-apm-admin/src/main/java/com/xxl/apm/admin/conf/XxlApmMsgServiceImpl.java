@@ -139,8 +139,7 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
     // apm msg process thread, report-fail or queue-max, write msg-file
     private void startApmThread(){
 
-        // todo-apm, avoid repeat transaction report log
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             innerThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
