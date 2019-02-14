@@ -34,7 +34,6 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
 
     @Override
     public boolean processMsg(List<XxlApmMsg> messageList) {
-
         // dispatch msg
         List<XxlApmHeartbeat> heartbeatList = null;
         List<XxlApmEvent> eventList = null;
@@ -190,7 +189,7 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
 
         }
 
-        return false;
+        return true;
     }
 
 
