@@ -83,10 +83,12 @@
 	</select>
 
 	<select id="findTotalMsgCount" resultType="java.lang.Integer" >
-		SELECT IFNULL( max(t1.id) + max(t2.id) + max(t3.id) , 0)
-		FROM xxl_apm_heartbeat_report as t1,
-			xxl_apm_event_report as t2,
-			xxl_apm_transaction_report as t3
+		select IFNULL(c1 + c2 + c3, 0)
+		from (
+			select	( select count(1) from xxl_apm_heartbeat_report) as c1,
+				( select sum(total_count) from xxl_apm_event_report) as c2,
+				( select sum(total_count) from xxl_apm_transaction_report) as c3
+		) as c
 	</select>
 
 </mapper>
