@@ -124,10 +124,11 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
             }
 
             for (XxlApmEventReport eventReport: eventReportMap.values()) {
-                int ret = xxlApmEventReportDao.update(eventReport);
+                /*int ret = xxlApmEventReportDao.update(eventReport);
                 if (ret < 1) {
                     xxlApmEventReportDao.add(eventReport);
-                }
+                }*/
+                xxlApmEventReportDao.addOrUpdate(eventReport);
             }
             
         }
@@ -181,10 +182,12 @@ public class XxlApmStoreServiceImpl implements XxlApmStoreService {
             }
 
             for (XxlApmTransactionReport transactionReport: transactionReportMap.values()) {
-                int ret = xxlApmTransactionReportDao.update(transactionReport);
+                /*int ret = xxlApmTransactionReportDao.update(transactionReport);
                 if (ret < 1) {
                     xxlApmTransactionReportDao.add(transactionReport);
-                }
+                }*/
+                xxlApmTransactionReportDao.addOrUpdate(transactionReport);
+
             }
 
         }

@@ -64,6 +64,32 @@
 			AND `name` = #{xxlApmEventReport.name}
 	</update>
 
+	<update id="addOrUpdate" parameterType="com.xxl.apm.admin.core.model.XxlApmEventReport" >
+		INSERT INTO xxl_apm_event_report (
+			`appname`,
+			`addtime`,
+			`address`,
+			`hostname`,
+			`type`,
+			`name`,
+			`total_count`,
+			`fail_count`
+		) VALUES
+		(
+			#{xxlApmEventReport.appname},
+			#{xxlApmEventReport.addtime},
+			#{xxlApmEventReport.address},
+			#{xxlApmEventReport.hostname},
+			#{xxlApmEventReport.type},
+			#{xxlApmEventReport.name},
+			#{xxlApmEventReport.total_count},
+			#{xxlApmEventReport.fail_count}
+		)
+		ON DUPLICATE KEY update
+			`total_count` = `total_count` + #{xxlApmEventReport.total_count},
+			`fail_count` = `fail_count` + #{xxlApmEventReport.fail_count}
+	</update>
+
 	<delete id="clean" parameterType="java.util.HashMap" >
 		DELETE FROM xxl_apm_event_report
 		WHERE addtime <![CDATA[ < ]]> #{timeoutTime}

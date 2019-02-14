@@ -13,6 +13,8 @@ public interface IXxlApmEventReportDao {
 
     public int update(@Param("xxlApmEventReport") XxlApmEventReport xxlApmEventReport);
 
+    public int addOrUpdate(@Param("xxlApmEventReport") XxlApmEventReport xxlApmEventReport);
+
     public int clean(@Param("timeoutTime") long timeoutTime);
 
     public List<XxlApmEventReport> find(@Param("appname") String appname,
