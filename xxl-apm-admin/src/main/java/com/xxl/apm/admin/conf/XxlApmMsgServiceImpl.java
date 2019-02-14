@@ -342,8 +342,7 @@ public class XxlApmMsgServiceImpl implements XxlApmMsgService, InitializingBean,
 
 
     private boolean processMsg(List<XxlApmMsg> messageList){
-        xxlApmStoreService.processMsg(messageList);
-        return true;
+        return xxlApmStoreService.processMsg(messageList);
     }
 
     private boolean cleanMsg(int msglogStorageDay){

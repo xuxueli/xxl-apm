@@ -49,8 +49,9 @@ CREATE TABLE `xxl_apm_event_report` (
   `name` varchar(200) NOT NULL,
   `total_count` bigint(11) NOT NULL,
   `fail_count` bigint(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `I_unique` (`appname`,`addtime`,`address`,`type`,`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
 CREATE TABLE `xxl_apm_transaction_report` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -68,5 +69,6 @@ CREATE TABLE `xxl_apm_transaction_report` (
   `time_tp95` int(11) NOT NULL,
   `time_tp99` int(11) NOT NULL,
   `time_tp999` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `I_unique` (`appname`,`addtime`,`address`,`type`,`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8

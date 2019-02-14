@@ -94,6 +94,50 @@
 			AND `name` = #{xxlApmTransactionReport.name}
 	</update>
 
+	<update id="addOrUpdate" parameterType="com.xxl.apm.admin.core.model.XxlApmTransactionReport" >
+		INSERT INTO xxl_apm_transaction_report (
+			`appname`,
+			`addtime`,
+			`address`,
+			`hostname`,
+			`type`,
+			`name`,
+			`total_count`,
+			`fail_count`,
+			`time_max`,
+			`time_avg`,
+			`time_tp90`,
+			`time_tp95`,
+			`time_tp99`,
+			`time_tp999`
+		) VALUES
+		(
+			#{xxlApmTransactionReport.appname},
+			#{xxlApmTransactionReport.addtime},
+			#{xxlApmTransactionReport.address},
+			#{xxlApmTransactionReport.hostname},
+			#{xxlApmTransactionReport.type},
+			#{xxlApmTransactionReport.name},
+			#{xxlApmTransactionReport.total_count},
+			#{xxlApmTransactionReport.fail_count},
+			#{xxlApmTransactionReport.time_max},
+			#{xxlApmTransactionReport.time_avg},
+			#{xxlApmTransactionReport.time_tp90},
+			#{xxlApmTransactionReport.time_tp95},
+			#{xxlApmTransactionReport.time_tp99},
+			#{xxlApmTransactionReport.time_tp999}
+		)
+		ON DUPLICATE KEY update
+			`total_count` = `total_count` + #{xxlApmTransactionReport.total_count},
+			`fail_count` = `fail_count` + #{xxlApmTransactionReport.fail_count},
+			`time_max` = #{xxlApmTransactionReport.time_max},
+			`time_avg` = #{xxlApmTransactionReport.time_avg},
+			`time_tp90` = #{xxlApmTransactionReport.time_tp90},
+			`time_tp95` = #{xxlApmTransactionReport.time_tp95},
+			`time_tp99` = #{xxlApmTransactionReport.time_tp99},
+			`time_tp999` = #{xxlApmTransactionReport.time_tp999}
+	</update>
+
 	<delete id="clean" parameterType="java.util.HashMap" >
 		DELETE FROM xxl_apm_transaction_report
 		WHERE addtime <![CDATA[ < ]]> #{timeoutTime}

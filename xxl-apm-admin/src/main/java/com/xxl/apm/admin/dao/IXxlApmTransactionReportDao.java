@@ -13,6 +13,8 @@ public interface IXxlApmTransactionReportDao {
 
     public int update(@Param("xxlApmTransactionReport") XxlApmTransactionReport xxlApmTransactionReport);
 
+    public int addOrUpdate(@Param("xxlApmTransactionReport") XxlApmTransactionReport xxlApmTransactionReport);
+
     public int clean(@Param("timeoutTime") long timeoutTime);
 
     public List<XxlApmTransactionReport> find(@Param("appname") String appname,
