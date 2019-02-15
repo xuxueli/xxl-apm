@@ -108,6 +108,12 @@ A distributed APM(application-performance-management) platform.
 - 死锁线程检测：ing
 - apm，内存简要分析
 
+- nest:
+    - trans 平均耗时，tp数据-分钟维度报表。
+    - 调用链：es关联，logview展示；
+    - problem：appname维度查询，实时展示异常；
+    - 告警配置：appname邮箱，fullgc、event、trans等阈值；
+    - 文档：sample示例，接入步骤；
 
 ---                
 大盘：分钟维度；
