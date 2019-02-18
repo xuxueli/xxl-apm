@@ -18,12 +18,13 @@ public class FileUtil {
 
         // file
         if (!file.exists()) {
-            try {
+            file.getParentFile().mkdirs();
+            /*try {
                 file.createNewFile();
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
                 return;
-            }
+            }*/
         }
 
         // append file content
