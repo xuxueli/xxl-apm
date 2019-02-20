@@ -44,12 +44,7 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>${javax.servlet-api.version}</version>
             <scope>provided</scope>
-        </dependency><dependency>
-        <groupId>ant</groupId>
-        <artifactId>ant</artifactId>
-        <version>1.6.5</version>
-        <scope>compile</scope>
-    </dependency>
+        </dependency>
 
     </dependencies>
 
