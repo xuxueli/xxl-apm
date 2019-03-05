@@ -107,6 +107,7 @@ A distributed APM(application-performance-management) platform.
     - dump 内存分析：dump，jmap，分析工具
 - 死锁线程检测：ing
 - apm，内存简要分析
+- event消息，新增count属性，借助map累加降低消息量；
 
 - nest:
     - trans 平均耗时，tp数据-分钟维度报表。
