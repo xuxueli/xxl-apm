@@ -8,7 +8,7 @@
 
 	<name>xxl-apm</name>
 	<description>A distributed APM(application-performance-management) platform.</description>
-	<url>http://www.xuxueli.com/</url>
+	<url>https://www.xuxueli.com/</url>
 
 	<modules>
         <module>xxl-apm-client</module>
